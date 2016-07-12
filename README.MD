@@ -4,7 +4,7 @@ Console version of popular Battleships game.
 
 ##Contributors
 
-Damian
-Kamil
-Maciek
+Damian,
+Kamil,
+Maciek,
 Tomek
