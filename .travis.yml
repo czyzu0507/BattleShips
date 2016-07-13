@@ -1,3 +1,7 @@
+os:
+  - linux
+jdk:
+  - oraclejdk8
 language: java
 sudo: false
 script: mvn clean verify
