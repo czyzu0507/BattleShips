@@ -33,8 +33,23 @@ public class BoardTest {
         };
     }
 
+    @DataProvider(name = "ofPosition")
+    private Object[][] provideCoordinates() {
+        return new Object[][] {
+                {new Field(1,1), new Field(1,1)},
+                {new Field(1,2), new Field(1,2)},
+                {new Field(-1,0), null},
+                {new Field(-1,-2), null}
+        };
+    }
+
     @Test(dataProvider = "positions")
     public void testIfBoardContainsParticularField(Field field, boolean expected) {
         assertEquals( boardSet.contains( field ), expected );
+    }
+
+    @Test(dataProvider = "ofPosition")
+    public void testGetFieldOfPosition(Field toFind, Field expected) {
+        assertEquals( board.getFieldFromTheBoard( toFind ), expected );
     }
 }

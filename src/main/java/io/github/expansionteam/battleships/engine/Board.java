@@ -23,6 +23,16 @@ public class Board implements Iterable<Field> {
         return initialSet;
     }
 
+    // returns field from the board - to return pointer to the field on the board
+    Field getFieldFromTheBoard(Field field) {
+        for (Field f : board) {
+            if ( f.equals( field ) ) {
+                return f;
+            }
+        }
+        return null;
+    }
+
     // allows to iterate over Fields
     @Override
     public Iterator<Field> iterator() {

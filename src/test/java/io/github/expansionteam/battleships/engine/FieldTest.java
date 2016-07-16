@@ -36,6 +36,22 @@ public class FieldTest {
         };
     }
 
+    @DataProvider(name = "horizontalSwitch")
+    private Object[][] provideHorizontalSwitchedFields() {
+        return new Object[][] {
+                {new Field(1,1), new Field(2,1)},
+                {new Field(2,4), new Field(3,4)}
+        };
+    }
+
+    @DataProvider(name = "verticalSwitch")
+    private Object[][] provideVerticalSwitchedFields() {
+        return new Object[][] {
+                {new Field(1,1), new Field(1,2)},
+                {new Field(2,3), new Field(2,4)}
+        };
+    }
+
     @Test(dataProvider = "equalityCheck")
     public void checkHashCodeEquality(final Field f1, final Field f2, final boolean expected) {
         assertEquals(f1.hashCode() == f2.hashCode(), expected);
@@ -50,5 +66,26 @@ public class FieldTest {
     public void checkCompare(final Field f1, final Field f2, final Function<Integer, Boolean> fun) {
         int compareResult = f1.compareTo(f2);
         assertTrue( fun.apply( compareResult ) );
+    }
+
+    @Test
+    public void testHitMarking() {
+        // given
+        Field f1 = new Field(1,1), f2 = new Field(2,2);
+        // when
+        f1.markAsHit();
+        // then
+        assertEquals(f1.isHit(), true);
+        assertEquals(f2.isHit(), false);
+    }
+
+    @Test(dataProvider = "horizontalSwitch")
+    public void testHorizontalSwitch(Field arg, Field expected) {
+        assertEquals( arg.nextHorizontalField(), expected );
+    }
+
+    @Test(dataProvider = "verticalSwitch")
+    public void testVerticalSwitch(Field arg, Field expected) {
+        assertEquals( arg.nextVerticalField(), expected );
     }
 }
