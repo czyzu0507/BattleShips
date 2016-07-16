@@ -48,7 +48,7 @@ public class FieldTest {
 
     @Test(dataProvider = "compareCheck")
     public void checkCompare(final Field f1, final Field f2, final Function<Integer, Boolean> fun) {
-        int compareResult = f1.compare(f1, f2);
+        int compareResult = f1.compareTo(f2);
         assertTrue( fun.apply( compareResult ) );
     }
 }

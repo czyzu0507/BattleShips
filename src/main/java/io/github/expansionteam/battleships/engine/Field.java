@@ -2,7 +2,7 @@ package io.github.expansionteam.battleships.engine;
 
 import java.util.Comparator;
 
-public class Field implements Comparator<Field> {
+public class Field implements Comparable<Field> {
     // coordinates (in an array/mesh)
     final int x;
     final int y;
@@ -14,11 +14,11 @@ public class Field implements Comparator<Field> {
 
     // does not allow null values!
     @Override
-    public int compare(final Field f1, final Field f2) {
-        int xDiff = f1.x - f2.x;
+    public int compareTo(final Field f) {
+        int xDiff = x - f.x;
         if (xDiff != 0)
             return xDiff;
-        return f1.y - f2.y;
+        return y - f.y;
     }
 
     @Override
