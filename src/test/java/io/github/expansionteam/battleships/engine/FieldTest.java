@@ -37,17 +37,17 @@ public class FieldTest {
     }
 
     @Test(dataProvider = "equalityCheck")
-    public void checkHashCodeEquality(Field f1, Field f2, boolean expected) {
+    public void checkHashCodeEquality(final Field f1, final Field f2, final boolean expected) {
         assertEquals(f1.hashCode() == f2.hashCode(), expected);
     }
 
     @Test(dataProvider = "equalityCheck")
-    public void checkEquals(Field f1, Field f2, boolean expected) {
+    public void checkEquals(final Field f1, final Field f2, final boolean expected) {
         assertEquals(f1.equals(f2), expected);
     }
 
     @Test(dataProvider = "compareCheck")
-    public void checkCompare(Field f1, Field f2, Function<Integer, Boolean> fun) {
+    public void checkCompare(final Field f1, final Field f2, final Function<Integer, Boolean> fun) {
         int compareResult = f1.compare(f1, f2);
         assertTrue( fun.apply( compareResult ) );
     }
