@@ -3,8 +3,12 @@ package io.github.expansionteam.battleships.engine;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Function;
 
+import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
 import static org.testng.Assert.*;
 
 @Test()
@@ -87,5 +91,30 @@ public class FieldTest {
     @Test(dataProvider = "verticalSwitch")
     public void testVerticalSwitch(Field arg, Field expected) {
         assertEquals( arg.nextVerticalField(), expected );
+    }
+
+    @DataProvider(name = "shipPointers")
+    private Object[][] provideDataToTestPointers() {
+        return new Object[][] {
+                {new Field(0,1), false},
+                {new Field(1,1), true},
+                {new Field(2,1), true},
+                {new Field(3,1), true},
+                {new Field(4,1), true},
+                {new Field(5,1), false}
+        };
+    }
+
+    // checking if adding pointers to the ship works
+    @Test(dataProvider = "shipPointers")
+    public void testPointers(Field field, boolean expected) {
+        // given
+        final Board board = new Board();
+        final Field startingField = new Field(1,1);
+        Ship ship = new Ship.ShipBuilder(board, startingField, HORIZONTAL, 4).build();
+        // when
+        boolean actual = board.getFieldFromTheBoard( field ).isPartOfTheShip();
+        // then
+        assertEquals(actual, expected);
     }
 }

@@ -8,6 +8,7 @@ public class Board implements Iterable<Field> {
     private static final int X = 10;    // constraint for x
     private static final int Y = 10;    // constraint for y
     private final Set<Field> board;   // board representation
+    private final Set<Ship> ships = new TreeSet<>();
 
     Board() {
         board = initializeSet();

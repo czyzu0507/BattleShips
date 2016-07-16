@@ -13,6 +13,13 @@ class Ship {
     private Ship(ShipBuilder shipBuilder) {
         this.name = shipBuilder.name;
         this.occupiedFields = shipBuilder.set;
+        // pointers in fields !
+        setPointers( this );
+    }
+
+    // set pointers
+    private static void setPointers(Ship ship) {
+        ship.occupiedFields.forEach( field -> field.setPointerToShip( ship ) );
     }
 
     // show the name

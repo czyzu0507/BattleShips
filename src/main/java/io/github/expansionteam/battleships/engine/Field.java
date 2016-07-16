@@ -3,7 +3,6 @@ package io.github.expansionteam.battleships.engine;
 class Field implements Comparable<Field> {
     // coordinates (in an array/mesh)
     private final int x, y;
-    // TODO: add pointer to the ship after adding some ships on the board!
     private Ship shipParent = null;     // pointer to the ship that contains this field
     private State state = State.NOT_HIT;
 
@@ -14,6 +13,16 @@ class Field implements Comparable<Field> {
 
     private enum State {
         HIT, NOT_HIT
+    }
+
+    // part of a ship?
+    boolean isPartOfTheShip() {
+        return shipParent != null;
+    }
+
+    // add pointer
+    void setPointerToShip(Ship ship) {
+        shipParent = ship;
     }
 
     // switch field horizontally (move one position right)
