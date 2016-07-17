@@ -15,6 +15,7 @@ import static org.testng.Assert.*;
 @Test()
 public class BoardTest {
     private final Board board = new Board();
+    private final Board boardForSeqTest = new Board();
     private final Set<Field> boardSet = new TreeSet<>();
 
     @BeforeClass
@@ -64,6 +65,18 @@ public class BoardTest {
         };
     }
 
+    @DataProvider(name = "appendShips")
+    private Object[][] provideAppendShipsData() {
+        return new Object[][] {
+                {new Field(1,1), HORIZONTAL, 4, new HashSet<>(Arrays.asList( new Field[] { new Field(1,1), new Field(2,1), new Field(3,1), new Field(4,1) } ))},
+                {new Field(1,0), VERTICAL, 2, null},
+                {new Field(7,0), HORIZONTAL, 4, null},
+                {new Field(7,0), VERTICAL, 2, new HashSet<>(Arrays.asList( new Field[] { new Field(7,0), new Field(7,1) } ))},
+                {new Field(7,1), VERTICAL, 4, null},
+                {new Field(3,6), VERTICAL, 3, new HashSet<>(Arrays.asList( new Field[] { new Field(3,6), new Field(3,7), new Field(3,8) } ))}
+        };
+    }
+
     @Test(dataProvider = "positions")
     public void testIfBoardContainsParticularField(Field field, boolean expected) {
         assertEquals( boardSet.contains( field ), expected );
@@ -80,5 +93,17 @@ public class BoardTest {
         Set<Field> actual = board.generateSetOfFieldsForShip(startingField, orientation, length);
         // then
         assertEquals(actual, set);
+    }
+
+    @Test(dataProvider = "appendShips")
+    public void testSequentiallyAppendShips(Field field, Orientation orientation, int length, Set<Field> expected) {
+        // when
+        Ship ship = boardForSeqTest.appendShip(field, orientation, length);
+        Set<Field> actual = null;
+        if (ship != null) {
+            actual = ship.occupiedFields;
+        }
+        // then
+        assertEquals(actual, expected);
     }
 }

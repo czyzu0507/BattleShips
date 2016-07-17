@@ -48,10 +48,10 @@ class Field implements Comparable<Field> {
     // does not allow null values!
     @Override
     public int compareTo(final Field f) {
-        int xDiff = x - f.x;
-        if (xDiff != 0)
-            return xDiff;
-        return y - f.y;
+        int yDiff = y - f.y;
+        if (yDiff != 0)
+            return yDiff;
+        return x - f.x;
     }
 
     @Override
@@ -66,5 +66,14 @@ class Field implements Comparable<Field> {
             return false;
         Field field = (Field) fieldObject;
         return x == field.x && y == field.y;
+    }
+
+    // only for 'visual' test
+    @Override
+    public String toString() {
+        if (shipParent == null) {
+            return x + "" + y;
+        }
+        return "\u001B[32m S\u001B[0m";
     }
 }
