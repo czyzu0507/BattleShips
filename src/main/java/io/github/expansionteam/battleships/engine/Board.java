@@ -51,7 +51,7 @@ public class Board implements Iterable<Field> {
     */
 
     // add new Ship - null if it is not possible to append the ship
-    // TODO: consider changing return value to boolean
+    // TODO: add return object to ships set
     // TODO: validate adjacent fields ( using validateSet() )
     Ship appendShip(Field startingField, Orientation orientation, int length) {
         Set<Field> setOfShipFields = generateSetOfFieldsForShip(startingField, orientation, length);
