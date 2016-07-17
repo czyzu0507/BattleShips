@@ -3,7 +3,6 @@ package io.github.expansionteam.battleships.engine;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 class Ship {
     private final String name;
@@ -47,9 +46,9 @@ class Ship {
         private final Set<Field> set;
 
         // constructor
-        ShipBuilder(Board board, Field startingField, Orientation orientation, int length) {
+        ShipBuilder(Set<Field> setOfFields, int length) {
             name = map.get(length);
-            set = getFieldsFromTheBoard(board, startingField, orientation, length);
+            set = setOfFields;
         }
 
         // helper map
@@ -60,22 +59,6 @@ class Ship {
             put(4, "Battleship");
             put(5, "Aircraft carrier");
         }};
-
-        // helper method
-        private static Set<Field> getFieldsFromTheBoard(Board board, Field currentField, Orientation orientation, int length) {
-            Set<Field> set = new TreeSet<>();
-            while (length > 0) {
-                set.add( board.getFieldFromTheBoard( currentField ) );
-                if (orientation == Orientation.HORIZONTAL) {
-                    currentField = currentField.nextHorizontalField();
-                }
-                else {
-                    currentField = currentField.nextVerticalField();
-                }
-                --length;
-            }
-            return set;
-        }
 
         Ship build() {
             return new Ship(this);

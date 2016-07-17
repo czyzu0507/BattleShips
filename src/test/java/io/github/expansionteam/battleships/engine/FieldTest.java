@@ -3,12 +3,11 @@ package io.github.expansionteam.battleships.engine;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
+import static io.github.expansionteam.battleships.engine.Orientation.VERTICAL;
 import static org.testng.Assert.*;
 
 @Test()
@@ -40,19 +39,13 @@ public class FieldTest {
         };
     }
 
-    @DataProvider(name = "horizontalSwitch")
+    @DataProvider(name = "adjacentSwitch")
     private Object[][] provideHorizontalSwitchedFields() {
         return new Object[][] {
-                {new Field(1,1), new Field(2,1)},
-                {new Field(2,4), new Field(3,4)}
-        };
-    }
-
-    @DataProvider(name = "verticalSwitch")
-    private Object[][] provideVerticalSwitchedFields() {
-        return new Object[][] {
-                {new Field(1,1), new Field(1,2)},
-                {new Field(2,3), new Field(2,4)}
+                {HORIZONTAL, new Field(1,1), new Field(2,1)},
+                {HORIZONTAL, new Field(2,4), new Field(3,4)},
+                {VERTICAL, new Field(1,1), new Field(1,2)},
+                {VERTICAL, new Field(2,3), new Field(2,4)}
         };
     }
 
@@ -83,14 +76,9 @@ public class FieldTest {
         assertEquals(f2.isHit(), false);
     }
 
-    @Test(dataProvider = "horizontalSwitch")
-    public void testHorizontalSwitch(Field arg, Field expected) {
-        assertEquals( arg.nextHorizontalField(), expected );
-    }
-
-    @Test(dataProvider = "verticalSwitch")
-    public void testVerticalSwitch(Field arg, Field expected) {
-        assertEquals( arg.nextVerticalField(), expected );
+    @Test(dataProvider = "adjacentSwitch")
+    public void testHorizontalSwitch(Orientation orientation, Field arg, Field expected) {
+        assertEquals( arg.nextField( orientation ), expected );
     }
 
     @DataProvider(name = "shipPointers")
@@ -111,7 +99,8 @@ public class FieldTest {
         // given
         final Board board = new Board();
         final Field startingField = new Field(1,1);
-        Ship ship = new Ship.ShipBuilder(board, startingField, HORIZONTAL, 4).build();
+        Set<Field> setOfFields = board.generateSetOfFieldsForShip( startingField, HORIZONTAL, 4 );
+        Ship ship = new Ship.ShipBuilder(setOfFields, 4).build();
         // when
         boolean actual = board.getFieldFromTheBoard( field ).isPartOfTheShip();
         // then

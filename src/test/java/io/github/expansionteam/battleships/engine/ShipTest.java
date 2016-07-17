@@ -14,8 +14,10 @@ import static org.testng.Assert.*;
 public class ShipTest {
     private final Board board = new Board();
     private final Field startingField = new Field(1,1);
-    private Ship ship1 = new Ship.ShipBuilder(board, startingField, HORIZONTAL, 4).build();
-    private Ship ship2 = new Ship.ShipBuilder(board, startingField, VERTICAL, 4).build();
+    private final Set<Field> fieldsOfShip1 = board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 4);
+    private final Set<Field> fieldsOfShip2 = board.generateSetOfFieldsForShip(startingField, VERTICAL, 4);
+    private Ship ship1 = new Ship.ShipBuilder(fieldsOfShip1, 4).build();
+    private Ship ship2 = new Ship.ShipBuilder(fieldsOfShip2, 4).build();
 
     @DataProvider(name = "horizontal")
     private Object[][] provideSetOfPositionsAndResultsHorizontal() {
@@ -39,19 +41,21 @@ public class ShipTest {
     private Object[][] provideSomeObjectsForEqualityTest() {
         return new Object[][] {
                 {ship1, ship2, false},
-                {ship1, new Ship.ShipBuilder(board, startingField, HORIZONTAL, 4).build(), true},
-                {ship2, new Ship.ShipBuilder(board, startingField, VERTICAL, 4).build(), true}
+                {ship1, new Ship.ShipBuilder(fieldsOfShip1, 4).build(), true},
+                {ship2, new Ship.ShipBuilder(fieldsOfShip2, 4).build(), true},
+                {ship1, new Ship.ShipBuilder(fieldsOfShip2, 4).build(), false},
+                {ship2, new Ship.ShipBuilder(fieldsOfShip1, 4).build(), false}
         };
     }
 
     @DataProvider(name = "names")
     private Object[][] provideObjectsToCheckNames() {
         return new Object[][] {
-                {new Ship.ShipBuilder(board, startingField, HORIZONTAL, 1).build(), "Submarine"},
-                {new Ship.ShipBuilder(board, startingField, HORIZONTAL, 2).build(), "Destroyer"},
-                {new Ship.ShipBuilder(board, startingField, HORIZONTAL, 3).build(), "Cruiser"},
-                {new Ship.ShipBuilder(board, startingField, HORIZONTAL, 4).build(), "Battleship"},
-                {new Ship.ShipBuilder(board, startingField, HORIZONTAL, 5).build(), "Aircraft carrier"},
+                {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 1), 1).build(), "Submarine"},
+                {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 2), 2).build(), "Destroyer"},
+                {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 3), 3).build(), "Cruiser"},
+                {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 4), 4).build(), "Battleship"},
+                {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 5), 5).build(), "Aircraft carrier"},
         };
     }
 

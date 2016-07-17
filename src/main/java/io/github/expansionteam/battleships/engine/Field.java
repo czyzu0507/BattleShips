@@ -1,5 +1,7 @@
 package io.github.expansionteam.battleships.engine;
 
+import static io.github.expansionteam.battleships.engine.Orientation.*;
+
 class Field implements Comparable<Field> {
     // coordinates (in an array/mesh)
     private final int x, y;
@@ -25,14 +27,12 @@ class Field implements Comparable<Field> {
         shipParent = ship;
     }
 
-    // switch field horizontally (move one position right)
-    Field nextHorizontalField() {
-        return new Field( x+1, y );
-    }
-
-    // switch field vertically (move one position down)
-    Field nextVerticalField() {
-        return new Field( x, y+1 );
+    // switch field (based on Orientation)
+    Field nextField(Orientation orientation) {
+        if (orientation == HORIZONTAL)
+            return new Field( x+1, y );
+        else
+            return new Field( x, y+1 );
     }
 
     // hit

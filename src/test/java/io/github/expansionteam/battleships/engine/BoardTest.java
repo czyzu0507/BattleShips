@@ -4,9 +4,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static io.github.expansionteam.battleships.engine.Orientation.*;
 import static org.testng.Assert.*;
 
 @Test()
@@ -43,6 +46,24 @@ public class BoardTest {
         };
     }
 
+    @DataProvider(name = "setOfShipFields")
+    private Object[][] provideDataToTestPointers() {
+        Field startingField1 = new Field(-1,-1);
+        Field startingField2 = new Field(0,0);
+        Field startingField3 = new Field(9,9);
+
+        return new Object[][] {
+                {startingField1, HORIZONTAL, 3, null},
+                {startingField1, VERTICAL, 1, null},
+                {startingField2, HORIZONTAL, 2, new HashSet<>(Arrays.asList( new Field[] { new Field(0,0), new Field(1, 0) } ) )},
+                {startingField2, VERTICAL, 2, new HashSet<>(Arrays.asList( new Field[] { new Field(0,0), new Field(0, 1) } ) )},
+                {startingField3, HORIZONTAL, 1, new HashSet<>(Arrays.asList( new Field[] { new Field(9,9) } ))},
+                {startingField3, VERTICAL, 1, new HashSet<>(Arrays.asList( new Field[] { new Field(9,9) } ))},
+                {startingField3, HORIZONTAL, 2, null},
+                {startingField3, VERTICAL, 2, null}
+        };
+    }
+
     @Test(dataProvider = "positions")
     public void testIfBoardContainsParticularField(Field field, boolean expected) {
         assertEquals( boardSet.contains( field ), expected );
@@ -51,5 +72,13 @@ public class BoardTest {
     @Test(dataProvider = "ofPosition")
     public void testGetFieldOfPosition(Field toFind, Field expected) {
         assertEquals( board.getFieldFromTheBoard( toFind ), expected );
+    }
+
+    @Test(dataProvider = "setOfShipFields")
+    public void testReturnedSetsOfFields(Field startingField, Orientation orientation, int length, Set<Field> set) {
+        // when
+        Set<Field> actual = board.generateSetOfFieldsForShip(startingField, orientation, length);
+        // then
+        assertEquals(actual, set);
     }
 }
