@@ -1,5 +1,8 @@
 package io.github.expansionteam.battleships.engine;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import static io.github.expansionteam.battleships.engine.Orientation.*;
 
 class Field implements Comparable<Field> {
@@ -17,9 +20,26 @@ class Field implements Comparable<Field> {
         HIT, NOT_HIT
     }
 
+    Set<Field> createAllPossibleAdjacentFields() {
+        Set<Field> set = new TreeSet<>();
+        for (int dy = -1; dy <= 1; dy++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                if (dy == 0 && dx == 0)
+                    continue;
+                set.add(new Field(x + dx, y + dy));
+            }
+        }
+        return set;
+    }
+
     // part of a ship?
     boolean isPartOfTheShip() {
         return shipParent != null;
+    }
+
+    // part of a particular ship
+    boolean isPartOfTheShip(Ship ship) {
+        return shipParent == ship;
     }
 
     // add pointer
@@ -30,9 +50,9 @@ class Field implements Comparable<Field> {
     // switch field (based on Orientation)
     Field nextField(Orientation orientation) {
         if (orientation == HORIZONTAL)
-            return new Field( x+1, y );
+            return new Field(x + 1, y);
         else
-            return new Field( x, y+1 );
+            return new Field(x, y + 1);
     }
 
     // hit
@@ -62,7 +82,7 @@ class Field implements Comparable<Field> {
     @Override
     public boolean equals(Object fieldObject) {
         if (this == fieldObject) return true;
-        if (fieldObject == null || !(getClass().equals( fieldObject.getClass() )))
+        if (fieldObject == null || !(getClass().equals(fieldObject.getClass())))
             return false;
         Field field = (Field) fieldObject;
         return x == field.x && y == field.y;

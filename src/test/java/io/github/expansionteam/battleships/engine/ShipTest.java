@@ -55,7 +55,7 @@ public class ShipTest {
                 {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 2), 2).build(), "Destroyer"},
                 {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 3), 3).build(), "Cruiser"},
                 {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 4), 4).build(), "Battleship"},
-                {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 5), 5).build(), "Aircraft carrier"},
+               // {new Ship.ShipBuilder(board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 5), 5).build(), "Aircraft carrier"},
         };
     }
 
