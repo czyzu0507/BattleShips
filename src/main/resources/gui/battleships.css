@@ -1,0 +1,11 @@
+.field {
+    -fx-fill: #2DDFFA;
+    -fx-stroke: #2798F5;
+    -fx-stroke-width:2;
+}
+
+.field-highlight {
+    -fx-fill: #6CE046;
+    -fx-stroke: #2798F5;
+    -fx-stroke-width:2;
+}
