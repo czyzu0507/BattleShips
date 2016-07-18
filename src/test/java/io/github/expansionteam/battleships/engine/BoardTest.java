@@ -9,8 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static io.github.expansionteam.battleships.engine.Orientation.*;
-import static org.testng.Assert.*;
+import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
+import static io.github.expansionteam.battleships.engine.Orientation.VERTICAL;
+import static org.testng.Assert.assertEquals;
 
 @Test()
 public class BoardTest {
@@ -82,10 +83,34 @@ public class BoardTest {
         Board b = new Board();
         return new Object[][]{
                 {b.appendShip(new Field(1, 1), HORIZONTAL, 4) != null, true},
-                {b.appendShip(new Field(5, 0), VERTICAL, 4) != null, false},
-                {b.appendShip(new Field(3, 6), VERTICAL, 4) != null, true},
-                {b.appendShip(new Field(2, 0), VERTICAL, 4) != null, false},
+                {b.appendShip(new Field(5, 0), VERTICAL, 3) != null, false},
+                {b.appendShip(new Field(3, 6), VERTICAL, 3) != null, true},
+                {b.appendShip(new Field(2, 0), VERTICAL, 2) != null, false},
                 {b.appendShip(new Field(7, 7), VERTICAL, 1) != null, true}
+        };
+    }
+
+    @DataProvider(name = "appendAvailableShips")
+    private Object[][] provideDataToTestAvailableShips() {
+        Board board = new Board();
+        return new Object[][]{
+                {board.appendShip(new Field(0, 0), HORIZONTAL, 4) != null, true},
+                {board.appendShip(new Field(0, 2), HORIZONTAL, 4) != null, false},
+
+                {board.appendShip(new Field(0, 4), HORIZONTAL, 3) != null, true},
+                {board.appendShip(new Field(0, 6), HORIZONTAL, 3) != null, true},
+                {board.appendShip(new Field(0, 8), HORIZONTAL, 3) != null, false},
+
+                {board.appendShip(new Field(5, 3), HORIZONTAL, 2) != null, true},
+                {board.appendShip(new Field(5, 5), HORIZONTAL, 2) != null, true},
+                {board.appendShip(new Field(5, 7), HORIZONTAL, 2) != null, true},
+                {board.appendShip(new Field(5, 9), HORIZONTAL, 2) != null, false},
+
+                {board.appendShip(new Field(9, 0), HORIZONTAL, 1) != null, true},
+                {board.appendShip(new Field(9, 2), HORIZONTAL, 1) != null, true},
+                {board.appendShip(new Field(9, 4), HORIZONTAL, 1) != null, true},
+                {board.appendShip(new Field(9, 6), HORIZONTAL, 1) != null, true},
+                {board.appendShip(new Field(9, 8), HORIZONTAL, 1) != null, false},
         };
     }
 
@@ -123,5 +148,11 @@ public class BoardTest {
     public void testAdjacentAppendingShips(boolean actual, boolean expected) {
         // then
         assertEquals(actual, expected);
+    }
+
+    @Test(dataProvider = "appendAvailableShips")
+    public void testIfShipIsAvailable(boolean addsShip, boolean expected) {
+        // then
+        assertEquals(addsShip, expected);
     }
 }

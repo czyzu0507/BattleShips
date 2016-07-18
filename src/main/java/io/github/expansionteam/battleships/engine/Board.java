@@ -8,10 +8,12 @@ public class Board implements Iterable<Field> {
     private static final int X = 10;    // constraint for x
     private static final int Y = 10;    // constraint for y
     private final Set<Field> board;   // board representation
+    private final Map<Integer, Integer> availableShips;
     private final Set<Ship> ships = new HashSet<>();
 
     Board() {
         board = initializeSet();
+        availableShips = initializeMap();
     }
 
     private static Set<Field> initializeSet() {
@@ -22,6 +24,15 @@ public class Board implements Iterable<Field> {
             }
         }
         return initialSet;
+    }
+
+    private static Map<Integer, Integer> initializeMap() {
+        Map<Integer, Integer> initialMap = new HashMap<>();
+        initialMap.put(4, 1);
+        initialMap.put(3, 2);
+        initialMap.put(2, 3);
+        initialMap.put(1, 4);
+        return initialMap;
     }
 
     // PRINT HELPER - TO SEE WHAT HAPPENS ON THE BOARD :)
@@ -59,9 +70,10 @@ public class Board implements Iterable<Field> {
     // TODO: validate adjacent fields ( using validateSet() )
     // consider moving adjacent fields to ship (as a set of adjacent fields)
     Ship appendShip(Field startingField, Orientation orientation, int length) {
-        // add condition if the ship of particular length if available for the board
-        // ...
-
+        // checks if ship length is available
+        if (!isLengthAvailable(length)) {
+            return null;
+        }
         Set<Field> setOfShipFields = generateSetOfFieldsForShip(startingField, orientation, length);
         if (setOfShipFields == null) {      // checks if the set is out of bounds
             return null;
@@ -75,6 +87,7 @@ public class Board implements Iterable<Field> {
             if (f.isPartOfTheShip())
                 return null;
         }
+        decreaseShipCounter(length);
         return new Ship.ShipBuilder(setOfShipFields).build();
     }
 
@@ -82,6 +95,30 @@ public class Board implements Iterable<Field> {
     private boolean validateSet(Set<Field> set) {
         Set<Field> intersectedFields = set.stream().filter(Field::isPartOfTheShip).collect(Collectors.toSet());
         return intersectedFields.size() == 0;
+    }
+
+    // checks if the type of ship with given length is still available
+    private boolean isLengthAvailable(int length) {
+        if (!availableShips.containsKey(length)) {
+            throw new IllegalStateException("No such length");
+        }
+
+        return availableShips.get(length) > 0;
+    }
+
+    // lowers number of available ship type with given length
+    private void decreaseShipCounter(int length) {
+        if (!availableShips.containsKey(length)) {
+            throw new IllegalStateException("No such length");
+        }
+
+        Integer counter = availableShips.get(length);
+
+        if (counter < 1) {
+            throw new IllegalStateException("No available length");
+        }
+
+        availableShips.put(length, --counter);
     }
 
     // generates set for the board (null if coordinates are reached)
