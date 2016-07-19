@@ -1,10 +1,16 @@
-.field {
+.field-empty {
     -fx-fill: #2DDFFA;
     -fx-stroke: #2798F5;
     -fx-stroke-width:2;
 }
 
-.field-highlight {
+.field-occupied {
+    -fx-fill: #ADB1B3;
+    -fx-stroke: #696969;
+    -fx-stroke-width:2;
+}
+
+.field-placement-hint-empty {
     -fx-fill: #6CE046;
     -fx-stroke: #2798F5;
     -fx-stroke-width:2;

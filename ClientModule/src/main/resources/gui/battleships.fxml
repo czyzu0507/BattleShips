@@ -16,7 +16,7 @@
 
     <center>
         <HBox alignment="CENTER">
-            <VBox fx:id="opponentBoard">
+            <VBox fx:id="opponentBoardArea">
                 <Label alignment="CENTER" contentDisplay="CENTER" text="OPPONENT'S BATTLEFIELD" textAlignment="CENTER">
                     <font>
                         <Font name="System Bold" size="13.0"/>
@@ -28,7 +28,7 @@
                     <Insets left="15.0" right="15.0"/>
                 </HBox.margin>
             </Separator>
-            <VBox fx:id="playerBoard">
+            <VBox fx:id="playerBoardArea">
                 <Label alignment="CENTER" contentDisplay="CENTER" text="YOUR BATTLEFIELD" textAlignment="CENTER">
                     <font>
                         <Font name="System Bold" size="13.0"/>
