@@ -1,7 +1,6 @@
 package io.github.expansionteam.battleships.engine;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Board implements Iterable<Field> {
@@ -69,26 +68,33 @@ public class Board implements Iterable<Field> {
     // TODO: add return object to ships set
     // TODO: validate adjacent fields ( using validateSet() )
     // consider moving adjacent fields to ship (as a set of adjacent fields)
-    Ship appendShip(Field startingField, Orientation orientation, int length) {
+    // TODO: consider name changing
+    public boolean appendShip(Field startingField, Orientation orientation, int length) {
         // checks if ship length is available
         if (!isLengthAvailable(length)) {
-            return null;
+            return false;
         }
         Set<Field> setOfShipFields = generateSetOfFieldsForShip(startingField, orientation, length);
         if (setOfShipFields == null) {      // checks if the set is out of bounds
-            return null;
+            return false;
         }
         // validate set of current ship-fields
         if (!validateSet(setOfShipFields))
-            return null;
+            return false;
         // validate adjacent fields
         Set<Field> adjacent = Ship.generateSetOfAdjacentFields(this, setOfShipFields);
         for (Field f : adjacent) {
             if (f.isPartOfTheShip())
-                return null;
+                return false;
         }
+        Ship ship = new Ship.ShipBuilder(setOfShipFields).build();
         decreaseShipCounter(length);
-        return new Ship.ShipBuilder(setOfShipFields).build();
+        ships.add(ship);
+        return true;
+    }
+
+    public Set<Ship> getShips() {
+        return ships;
     }
 
     // checks intersection of sets (with set of fields of other ships)

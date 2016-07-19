@@ -82,11 +82,11 @@ public class BoardTest {
     private Object[][] provideAppendShipsWithoutAdjacentData() {
         Board b = new Board();
         return new Object[][]{
-                {b.appendShip(new Field(1, 1), HORIZONTAL, 4) != null, true},
-                {b.appendShip(new Field(5, 0), VERTICAL, 3) != null, false},
-                {b.appendShip(new Field(3, 6), VERTICAL, 3) != null, true},
-                {b.appendShip(new Field(2, 0), VERTICAL, 2) != null, false},
-                {b.appendShip(new Field(7, 7), VERTICAL, 1) != null, true}
+                {b.appendShip(new Field(1, 1), HORIZONTAL, 4), true},
+                {b.appendShip(new Field(5, 0), VERTICAL, 3), false},
+                {b.appendShip(new Field(3, 6), VERTICAL, 3), true},
+                {b.appendShip(new Field(2, 0), VERTICAL, 2), false},
+                {b.appendShip(new Field(7, 7), VERTICAL, 1), true}
         };
     }
 
@@ -94,23 +94,23 @@ public class BoardTest {
     private Object[][] provideDataToTestAvailableShips() {
         Board board = new Board();
         return new Object[][]{
-                {board.appendShip(new Field(0, 0), HORIZONTAL, 4) != null, true},
-                {board.appendShip(new Field(0, 2), HORIZONTAL, 4) != null, false},
+                {board.appendShip(new Field(0, 0), HORIZONTAL, 4), true},
+                {board.appendShip(new Field(0, 2), HORIZONTAL, 4), false},
 
-                {board.appendShip(new Field(0, 4), HORIZONTAL, 3) != null, true},
-                {board.appendShip(new Field(0, 6), HORIZONTAL, 3) != null, true},
-                {board.appendShip(new Field(0, 8), HORIZONTAL, 3) != null, false},
+                {board.appendShip(new Field(0, 4), HORIZONTAL, 3), true},
+                {board.appendShip(new Field(0, 6), HORIZONTAL, 3), true},
+                {board.appendShip(new Field(0, 8), HORIZONTAL, 3), false},
 
-                {board.appendShip(new Field(5, 3), HORIZONTAL, 2) != null, true},
-                {board.appendShip(new Field(5, 5), HORIZONTAL, 2) != null, true},
-                {board.appendShip(new Field(5, 7), HORIZONTAL, 2) != null, true},
-                {board.appendShip(new Field(5, 9), HORIZONTAL, 2) != null, false},
+                {board.appendShip(new Field(5, 3), HORIZONTAL, 2), true},
+                {board.appendShip(new Field(5, 5), HORIZONTAL, 2), true},
+                {board.appendShip(new Field(5, 7), HORIZONTAL, 2), true},
+                {board.appendShip(new Field(5, 9), HORIZONTAL, 2), false},
 
-                {board.appendShip(new Field(9, 0), HORIZONTAL, 1) != null, true},
-                {board.appendShip(new Field(9, 2), HORIZONTAL, 1) != null, true},
-                {board.appendShip(new Field(9, 4), HORIZONTAL, 1) != null, true},
-                {board.appendShip(new Field(9, 6), HORIZONTAL, 1) != null, true},
-                {board.appendShip(new Field(9, 8), HORIZONTAL, 1) != null, false},
+                {board.appendShip(new Field(9, 0), HORIZONTAL, 1), true},
+                {board.appendShip(new Field(9, 2), HORIZONTAL, 1), true},
+                {board.appendShip(new Field(9, 4), HORIZONTAL, 1), true},
+                {board.appendShip(new Field(9, 6), HORIZONTAL, 1), true},
+                {board.appendShip(new Field(9, 8), HORIZONTAL, 1), false},
         };
     }
 
@@ -135,10 +135,13 @@ public class BoardTest {
     @Test(dataProvider = "appendShips")
     public void testSequentiallyAppendShips(Field field, Orientation orientation, int length, Set<Field> expected) {
         // when
-        Ship ship = boardForSeqTest.appendShip(field, orientation, length);
+        boolean appended = boardForSeqTest.appendShip(field, orientation, length);
+        Set<Ship> ships = boardForSeqTest.getShips();
         Set<Field> actual = null;
-        if (ship != null) {
-            actual = ship.occupiedFields;
+        for (Ship ship : ships) {
+            if (appended) {
+                actual = ship.occupiedFields;
+            }
         }
         // then
         assertEquals(actual, expected);
