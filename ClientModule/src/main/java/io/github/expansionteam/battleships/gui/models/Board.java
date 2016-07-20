@@ -1,44 +1,39 @@
 package io.github.expansionteam.battleships.gui.models;
 
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 
-public class Board extends Parent {
+import java.util.Map;
 
-    private final VBox column = new VBox();
+public abstract class Board extends Parent {
 
-    public Board() {
-        for (int i = 0; i < 10; i++) {
+    protected final Map<Position, Field> fieldsByPosition;
+
+    @FXML
+    private VBox board;
+
+    Board(Map<Position, Field> fieldsByPosition) {
+        this.fieldsByPosition = fieldsByPosition;
+        updateBoard();
+    }
+
+    protected void updateBoard() {
+        board = new VBox();
+
+        for (int y = 0; y < 10; y++) {
             HBox row = new HBox();
-            for (int j = 0; j < 10; j++) {
-                Rectangle rectangle = new Rectangle(30, 30);
-                rectangle.getStyleClass().add("field");
-                String text = "Jesteś pewny, że chcesz kliknąć [" + i + ", " + j + "]?";
-                rectangle.setOnMouseClicked(event -> {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Czy chcesz kliknąć?");
-                    alert.setContentText(text);
-                    alert.showAndWait();
-                });
-                rectangle.setOnMouseEntered(event -> {
-                    Rectangle currentRectangle = (Rectangle) event.getSource();
-                    currentRectangle.getStyleClass().remove("field");
-                    currentRectangle.getStyleClass().add("field-highlight");
-                });
-                rectangle.setOnMouseExited(event -> {
-                    Rectangle currentRectangle = (Rectangle) event.getSource();
-                    currentRectangle.getStyleClass().remove("field-highlight");
-                    currentRectangle.getStyleClass().add("field");
-                });
-
-                row.getChildren().add(rectangle);
+            for (int x = 0; x < 10; x++) {
+                Field field = fieldsByPosition.get(Position.of(x, y));
+                row.getChildren().add(field);
             }
-            column.getChildren().add(row);
+            board.getChildren().removeAll();
+            board.getChildren().add(row);
         }
-        getChildren().add(column);
+
+        getChildren().removeAll();
+        getChildren().add(board);
     }
 
 }

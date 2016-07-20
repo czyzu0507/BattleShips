@@ -1,11 +1,35 @@
-.field {
+.field-is-empty {
     -fx-fill: #2DDFFA;
     -fx-stroke: #2798F5;
     -fx-stroke-width:2;
 }
 
-.field-highlight {
+.field-is-occupied {
+    -fx-fill: #ADB1B3;
+    -fx-stroke: #ADB1B3;
+    -fx-stroke-width:2;
+}
+
+.field-was-shot-miss {
+    -fx-fill: #76797A;
+    -fx-stroke: #000;
+    -fx-stroke-width:2;
+}
+
+.field-was-shot-hit {
+    -fx-fill: #EB9307;
+    -fx-stroke: #EB9307;
+    -fx-stroke-width:2;
+}
+
+.field-placement-hint-legal {
     -fx-fill: #6CE046;
+    -fx-stroke: #2798F5;
+    -fx-stroke-width:2;
+}
+
+.field-shot-hint-legal {
+    -fx-fill: #62B547;
     -fx-stroke: #2798F5;
     -fx-stroke-width:2;
 }
