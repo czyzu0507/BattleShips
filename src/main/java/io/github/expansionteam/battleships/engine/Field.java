@@ -88,6 +88,7 @@ class Field implements Comparable<Field> {
         return x == field.x && y == field.y;
     }
 
+    // TODO: remove this later
     // only for 'visual' test
     @Override
     public String toString() {

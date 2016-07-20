@@ -24,7 +24,7 @@ class Ship {
 
     // set of adjacent fields
     static Set<Field> generateSetOfAdjacentFields(Board board, Set<Field> shipSet) {
-        Set<Field> tmpSet = new TreeSet<>();   // set with nulls, adjacents, and ship's fields
+        Set<Field> tmpSet;   // set with nulls, adjacents, and ship's fields
 
         tmpSet = shipSet.stream()
                 .map(Field::createAllPossibleAdjacentFields)
