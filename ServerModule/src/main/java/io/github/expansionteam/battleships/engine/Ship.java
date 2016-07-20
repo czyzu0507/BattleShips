@@ -1,6 +1,9 @@
 package io.github.expansionteam.battleships.engine;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 class Ship {
@@ -41,6 +44,15 @@ class Ship {
         return name;
     }
 
+    boolean isDestroyed() {
+        for (Field field : occupiedFields) {
+            if (!field.isHit()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public int hashCode() {
         return name.hashCode() * 31 + occupiedFields.hashCode();
@@ -61,7 +73,7 @@ class Ship {
         private final Set<Field> set;
 
         ShipBuilder(Set<Field> setOfFields) {
-            name = map.get( setOfFields.size() );
+            name = map.get(setOfFields.size());
             set = setOfFields;
         }
 

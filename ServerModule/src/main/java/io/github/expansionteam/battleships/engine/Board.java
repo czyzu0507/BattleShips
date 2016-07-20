@@ -39,7 +39,6 @@ public class Board implements Iterable<Field> {
     }
 
 
-
     private static Set<Field> initializeSet() {
         Set<Field> initialSet = new TreeSet<>();
         for (int i = 0; i < X; i++) {
@@ -100,6 +99,31 @@ public class Board implements Iterable<Field> {
         decreaseShipCounter(length);
         ships.add(ship);
         return true;
+    }
+
+    public boolean shootField(Field field) {
+        Field boardField = getFieldFromTheBoard(field);
+        if (boardField.isHit()) {
+            throw new IllegalStateException("Field already shot");
+        }
+        boardField.markAsHit();
+        if (!boardField.isPartOfTheShip()) {
+            return true;
+        }
+
+        Ship hitShip = field.getShip();
+
+        if (!hitShip.isDestroyed()) {
+            return true;
+        }
+
+        markAdjacentFieldsAsHit(hitShip);
+        return true;
+    }
+
+    private void markAdjacentFieldsAsHit(Ship hitShip) {
+        Set<Field> fields = Ship.generateSetOfAdjacentFields(this, hitShip.occupiedFields);
+        fields.forEach(Field::markAsHit);
     }
 
     public Set<Ship> getShips() {

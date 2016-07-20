@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
 import static io.github.expansionteam.battleships.engine.Orientation.VERTICAL;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 @Test()
 public class BoardTest {
@@ -114,6 +115,32 @@ public class BoardTest {
         };
     }
 
+    @DataProvider(name = "allPositions")
+    private Object[][] provideAllPositions() {
+        Object[][] objects = new Object[9][1];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                objects[i * 3 + j][0] = new Field(i, j);
+            }
+        }
+        return objects;
+    }
+
+    @DataProvider(name = "markHitAdjacent")
+    private Object[][] provideScenariosForMarkingAdjacentFields() {
+        Object[][] objects = new Object[][]{
+                {new Field(0, 0), Orientation.HORIZONTAL, 4},
+                {new Field(0, 0), Orientation.HORIZONTAL, 1},
+                {new Field(2, 2), Orientation.VERTICAL, 4},
+                {new Field(0, 4), Orientation.HORIZONTAL, 3},
+                {new Field(4, 0), Orientation.HORIZONTAL, 2},
+                {new Field(3, 9), Orientation.HORIZONTAL, 1},
+                {new Field(9, 2), Orientation.VERTICAL, 1},
+                {new Field(9, 9), Orientation.HORIZONTAL, 1},
+        };
+        return objects;
+    }
+
     @Test(dataProvider = "positions")
     public void testIfBoardContainsParticularField(Field field, boolean expected) {
         assertEquals(boardSet.contains(field), expected);
@@ -157,5 +184,35 @@ public class BoardTest {
     public void testIfShipIsAvailable(boolean addsShip, boolean expected) {
         // then
         assertEquals(addsShip, expected);
+    }
+
+    @Test(dataProvider = "allPositions")
+    public void shootsNotHitField(Field field) {
+        // given
+        Board notHitBoard = new Board();
+
+        // when
+        notHitBoard.shootField(field);
+        Field shotField = notHitBoard.getFieldFromTheBoard(field);
+
+        // then
+        assertTrue(shotField.isHit());
+    }
+
+    @Test(dataProvider = "markHitAdjacent")
+    public void marksAdjacentFieldsIfShipsDestroyed(Field field, Orientation orientation, int length) {
+        // given
+        Board board = new Board();
+        board.appendShip(field, orientation, length);
+        Set<Field> occupiedFields = board.getFieldFromTheBoard(field).getShip().occupiedFields;
+        Set<Field> adjacentFields = Ship.generateSetOfAdjacentFields(board, occupiedFields);
+
+        // when
+        occupiedFields.forEach(board::shootField);
+
+        // then
+        for (Field adjacentField : adjacentFields) {
+            assertEquals(adjacentField.isHit(), true);
+        }
     }
 }

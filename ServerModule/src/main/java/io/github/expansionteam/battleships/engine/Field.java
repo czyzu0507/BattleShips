@@ -3,7 +3,7 @@ package io.github.expansionteam.battleships.engine;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static io.github.expansionteam.battleships.engine.Orientation.*;
+import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
 
 class Field implements Comparable<Field> {
     // coordinates (in an array/mesh)
@@ -63,6 +63,13 @@ class Field implements Comparable<Field> {
     // is hit?
     boolean isHit() {
         return state == State.HIT;
+    }
+
+    Ship getShip() {
+        if (shipParent == null) {
+            throw new IllegalStateException("No ship on field");
+        }
+        return shipParent;
     }
 
     // does not allow null values!
