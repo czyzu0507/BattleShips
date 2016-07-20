@@ -24,16 +24,16 @@ public class BattleshipsController implements Initializable {
         Board opponentBoard = boardFactory.createEmptyOpponentBoard();
 
         Board playerBoard = boardFactory.createEmptyPlayerBoard();
-        playerBoard.placeShip(Ship.create(Position.of(6, 5), ShipOrientation.HORIZONTAL, ShipSize.FOUR));
-        playerBoard.placeShip(Ship.create(Position.of(4, 4), ShipOrientation.VERTICAL, ShipSize.THREE));
-        playerBoard.placeShip(Ship.create(Position.of(9, 0), ShipOrientation.VERTICAL, ShipSize.THREE));
-        playerBoard.placeShip(Ship.create(Position.of(0, 9), ShipOrientation.HORIZONTAL, ShipSize.TWO));
-        playerBoard.placeShip(Ship.create(Position.of(4, 0), ShipOrientation.VERTICAL, ShipSize.TWO));
-        playerBoard.placeShip(Ship.create(Position.of(1, 1), ShipOrientation.HORIZONTAL, ShipSize.TWO));
-        playerBoard.placeShip(Ship.create(Position.of(2, 7), ShipOrientation.VERTICAL, ShipSize.ONE));
-        playerBoard.placeShip(Ship.create(Position.of(9, 9), ShipOrientation.VERTICAL, ShipSize.ONE));
-        playerBoard.placeShip(Ship.create(Position.of(8, 7), ShipOrientation.VERTICAL, ShipSize.ONE));
-        playerBoard.placeShip(Ship.create(Position.of(1, 5), ShipOrientation.VERTICAL, ShipSize.ONE));
+        playerBoard.placeShip(Ship.createHorizontal(Position.of(6, 5), ShipSize.FOUR));
+        playerBoard.placeShip(Ship.createVertical(Position.of(4, 4), ShipSize.THREE));
+        playerBoard.placeShip(Ship.createVertical(Position.of(9, 0), ShipSize.THREE));
+        playerBoard.placeShip(Ship.createHorizontal(Position.of(0, 9), ShipSize.TWO));
+        playerBoard.placeShip(Ship.createVertical(Position.of(4, 0), ShipSize.TWO));
+        playerBoard.placeShip(Ship.createHorizontal(Position.of(1, 1), ShipSize.TWO));
+        playerBoard.placeShip(Ship.createVertical(Position.of(2, 7), ShipSize.ONE));
+        playerBoard.placeShip(Ship.createVertical(Position.of(9, 9), ShipSize.ONE));
+        playerBoard.placeShip(Ship.createVertical(Position.of(8, 7), ShipSize.ONE));
+        playerBoard.placeShip(Ship.createVertical(Position.of(1, 5), ShipSize.ONE));
 
         opponentBoardArea.getChildren().add(opponentBoard);
         playerBoardArea.getChildren().add(playerBoard);

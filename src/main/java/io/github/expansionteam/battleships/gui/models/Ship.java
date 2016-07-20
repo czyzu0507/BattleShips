@@ -1,11 +1,7 @@
 package io.github.expansionteam.battleships.gui.models;
 
-import javafx.geometry.Orientation;
-
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Ship {
 
@@ -15,7 +11,15 @@ public class Ship {
         this.fieldsByPosition = fieldsByPosition;
     }
 
-    public static Ship create(Position position, ShipOrientation orientation, ShipSize shipSize) {
+    public static Ship createHorizontal(Position position, ShipSize shipSize) {
+        return create(ShipOrientation.HORIZONTAL, position, shipSize);
+    }
+
+    public static Ship createVertical(Position position, ShipSize shipSize) {
+        return create(ShipOrientation.VERTICAL, position, shipSize);
+    }
+
+    private static Ship create(ShipOrientation orientation, Position position, ShipSize shipSize) {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
 
         for (int i = 0; i < shipSize.getValue(); i++) {
