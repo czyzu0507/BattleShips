@@ -2,7 +2,7 @@ package io.github.expansionteam.battleships.gui.models;
 
 import javafx.scene.shape.Rectangle;
 
-public class Field extends Rectangle {
+public abstract class Field extends Rectangle {
 
     private static final int FIELD_SIZE = 30;
 
@@ -18,14 +18,6 @@ public class Field extends Rectangle {
         this.wasShot = wasShot;
 
         updateCss();
-    }
-
-    public static Field createEmpty(Position position) {
-        return new Field(position, false, false);
-    }
-
-    public static Field createOccupied(Position position) {
-        return new Field(position, true, false);
     }
 
     public Position getPosition() {
@@ -67,13 +59,27 @@ public class Field extends Rectangle {
 
     public static class FieldBuilder {
 
+        private enum FieldType {
+            OPPONENT, PLAYER;
+        }
+
+        private final FieldType fieldType;
         private final Position position;
 
         private boolean occupied = false;
         private boolean shot = false;
 
-        public FieldBuilder(Position position) {
+        FieldBuilder(FieldType fieldType, Position position) {
+            this.fieldType = fieldType;
             this.position = position;
+        }
+
+        public static FieldBuilder opponentField(Position position) {
+            return new FieldBuilder(FieldType.OPPONENT, position);
+        }
+
+        public static FieldBuilder playerField(Position position) {
+            return new FieldBuilder(FieldType.PLAYER, position);
         }
 
         public FieldBuilder occupied() {
@@ -87,7 +93,14 @@ public class Field extends Rectangle {
         }
 
         public Field build() {
-            return new Field(position, occupied, shot);
+            switch (fieldType) {
+                case OPPONENT:
+                    return new OpponentField(position, occupied, shot);
+                case PLAYER:
+                    return new PlayerField(position, occupied, shot);
+                default:
+                    throw new AssertionError();
+            }
         }
 
     }

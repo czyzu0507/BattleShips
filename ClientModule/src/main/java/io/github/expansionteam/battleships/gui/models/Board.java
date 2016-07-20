@@ -7,9 +7,9 @@ import javafx.scene.layout.VBox;
 
 import java.util.Map;
 
-public class Board extends Parent {
+public abstract class Board extends Parent {
 
-    private final Map<Position, Field> fieldsByPosition;
+    protected final Map<Position, Field> fieldsByPosition;
 
     @FXML
     private VBox board;
@@ -19,12 +19,7 @@ public class Board extends Parent {
         updateBoard();
     }
 
-    public void placeShip(Ship ship) {
-        ship.getFieldsByPosition().forEach((p, f) -> fieldsByPosition.put(p, f));
-        updateBoard();
-    }
-
-    private void updateBoard() {
+    protected void updateBoard() {
         board = new VBox();
 
         for (int y = 0; y < 10; y++) {

@@ -8,4 +8,9 @@ public class PlayerBoard extends Board {
         super(fieldsByPosition);
     }
 
+    public void placeShip(Ship ship) {
+        ship.getFieldsByPosition().forEach((p, f) -> fieldsByPosition.put(p, f));
+        updateBoard();
+    }
+
 }

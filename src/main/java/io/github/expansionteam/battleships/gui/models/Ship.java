@@ -23,7 +23,7 @@ public class Ship {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
 
         for (int i = 0; i < shipSize.getValue(); i++) {
-            fieldsByPosition.put(position, Field.createOccupied(position));
+            fieldsByPosition.put(position, Field.FieldBuilder.playerField(position).occupied().build());
 
             if (orientation.equals(ShipOrientation.HORIZONTAL)) {
                 position = position.nextPositionHorizontally();

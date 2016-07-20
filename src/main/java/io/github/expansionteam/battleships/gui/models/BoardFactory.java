@@ -1,28 +1,26 @@
 package io.github.expansionteam.battleships.gui.models;
 
-import javafx.scene.control.Alert;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class BoardFactory {
 
-    public Board createEmptyPlayerBoard() {
+    public PlayerBoard createEmptyPlayerBoard() {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                fieldsByPosition.put(Position.of(x, y), Field.createEmpty(Position.of(x, y)));
+                fieldsByPosition.put(Position.of(x, y), Field.FieldBuilder.playerField(Position.of(x, y)).build());
             }
         }
 
         return new PlayerBoard(fieldsByPosition);
     }
 
-    public Board createEmptyOpponentBoard() {
+    public OpponentBoard createEmptyOpponentBoard() {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                Field field = Field.createEmpty(Position.of(x, y));
+                Field field = Field.FieldBuilder.opponentField(Position.of(x, y)).build();
 
                 field.setOnMouseClicked(event -> {
                     Field clickedField = (Field) event.getSource();

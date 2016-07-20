@@ -22,9 +22,13 @@ public class BattleshipsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         BoardFactory boardFactory = new BoardFactory();
 
-        Board opponentBoard = boardFactory.createEmptyOpponentBoard();
+        OpponentBoard opponentBoard = boardFactory.createEmptyOpponentBoard();
+        opponentBoard.fieldWasShotAndHit(Position.of(0, 0));
+        opponentBoard.fieldWasShotAndHit(Position.of(0, 1));
+        opponentBoard.fieldWasShotAndHit(Position.of(0, 2));
+        opponentBoard.fieldWasShotAndMissed(Position.of(5, 5));
 
-        Board playerBoard = boardFactory.createEmptyPlayerBoard();
+        PlayerBoard playerBoard = boardFactory.createEmptyPlayerBoard();
         playerBoard.placeShip(Ship.createHorizontal(Position.of(6, 5), ShipSize.FOUR));
         playerBoard.placeShip(Ship.createVertical(Position.of(4, 4), ShipSize.THREE));
         playerBoard.placeShip(Ship.createVertical(Position.of(9, 0), ShipSize.THREE));
