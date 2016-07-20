@@ -1,7 +1,6 @@
 package io.github.expansionteam.battleships.engine;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 class Ship {
@@ -24,7 +23,7 @@ class Ship {
 
     // set of adjacent fields
     static Set<Field> generateSetOfAdjacentFields(Board board, Set<Field> shipSet) {
-        Set<Field> tmpSet = new TreeSet<>();   // set with nulls, adjacents, and ship's fields
+        Set<Field> tmpSet;   // set with nulls, adjacents, and ship's fields
 
         tmpSet = shipSet.stream()
                 .map(Field::createAllPossibleAdjacentFields)

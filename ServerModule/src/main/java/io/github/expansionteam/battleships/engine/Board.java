@@ -10,10 +10,35 @@ public class Board implements Iterable<Field> {
     private final Map<Integer, Integer> availableShips;
     private final Set<Ship> ships = new HashSet<>();
 
-    Board() {
+    public Board() {
         board = initializeSet();
         availableShips = initializeMap();
     }
+
+
+    // just for now - random ships
+    public void generateRandomShips() {
+        Random random = new Random();
+        int[] shipsArr = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};           // consider using our map - availableShips - iterate over keys !!
+        for (int i = 0; i < shipsArr.length; ) {
+            Field field = new Field(random.nextInt(10), random.nextInt(10));
+            Orientation orientation = resolveOrientation(random.nextInt(2));
+            int length = shipsArr[i];
+            if (appendShip(field, orientation, length)) {
+                i++;
+            }
+        }
+    }
+
+    private Orientation resolveOrientation(int randomInt) {
+        if (randomInt % 2 == 0) {
+            return Orientation.VERTICAL;
+        } else {
+            return Orientation.HORIZONTAL;
+        }
+    }
+
+
 
     private static Set<Field> initializeSet() {
         Set<Field> initialSet = new TreeSet<>();
@@ -34,10 +59,11 @@ public class Board implements Iterable<Field> {
         return initialMap;
     }
 
-    // PRINT HELPER - TO SEE WHAT HAPPENS ON THE BOARD :)
 
-    private void printTmp() {
-        Iterator<Field> iter = iterator();
+    // PRINT HELPER - TO SEE WHAT HAPPENS ON THE BOARD :)
+    // TODO: remove this later
+    public static void printTmp(Board board) {
+        Iterator<Field> iter = board.iterator();
         int n = 0;
         while (iter.hasNext()) {
             System.out.print(iter.next() + "  ");
@@ -49,24 +75,7 @@ public class Board implements Iterable<Field> {
         System.out.println();
     }
 
-    public static void main(String[] args) {
-        Board b = new Board();
-        b.appendShip(new Field(1, 1), Orientation.HORIZONTAL, 4);
-        b.printTmp();
-        b.appendShip(new Field(5, 0), Orientation.VERTICAL, 4);
-        b.printTmp();
-        b.appendShip(new Field(3, 6), Orientation.VERTICAL, 3);
-        b.printTmp();
-        b.appendShip(new Field(2, 0), Orientation.VERTICAL, 4);
-        b.printTmp();
-        b.appendShip(new Field(7, 7), Orientation.VERTICAL, 1);
-        b.printTmp();
-    }
 
-
-    // add new Ship - null if it is not possible to append the ship
-    // TODO: add return object to ships set
-    // TODO: validate adjacent fields ( using validateSet() )
     // consider moving adjacent fields to ship (as a set of adjacent fields)
     // TODO: consider name changing
     public boolean appendShip(Field startingField, Orientation orientation, int length) {
