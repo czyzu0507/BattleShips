@@ -1,7 +1,6 @@
 package io.github.expansionteam.battleships.engine;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 class Ship {
