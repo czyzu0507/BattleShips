@@ -13,7 +13,7 @@ public class BoardFactory {
             }
         }
 
-        return new Board(fieldsByPosition);
+        return new PlayerBoard(fieldsByPosition);
     }
 
     public Board createEmptyOpponentBoard() {
@@ -24,7 +24,7 @@ public class BoardFactory {
             }
         }
 
-        return new Board(fieldsByPosition);
+        return new OpponentBoard(fieldsByPosition);
     }
 
 }
