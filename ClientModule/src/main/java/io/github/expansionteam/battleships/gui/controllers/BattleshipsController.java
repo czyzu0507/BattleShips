@@ -1,5 +1,6 @@
 package io.github.expansionteam.battleships.gui.controllers;
 
+import com.google.common.eventbus.Subscribe;
 import io.github.expansionteam.battleships.gui.models.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

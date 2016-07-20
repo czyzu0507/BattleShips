@@ -1,5 +1,7 @@
 package io.github.expansionteam.battleships.gui.models;
 
+import javafx.scene.control.Alert;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +11,7 @@ public class BoardFactory {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                fieldsByPosition.put(Position.of(x, y), Field.createEmpty());
+                fieldsByPosition.put(Position.of(x, y), Field.createEmpty(Position.of(x, y)));
             }
         }
 
@@ -20,7 +22,24 @@ public class BoardFactory {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                fieldsByPosition.put(Position.of(x, y), Field.createEmpty());
+                Field field = Field.createEmpty(Position.of(x, y));
+
+                field.setOnMouseClicked(event -> {
+                    Field clickedField = (Field) event.getSource();
+                    clickedField.shoot();
+                });
+                field.setOnMouseEntered(event -> {
+                    Field clickedField = (Field) event.getSource();
+                    clickedField.getStyleClass().remove("field-is-empty");
+                    clickedField.getStyleClass().add("field-shot-hint-legal");
+                });
+                field.setOnMouseExited(event -> {
+                    Field field2 = (Field) event.getSource();
+                    field2.getStyleClass().remove("field-shot-hint-legal");
+                    field2.getStyleClass().add("field-is-empty");
+                });
+
+                fieldsByPosition.put(Position.of(x, y), field);
             }
         }
 
