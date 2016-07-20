@@ -7,28 +7,25 @@ public class Field extends Rectangle {
     private static final int FIELD_SIZE = 30;
 
     private final Position position;
-    private boolean occupied;
-    private boolean shot;
+    private boolean isOccupied;
+    private boolean wasShot;
 
-    private String cssClass;
-
-    Field(Position position, boolean occupied, boolean shot, String cssClass) {
+    Field(Position position, boolean isOccupied, boolean wasShot) {
         super(FIELD_SIZE, FIELD_SIZE);
 
         this.position = position;
-        this.occupied = occupied;
-        this.shot = shot;
-        this.cssClass = cssClass;
+        this.isOccupied = isOccupied;
+        this.wasShot = wasShot;
 
         updateCss();
     }
 
     public static Field createEmpty(Position position) {
-        return new Field(position, false, false, "field-is-empty");
+        return new Field(position, false, false);
     }
 
     public static Field createOccupied(Position position) {
-        return new Field(position, false, false, "field-is-occupied");
+        return new Field(position, true, false);
     }
 
     public Position getPosition() {
@@ -36,19 +33,35 @@ public class Field extends Rectangle {
     }
 
     public boolean isOccupied() {
-        return occupied;
+        return isOccupied;
     }
 
     public boolean wasShot() {
-        return shot;
+        return wasShot;
     }
 
     public void shoot() {
-        this.cssClass = "field-was-shot-miss";
+        wasShot = true;
         updateCss();
     }
 
     private void updateCss() {
+        String cssClass;
+        if (isOccupied) {
+            if (wasShot) {
+                cssClass = "field-was-shot-hit";
+            } else {
+                cssClass = "field-is-occupied";
+            }
+        } else {
+            if (wasShot) {
+                cssClass = "field-was-shot-miss";
+            } else {
+                cssClass = "field-is-empty";
+            }
+        }
+
+        getStyleClass().removeAll();
         getStyleClass().add(cssClass);
     }
 
@@ -74,8 +87,9 @@ public class Field extends Rectangle {
         }
 
         public Field build() {
-            return new Field(position, occupied, shot, "field-is-empty");
+            return new Field(position, occupied, shot);
         }
 
     }
+
 }

@@ -1,11 +1,9 @@
 package io.github.expansionteam.battleships.gui.models;
 
-import javafx.geometry.Pos;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.testng.Assert.*;
 
 public class FieldBuilderTest {
 
@@ -56,5 +54,5 @@ public class FieldBuilderTest {
         // then
         assertThat(field.wasShot()).isFalse();
     }
-    
+
 }
