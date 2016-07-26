@@ -1,43 +1,57 @@
 package io.github.expansionteam.battleships;
 
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
+import java.io.*;
 import java.nio.channels.SocketChannel;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
 
-class PlayerThread implements Runnable {
-    private BufferedReader br;
-    private PrintWriter pw;
-    private String str;
+class PlayerThread extends Thread {
+    final SocketChannel sc;
+    private PlayerThread coupledThread = null;
 
-    private final SocketChannel sc;
+    DataInputStream dis = null;
+    DataOutputStream dos = null;
 
-    PlayerThread(SocketChannel sc, String str) {
+    void closeSocket() throws IOException {
+        sc.close();
+    }
+
+    PlayerThread(SocketChannel sc) {
         this.sc = sc;
-        this.str = str;
+    }
+
+    void setThreadToInform(PlayerThread playerThread) {
+        coupledThread = playerThread;
     }
 
     @Override
     public void run() {
-        Socket socket = sc.socket();
-
         try {
-            InputStreamReader ir1 = new InputStreamReader(socket.getInputStream());
-            br = new BufferedReader(ir1);
-            pw = new PrintWriter(socket.getOutputStream(), true);
-        }
-        catch (IOException e) {}
+            dis = new DataInputStream(sc.socket().getInputStream());
+            dos = new DataOutputStream(sc.socket().getOutputStream());
 
-        try {
-            String res = "";
-            while ((res = br.readLine()) != null) {
-                System.out.println( Thread.currentThread().getName() + " received: " + res );
-                pw.println("ECHO REPLY: " + res);
+            String str;
+
+            while (true) {
+
+                str = dis.readUTF();
+                System.out.println(str);
+                dos.writeUTF("response: " + str);
+                dos.flush();
+
+            }
+        } catch (IOException e) {
+            try {
+                coupledThread.closeSocket();
+            } catch (IOException ioExc) {
+                ioExc.printStackTrace();
+            }
+        } finally {
+            try {
+                sc.close();
+                dis.close();
+                dos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        catch (IOException e) {}
     }
 }

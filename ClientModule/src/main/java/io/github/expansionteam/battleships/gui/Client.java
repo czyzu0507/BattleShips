@@ -1,57 +1,83 @@
 package io.github.expansionteam.battleships.gui;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
 
-import java.net.Socket;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-// TO TEST MESSAGES FROM INPUT (ECHO ACTION)
-import java.util.Scanner;
+import java.io.*;
+import java.net.InetSocketAddress;
 
 
+import java.net.SocketAddress;
+import java.nio.channels.SocketChannel;
+
+import static java.lang.Thread.sleep;
 
 class Client {
-    private void connect() {
-        try (
-                Socket socket = new Socket("127.0.0.1", 1234);
-                PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                Scanner sc = new Scanner(System.in)
-        )
-        {
-            String str = "";
+    private SocketChannel sc;
+    private final int port = 1234;
 
+    Client() {
+        try {
+            SocketAddress address = new InetSocketAddress("127.0.0.1", port);
+            sc = SocketChannel.open(address);
+            sc.configureBlocking(true);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void talkWithServer() {
+        try {
             ///////////////////////////
             // CLIENT HAS TO SEND A STRING TO INITIALIZE CONNECTION WITH SERVER !!!
             // SERVER HAS TO BE STARTED FIRST (BEFORE CLIENTS) !!!
             ///////////////////////////
 
             //// dżejson test
-            String jsonString = new JSONObject()
+            /*String jsonString = new JSONObject()
                     .put("JSON1", "hello world1")
                     .put("JSON2", "hello world2")
                     .put("JSON3", new JSONObject()
                             .put("key1", "val")).toString();
 
-            output.println( jsonString );
+            output.println( jsonString );*/
             /////////////////////////////
 
+            DataInputStream dis = new DataInputStream(sc.socket().getInputStream());
+            DataOutputStream dos = new DataOutputStream(sc.socket().getOutputStream());
 
-            while ((str = in.readLine()) != null) {
-                System.out.println( str );
-                String tmpStr = sc.nextLine();
-                output.println(tmpStr);
+            // ini msg
+            dos.writeUTF("ini");
+            dos.flush();
+            String msg;
+
+            while (true) {
+                msg = dis.readUTF();
+
+                // test communication - infinite echo
+                System.out.println(msg);
+                String ss = "message from the client...";
+                dos.writeUTF(ss);
+                dos.flush();
+
+                // TODO: remove this shit because of blocking event-driven communication nature :)
+                sleep(1000);
             }
+        } catch (EOFException e) {    // ending game
+            System.out.println("Enemy has lost the connection...");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (Exception e) {
+        // TODO: remove this, when sleep is removed
+        catch (InterruptedException e) {
+            /*...*/
             e.printStackTrace();
         }
     }
 
+    // entry point
     public static void main(String[] args) {
         Client client = new Client();
-        client.connect();
+        client.talkWithServer();
     }
 }
