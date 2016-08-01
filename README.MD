@@ -1,6 +1,6 @@
 # BattleShips game
 
-Console version of popular Battleships game.
+Battleships game with GUI.
 
 ##Contributors
 

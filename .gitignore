@@ -1,6 +1,12 @@
 
 # Created by https://www.gitignore.io/api/maven,java,intellij,eclipse,linux,git
 
+#log files
+ClientModule/src/main/resources/*.log
+ServerModule/src/main/resources/*.log
+
+
+
 ### Maven ###
 target/
 pom.xml.tag
