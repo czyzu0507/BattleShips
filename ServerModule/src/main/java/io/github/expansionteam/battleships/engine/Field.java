@@ -6,13 +6,13 @@ import java.util.TreeSet;
 import static io.github.expansionteam.battleships.engine.Field.State.*;
 import static io.github.expansionteam.battleships.engine.Orientation.*;
 
-final class Field implements Comparable<Field> {
+public final class Field implements Comparable<Field> {
     // coordinates (in an array/mesh)
     private final int x, y;
     private Ship shipParent = null;     // pointer to the ship that contains this field
     private State state = NOT_HIT;
 
-    Field(int x, int y) {
+    public Field(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -86,8 +86,13 @@ final class Field implements Comparable<Field> {
     @Override
     public String toString() {
         if (shipParent == null) {
+            if (isHit()) {
+                return "\u001B[31m " + x + "" + y + "\u001B[0m";
+            }
             return x + "" + y;
         }
+        if (isHit())
+            return "\u001B[31m S\u001B[0m";
         return "\u001B[32m S\u001B[0m";
     }
 }

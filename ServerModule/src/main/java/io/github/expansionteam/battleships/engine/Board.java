@@ -3,8 +3,6 @@ package io.github.expansionteam.battleships.engine;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.Thread.sleep;
-
 public class Board implements Iterable<Field> {
     private static final int X = 10;    // constraint for x
     private static final int Y = 10;    // constraint for y
@@ -34,7 +32,6 @@ public class Board implements Iterable<Field> {
 
         private static Map<Integer, Integer> initializeMap() {
             Map<Integer, Integer> initialMap = new LinkedHashMap<>();
-            //initialMap.put(5, 1);
             initialMap.put(4, 1);
             initialMap.put(3, 2);
             initialMap.put(2, 3);
@@ -151,7 +148,7 @@ public class Board implements Iterable<Field> {
         }
     }
 
-    static class RandomShipGenerator {
+    public static class RandomShipGenerator {
         public void generateRandomShips(Board board) {
             Random random = new Random();
 
@@ -165,11 +162,6 @@ public class Board implements Iterable<Field> {
                     }
                 }
             }
-        }
-
-        public static void main(String[] args) {
-            RandomShipGenerator ss= new RandomShipGenerator();
-            ss.generateRandomShips(new Board.BoardBuilder().build());
         }
 
         private Orientation resolveOrientation(int randomInt) {
