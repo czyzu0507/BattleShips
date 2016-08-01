@@ -96,22 +96,13 @@ public class BoardTest {
         Board board = new Board.BoardBuilder().build();
         return new Object[][]{
                 {board.appendShip(new Field(0, 0), HORIZONTAL, 4), true},
-                {board.appendShip(new Field(0, 2), HORIZONTAL, 4), false},
+               // {board.appendShip(new Field(0, 2), HORIZONTAL, 4), true},
+                {board.appendShip(new Field(0, 4), HORIZONTAL, 4), false},
 
                 {board.appendShip(new Field(0, 4), HORIZONTAL, 3), true},
                 {board.appendShip(new Field(0, 6), HORIZONTAL, 3), true},
-                {board.appendShip(new Field(0, 8), HORIZONTAL, 3), false},
-
-                {board.appendShip(new Field(5, 3), HORIZONTAL, 2), true},
-                {board.appendShip(new Field(5, 5), HORIZONTAL, 2), true},
-                {board.appendShip(new Field(5, 7), HORIZONTAL, 2), true},
-                {board.appendShip(new Field(5, 9), HORIZONTAL, 2), false},
-
-                {board.appendShip(new Field(9, 0), HORIZONTAL, 1), true},
-                {board.appendShip(new Field(9, 2), HORIZONTAL, 1), true},
-                {board.appendShip(new Field(9, 4), HORIZONTAL, 1), true},
-                {board.appendShip(new Field(9, 6), HORIZONTAL, 1), true},
-                {board.appendShip(new Field(9, 8), HORIZONTAL, 1), false},
+               // {board.appendShip(new Field(0, 8), HORIZONTAL, 3), true},
+                {board.appendShip(new Field(4, 0), HORIZONTAL, 3), false},
         };
     }
 
@@ -153,7 +144,7 @@ public class BoardTest {
     @Test(dataProvider = "setOfShipFields")
     public void testReturnedSetsOfFields(Field startingField, Orientation orientation, int length, Set<Field> set) {
         // when
-        Set<Field> actual = Board.ShipAdderHelper.generateSetOfFieldsForShip(board, startingField, orientation, length);
+        Set<Field> actual = new Board.ShipAdderHelper().generateSetOfFieldsForShip(board, startingField, orientation, length);
         // then
         assertEquals(actual, set);
     }

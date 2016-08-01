@@ -3,6 +3,8 @@ package io.github.expansionteam.battleships.engine;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Thread.sleep;
+
 public class Board implements Iterable<Field> {
     private static final int X = 10;    // constraint for x
     private static final int Y = 10;    // constraint for y
@@ -31,7 +33,8 @@ public class Board implements Iterable<Field> {
         }
 
         private static Map<Integer, Integer> initializeMap() {
-            Map<Integer, Integer> initialMap = new HashMap<>();
+            Map<Integer, Integer> initialMap = new LinkedHashMap<>();
+            //initialMap.put(5, 1);
             initialMap.put(4, 1);
             initialMap.put(3, 2);
             initialMap.put(2, 3);
@@ -45,16 +48,17 @@ public class Board implements Iterable<Field> {
     }
 
     public boolean appendShip(Field startingField, Orientation orientation, int length) {
+        ShipAdderHelper shipAdderHelper = new ShipAdderHelper();
         // checks if ship length is available
-        if (!ShipAdderHelper.isLengthAvailable(this, length)) {
+        if (!shipAdderHelper.isLengthAvailable(this, length)) {
             return false;
         }
-        Set<Field> setOfShipFields = ShipAdderHelper.generateSetOfFieldsForShip(this, startingField, orientation, length);
+        Set<Field> setOfShipFields = shipAdderHelper.generateSetOfFieldsForShip(this, startingField, orientation, length);
         if (setOfShipFields == null) {      // checks if the set is out of bounds
             return false;
         }
         // validate set of current ship-fields
-        if (!ShipAdderHelper.validateSet(setOfShipFields))
+        if (!shipAdderHelper.validateSet(setOfShipFields))
             return false;
         // validate adjacent fields
         Set<Field> adjacent = Ship.generateSetOfAdjacentFields(this, setOfShipFields);
@@ -63,7 +67,7 @@ public class Board implements Iterable<Field> {
                 return false;
         }
         Ship ship = new Ship.ShipBuilder(setOfShipFields).build();
-        ShipAdderHelper.decreaseShipCounter(this, length);
+        shipAdderHelper.decreaseShipCounter(this, length);
         ships.add(ship);
         return true;
     }
@@ -105,13 +109,13 @@ public class Board implements Iterable<Field> {
 
     static class ShipAdderHelper {
         // checks intersection of sets (with set of fields of other ships)
-        static boolean validateSet(Set<Field> set) {
+        boolean validateSet(Set<Field> set) {
             Set<Field> intersectedFields = set.stream().filter(e -> e.getParentShip() != null).collect(Collectors.toSet());
             return intersectedFields.size() == 0;
         }
 
         // checks if the type of ship with given length is still available
-        static boolean isLengthAvailable(Board board, int length) {
+        boolean isLengthAvailable(Board board, int length) {
             if (!board.availableShips.containsKey(length)) {
                 throw new IllegalStateException("No such length");
             }
@@ -119,7 +123,7 @@ public class Board implements Iterable<Field> {
         }
 
         // lowers number of available ship type with given length
-        static void decreaseShipCounter(Board board, int length) {
+        void decreaseShipCounter(Board board, int length) {
             if (!board.availableShips.containsKey(length)) {
                 throw new IllegalStateException("No such length");
             }
@@ -131,7 +135,7 @@ public class Board implements Iterable<Field> {
         }
 
         // generates set for the board (null if coordinates are reached)
-        static Set<Field> generateSetOfFieldsForShip(Board board, Field field, Orientation orientation, int length) {
+        Set<Field> generateSetOfFieldsForShip(Board board, Field field, Orientation orientation, int length) {
             Set<Field> fields = new HashSet<>();
 
             while (length > 0) {
@@ -147,6 +151,35 @@ public class Board implements Iterable<Field> {
         }
     }
 
+    static class RandomShipGenerator {
+        public void generateRandomShips(Board board) {
+            Random random = new Random();
+
+            for (Integer len : board.availableShips.keySet()) {
+                Integer cnt = board.availableShips.get(len);
+                while (cnt > 0) {
+                    Field field = new Field(random.nextInt(10), random.nextInt(10));
+                    Orientation orientation = resolveOrientation(random.nextInt(2));
+                    if (board.appendShip(field, orientation, len)) {
+                        --cnt;
+                    }
+                }
+            }
+        }
+
+        public static void main(String[] args) {
+            RandomShipGenerator ss= new RandomShipGenerator();
+            ss.generateRandomShips(new Board.BoardBuilder().build());
+        }
+
+        private Orientation resolveOrientation(int randomInt) {
+            if (randomInt % 2 == 0) {
+                return Orientation.VERTICAL;
+            } else {
+                return Orientation.HORIZONTAL;
+            }
+        }
+    }
 
     // PRINT HELPER - TO SEE WHAT HAPPENS ON THE BOARD :)
     // TODO: remove this later
