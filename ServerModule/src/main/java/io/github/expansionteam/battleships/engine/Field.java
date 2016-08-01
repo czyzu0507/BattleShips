@@ -3,76 +3,62 @@ package io.github.expansionteam.battleships.engine;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
+import static io.github.expansionteam.battleships.engine.Field.State.*;
+import static io.github.expansionteam.battleships.engine.Orientation.*;
 
-class Field implements Comparable<Field> {
+final class Field implements Comparable<Field> {
     // coordinates (in an array/mesh)
     private final int x, y;
     private Ship shipParent = null;     // pointer to the ship that contains this field
-    private State state = State.NOT_HIT;
+    private State state = NOT_HIT;
 
     Field(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    private enum State {
-        HIT, NOT_HIT
-    }
-
-    Set<Field> createAllPossibleAdjacentFields() {
-        Set<Field> set = new TreeSet<>();
-        for (int dy = -1; dy <= 1; dy++) {
-            for (int dx = -1; dx <= 1; dx++) {
-                if (dy == 0 && dx == 0)
-                    continue;
-                set.add(new Field(x + dx, y + dy));
-            }
-        }
-        return set;
-    }
-
-    // part of a ship?
-    boolean isPartOfTheShip() {
-        return shipParent != null;
-    }
-
-    // part of a particular ship
-    boolean isPartOfTheShip(Ship ship) {
-        return shipParent == ship;
-    }
-
-    // add pointer
-    void setPointerToShip(Ship ship) {
-        shipParent = ship;
-    }
-
-    // switch field (based on Orientation)
-    Field nextField(Orientation orientation) {
-        if (orientation == HORIZONTAL)
-            return new Field(x + 1, y);
-        else
-            return new Field(x, y + 1);
-    }
-
-    // hit
-    void markAsHit() {
-        state = State.HIT;
-    }
-
-    // is hit?
-    boolean isHit() {
-        return state == State.HIT;
-    }
-
-    Ship getShip() {
-        if (shipParent == null) {
-            throw new IllegalStateException("No ship on field");
-        }
+    Ship getParentShip() {
         return shipParent;
     }
 
-    // does not allow null values!
+    void setParentShip(Ship ship) {
+        shipParent = ship;
+    }
+
+    void markAsHit() {
+        state = HIT;
+    }
+
+    boolean isHit() {
+        return state == HIT;
+    }
+
+    enum State {
+        HIT, NOT_HIT
+    }
+
+    // helper class
+    static class FieldSetGenerator {
+        static Set<Field> createAllPossibleAdjacentFields(Field field) {
+            Set<Field> set = new TreeSet<>();
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    if (dy == 0 && dx == 0)
+                        continue;
+                    set.add(new Field(field.x + dx, field.y + dy));
+                }
+            }
+            return set;
+        }
+
+        static Field nextField(Field field, Orientation orientation) {
+            if (orientation == HORIZONTAL)
+                return new Field(field.x + 1, field.y);
+            else
+                return new Field(field.x, field.y + 1);
+        }
+    }
+
     @Override
     public int compareTo(final Field f) {
         int yDiff = y - f.y;

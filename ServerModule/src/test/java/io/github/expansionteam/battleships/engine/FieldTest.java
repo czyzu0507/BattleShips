@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import java.util.Set;
 import java.util.function.Function;
 
+import static io.github.expansionteam.battleships.engine.Field.FieldSetGenerator.*;
 import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
 import static io.github.expansionteam.battleships.engine.Orientation.VERTICAL;
 import static org.testng.Assert.*;
@@ -46,41 +47,6 @@ public class FieldTest {
                 {HORIZONTAL, new Field(2, 4), new Field(3, 4)},
                 {VERTICAL, new Field(1, 1), new Field(1, 2)},
                 {VERTICAL, new Field(2, 3), new Field(2, 4)}
-        };
-    }
-
-    @DataProvider(name = "shipPointers")
-    private Object[][] provideDataToTestPointers() {
-        return new Object[][]{
-                {new Field(0, 1), false},
-                {new Field(1, 1), true},
-                {new Field(2, 1), true},
-                {new Field(3, 1), true},
-                {new Field(4, 1), true},
-                {new Field(5, 1), false}
-        };
-    }
-
-    @DataProvider(name = "shipPointerToParticularShip")
-    private Object[][] provideDataToTestParticularShipPointers() {
-        Board b = new Board();
-        Ship s1 = new Ship.ShipBuilder(b.generateSetOfFieldsForShip(new Field(1, 1), HORIZONTAL, 4), 4).build();
-        Ship s2 = new Ship.ShipBuilder(b.generateSetOfFieldsForShip(new Field(6, 1), HORIZONTAL, 4), 4).build();
-
-        Field f1 = b.getFieldFromTheBoard(new Field(1, 1));
-        Field f2 = b.getFieldFromTheBoard(new Field(3, 1));
-        Field f3 = b.getFieldFromTheBoard(new Field(5, 5));
-        Field f4 = b.getFieldFromTheBoard(new Field(7, 1));
-
-        return new Object[][]{
-                {f1, s1, true},
-                {f2, s1, true},
-                {f3, s1, false},
-                {f4, s1, false},
-                {f1, s2, false},
-                {f2, s2, false},
-                {f3, s2, false},
-                {f4, s2, true}
         };
     }
 
@@ -131,37 +97,14 @@ public class FieldTest {
 
     @Test(dataProvider = "adjacentSwitch")
     public void testHorizontalSwitch(Orientation orientation, Field arg, Field expected) {
-        assertEquals(arg.nextField(orientation), expected);
-    }
-
-    // checking if adding pointers to the ship works
-    @Test(dataProvider = "shipPointers")
-    public void testPointers(Field field, boolean expected) {
-        // given
-        final Board board = new Board();
-        final Field startingField = new Field(1, 1);
-        Set<Field> setOfFields = board.generateSetOfFieldsForShip(startingField, HORIZONTAL, 4);
-        Ship ship = new Ship.ShipBuilder(setOfFields, 4).build();
-        // when
-        boolean actual = board.getFieldFromTheBoard(field).isPartOfTheShip();
-        // then
-        assertEquals(actual, expected);
-    }
-
-    // checking pointer for particular ship
-    @Test(dataProvider = "shipPointerToParticularShip")
-    public void testPointersToParticularShips(Field field, Ship ship, boolean expected) {
-        // when
-        boolean actual = field.isPartOfTheShip(ship);
-        // then
-        assertEquals(actual, expected);
+        assertEquals(nextField(arg, orientation), expected);
     }
 
     // first attempt of adjacent fields
     @Test(dataProvider = "adjacentFields")
     public void testSimpleAdjacentFields(Field center, Field adjacent, boolean expected) {
         // when
-        Set<Field> adjacents = center.createAllPossibleAdjacentFields();
+        Set<Field> adjacents = createAllPossibleAdjacentFields(center);
         // then
         assertEquals(adjacents.contains(adjacent), expected);
     }

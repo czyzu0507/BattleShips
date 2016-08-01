@@ -1,56 +1,44 @@
 package io.github.expansionteam.battleships.engine;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 class Ship {
     private final String name;
     protected final Set<Field> occupiedFields;
-//    protected final Set<Field> adjacentFields;
 
-    // constructor
     private Ship(ShipBuilder shipBuilder) {
         this.name = shipBuilder.name;
         this.occupiedFields = shipBuilder.set;
-        // pointers in fields !
-        setPointers(this);
+        setParents(this);
     }
 
-    // set pointers
-    private static void setPointers(Ship ship) {
-        ship.occupiedFields.forEach(field -> field.setPointerToShip(ship));
+    private static void setParents(Ship ship) {
+        ship.occupiedFields.forEach(field -> field.setParentShip(ship));
     }
 
     // set of adjacent fields
-    static Set<Field> generateSetOfAdjacentFields(Board board, Set<Field> shipSet) {
+    static Set<Field> generateSetOfAdjacentFields(Board board, Set<Field> set) {
         Set<Field> tmpSet;   // set with nulls, adjacents, and ship's fields
 
-        tmpSet = shipSet.stream()
-                .map(Field::createAllPossibleAdjacentFields)
+        tmpSet = set.stream()
+                .map(Field.FieldSetGenerator::createAllPossibleAdjacentFields)
                 .flatMap(Collection::stream)
                 .filter(e -> board.getFieldFromTheBoard(e) != null)
                 .map(board::getFieldFromTheBoard)
-                .filter(e -> !shipSet.contains(e))
+                .filter(e -> !set.contains(e))
                 .collect(Collectors.toSet());
 
         return tmpSet;
     }
 
-    // show the name
-    public String showName() {
-        return name;
+    boolean isDestroyed() {
+        return occupiedFields.stream().filter(Field::isHit).collect(Collectors.toSet()).size() == occupiedFields.size();
     }
 
-    boolean isDestroyed() {
-        for (Field field : occupiedFields) {
-            if (!field.isHit()) {
-                return false;
-            }
-        }
-        return true;
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override
@@ -67,6 +55,7 @@ class Ship {
         return name.equals(ship.name) && occupiedFields.equals(ship.occupiedFields);
     }
 
+
     // helper builder-like class
     static class ShipBuilder {
         private final String name;
@@ -77,20 +66,13 @@ class Ship {
             set = setOfFields;
         }
 
-        // CONSIDER REMOVING -- WHY LENGTH WHEN WE HAVE SET AND SET.SIZE() ???
-        // constructor
-        ShipBuilder(Set<Field> setOfFields, int length) {
-            name = map.get(length);
-            set = setOfFields;
-        }
-
         // helper map
         private static final Map<Integer, String> map = new HashMap<Integer, String>() {{
             put(1, "Submarine");
             put(2, "Destroyer");
             put(3, "Cruiser");
             put(4, "Battleship");
-            //put(5, "Aircraft carrier");
+            put(5, "Aircraft carrier");
         }};
 
         Ship build() {
