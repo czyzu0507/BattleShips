@@ -153,13 +153,10 @@ public class Board implements Iterable<Field> {
             Random random = new Random();
 
             for (Integer len : board.availableShips.keySet()) {
-                Integer cnt = board.availableShips.get(len);
-                while (cnt > 0) {
+                while (board.availableShips.get(len) > 0) {
                     Field field = new Field(random.nextInt(10), random.nextInt(10));
                     Orientation orientation = resolveOrientation(random.nextInt(2));
-                    if (board.appendShip(field, orientation, len)) {
-                        --cnt;
-                    }
+                    board.appendShip(field, orientation, len);
                 }
             }
         }
