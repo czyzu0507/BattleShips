@@ -25,6 +25,9 @@ public class Ship {
         for (int i = 0; i < shipSize.getValue(); i++) {
             fieldsByPosition.put(position, Field.FieldBuilder.playerField(position).occupied().build());
 
+            if (i == shipSize.getValue() - 1) {
+                break;
+            }
             if (orientation.equals(ShipOrientation.HORIZONTAL)) {
                 position = position.nextPositionHorizontally();
             } else {
