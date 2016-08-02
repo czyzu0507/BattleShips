@@ -1,6 +1,9 @@
 package io.github.expansionteam.battleships.gui.models;
 
+import com.google.common.base.MoreObjects;
 import javafx.scene.shape.Rectangle;
+
+import java.util.Objects;
 
 public abstract class Field extends Rectangle {
 
@@ -55,6 +58,21 @@ public abstract class Field extends Rectangle {
 
         getStyleClass().removeAll();
         getStyleClass().add(cssClass);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if ((o instanceof Field) == false) {
+            return false;
+        }
+
+        Field other = (Field) o;
+        return Objects.equals(this.position, other.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position);
     }
 
     public static class FieldBuilder {
