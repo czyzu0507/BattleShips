@@ -11,7 +11,7 @@ import java.nio.channels.SocketChannel;
 
 import static java.lang.Thread.sleep;
 
-class Client {
+public class Client {
     private SocketChannel sc;
     private final int port = 1234;
 
@@ -26,7 +26,7 @@ class Client {
         }
     }
 
-    private void talkWithServer() {
+    public void talkWithServer() {
         try {
             ///////////////////////////
             // CLIENT HAS TO SEND A STRING TO INITIALIZE CONNECTION WITH SERVER !!!

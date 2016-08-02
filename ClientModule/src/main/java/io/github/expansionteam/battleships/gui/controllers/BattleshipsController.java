@@ -1,8 +1,10 @@
 package io.github.expansionteam.battleships.gui.controllers;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import io.github.expansionteam.battleships.gui.models.*;
+import io.github.expansionteam.battleships.logic.events.StartGameEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,6 +14,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BattleshipsController implements Initializable {
+
+    @Inject
+    private EventBus eventBus;
 
     @Inject
     private BoardFactory boardFactory;
@@ -29,6 +34,8 @@ public class BattleshipsController implements Initializable {
 
         opponentBoardArea.getChildren().add(opponentBoard);
         playerBoardArea.getChildren().add(playerBoard);
+
+        eventBus.post(new StartGameEvent());
     }
 
 }
