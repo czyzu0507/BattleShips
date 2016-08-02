@@ -5,7 +5,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/8.0.40" fx:controller="io.github.expansionteam.battleships.gui.controllers.BattleshipsController" stylesheets="@battleships.css">
+            xmlns="http://javafx.com/javafx/8.0.40"
+            stylesheets="@battleships.css"
+            fx:controller="io.github.expansionteam.battleships.gui.controllers.BattleshipsController"
+            fx:id="boardArea">
     <center>
         <HBox alignment="CENTER">
             <VBox fx:id="opponentBoardArea">
