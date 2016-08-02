@@ -5,8 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
 
 public class MainLauncher extends Application {
+
+    private final static Logger log = Logger.getLogger(MainLauncher.class.getSimpleName());
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -20,6 +23,7 @@ public class MainLauncher extends Application {
 
 
     public static void main(String[] args) {
+        log.debug("Logging test in client");
         launch(args);
     }
 
