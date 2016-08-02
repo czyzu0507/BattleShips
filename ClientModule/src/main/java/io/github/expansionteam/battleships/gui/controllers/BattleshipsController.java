@@ -42,16 +42,16 @@ public class BattleshipsController implements Initializable {
         OpponentBoard opponentBoard = boardFactory.createEmptyOpponentBoard();
         PlayerBoard playerBoard = boardFactory.createEmptyPlayerBoard();
 
+        boardArea.setVisible(false);
         opponentBoardArea.getChildren().add(opponentBoard);
         playerBoardArea.getChildren().add(playerBoard);
-
-        boardArea.setVisible(false);
 
         eventBus.post(new StartGameEvent());
     }
 
     @Subscribe
     public void handleOpponentArrived(OpponentArrivedEvent event) {
+        log.debug("[GUI] Handle OpponentArrivedEvent.");
         boardArea.setVisible(true);
     }
 

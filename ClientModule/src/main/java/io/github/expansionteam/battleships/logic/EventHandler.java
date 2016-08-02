@@ -17,7 +17,7 @@ public class EventHandler {
 
     @Subscribe
     public void handle(StartGameEvent event) {
-        log.debug("Game was started.");
+        log.debug("[LOGIC] Handle StartGameEvent.");
         eventBus.post(new OpponentArrivedEvent());
     }
 
