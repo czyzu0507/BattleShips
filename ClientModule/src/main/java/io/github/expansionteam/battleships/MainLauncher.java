@@ -37,7 +37,6 @@ public class MainLauncher extends Application {
 
 
     public static void main(String[] args) {
-        log.debug("Logging test in client");
         launch(args);
     }
 
