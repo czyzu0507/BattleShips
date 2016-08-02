@@ -1,4 +1,4 @@
-package io.github.expansionteam.battleships.gui;
+package io.github.expansionteam.battleships;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
