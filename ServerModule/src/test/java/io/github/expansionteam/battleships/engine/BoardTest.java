@@ -16,8 +16,8 @@ import static org.testng.Assert.assertTrue;
 
 @Test()
 public class BoardTest {
-    private final Board board = new Board();
-    private final Board boardForSeqTest = new Board();
+    private final Board board = new Board.BoardBuilder().build();
+    private final Board boardForSeqTest = new Board.BoardBuilder().build();
     private final Set<Field> boardSet = new TreeSet<>();
 
     @BeforeClass
@@ -81,7 +81,7 @@ public class BoardTest {
 
     @DataProvider(name = "appendShipsAdjacent")
     private Object[][] provideAppendShipsWithoutAdjacentData() {
-        Board b = new Board();
+        Board b = new Board.BoardBuilder().build();
         return new Object[][]{
                 {b.appendShip(new Field(1, 1), HORIZONTAL, 4), true},
                 {b.appendShip(new Field(5, 0), VERTICAL, 3), false},
@@ -93,25 +93,16 @@ public class BoardTest {
 
     @DataProvider(name = "appendAvailableShips")
     private Object[][] provideDataToTestAvailableShips() {
-        Board board = new Board();
+        Board board = new Board.BoardBuilder().build();
         return new Object[][]{
                 {board.appendShip(new Field(0, 0), HORIZONTAL, 4), true},
-                {board.appendShip(new Field(0, 2), HORIZONTAL, 4), false},
+               // {board.appendShip(new Field(0, 2), HORIZONTAL, 4), true},
+                {board.appendShip(new Field(0, 4), HORIZONTAL, 4), false},
 
                 {board.appendShip(new Field(0, 4), HORIZONTAL, 3), true},
                 {board.appendShip(new Field(0, 6), HORIZONTAL, 3), true},
-                {board.appendShip(new Field(0, 8), HORIZONTAL, 3), false},
-
-                {board.appendShip(new Field(5, 3), HORIZONTAL, 2), true},
-                {board.appendShip(new Field(5, 5), HORIZONTAL, 2), true},
-                {board.appendShip(new Field(5, 7), HORIZONTAL, 2), true},
-                {board.appendShip(new Field(5, 9), HORIZONTAL, 2), false},
-
-                {board.appendShip(new Field(9, 0), HORIZONTAL, 1), true},
-                {board.appendShip(new Field(9, 2), HORIZONTAL, 1), true},
-                {board.appendShip(new Field(9, 4), HORIZONTAL, 1), true},
-                {board.appendShip(new Field(9, 6), HORIZONTAL, 1), true},
-                {board.appendShip(new Field(9, 8), HORIZONTAL, 1), false},
+               // {board.appendShip(new Field(0, 8), HORIZONTAL, 3), true},
+                {board.appendShip(new Field(4, 0), HORIZONTAL, 3), false},
         };
     }
 
@@ -128,7 +119,7 @@ public class BoardTest {
 
     @DataProvider(name = "markHitAdjacent")
     private Object[][] provideScenariosForMarkingAdjacentFields() {
-        Object[][] objects = new Object[][]{
+        return new Object[][]{
                 {new Field(0, 0), Orientation.HORIZONTAL, 4},
                 {new Field(0, 0), Orientation.HORIZONTAL, 1},
                 {new Field(2, 2), Orientation.VERTICAL, 4},
@@ -138,7 +129,6 @@ public class BoardTest {
                 {new Field(9, 2), Orientation.VERTICAL, 1},
                 {new Field(9, 9), Orientation.HORIZONTAL, 1},
         };
-        return objects;
     }
 
     @Test(dataProvider = "positions")
@@ -154,24 +144,9 @@ public class BoardTest {
     @Test(dataProvider = "setOfShipFields")
     public void testReturnedSetsOfFields(Field startingField, Orientation orientation, int length, Set<Field> set) {
         // when
-        Set<Field> actual = board.generateSetOfFieldsForShip(startingField, orientation, length);
+        Set<Field> actual = new Board.ShipAdderHelper().generateSetOfFieldsForShip(board, startingField, orientation, length);
         // then
         assertEquals(actual, set);
-    }
-
-    @Test(dataProvider = "appendShips")
-    public void testSequentiallyAppendShips(Field field, Orientation orientation, int length, Set<Field> expected) {
-        // when
-        boolean appended = boardForSeqTest.appendShip(field, orientation, length);
-        Set<Ship> ships = boardForSeqTest.getShips();
-        Set<Field> actual = null;
-        for (Ship ship : ships) {
-            if (appended) {
-                actual = ship.occupiedFields;
-            }
-        }
-        // then
-        assertEquals(actual, expected);
     }
 
     @Test(dataProvider = "appendShipsAdjacent")
@@ -189,7 +164,7 @@ public class BoardTest {
     @Test(dataProvider = "allPositions")
     public void shootsNotHitField(Field field) {
         // given
-        Board notHitBoard = new Board();
+        Board notHitBoard = new Board.BoardBuilder().build();
 
         // when
         notHitBoard.shootField(field);
@@ -202,9 +177,9 @@ public class BoardTest {
     @Test(dataProvider = "markHitAdjacent")
     public void marksAdjacentFieldsIfShipsDestroyed(Field field, Orientation orientation, int length) {
         // given
-        Board board = new Board();
+        Board board = new Board.BoardBuilder().build();
         board.appendShip(field, orientation, length);
-        Set<Field> occupiedFields = board.getFieldFromTheBoard(field).getShip().occupiedFields;
+        Set<Field> occupiedFields = board.getFieldFromTheBoard(field).getParentShip().occupiedFields;
         Set<Field> adjacentFields = Ship.generateSetOfAdjacentFields(board, occupiedFields);
 
         // when
