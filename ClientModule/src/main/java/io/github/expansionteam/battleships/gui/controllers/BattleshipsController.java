@@ -1,6 +1,7 @@
 package io.github.expansionteam.battleships.gui.controllers;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
 import io.github.expansionteam.battleships.gui.models.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -12,6 +13,9 @@ import java.util.ResourceBundle;
 
 public class BattleshipsController implements Initializable {
 
+    @Inject
+    private BoardFactory boardFactory;
+
     @FXML
     private VBox opponentBoardArea;
 
@@ -20,8 +24,6 @@ public class BattleshipsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        BoardFactory boardFactory = new BoardFactory();
-
         OpponentBoard opponentBoard = boardFactory.createEmptyOpponentBoard();
         opponentBoard.fieldWasShotAndHit(Position.of(0, 0));
         opponentBoard.fieldWasShotAndHit(Position.of(0, 1));
