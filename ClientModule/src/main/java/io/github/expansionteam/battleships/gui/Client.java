@@ -9,13 +9,11 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
 
-import static java.lang.Thread.sleep;
-
 public class Client {
     private SocketChannel sc;
     private final int port = 1234;
 
-    Client() {
+    public Client() {
         try {
             SocketAddress address = new InetSocketAddress("127.0.0.1", port);
             sc = SocketChannel.open(address);
@@ -26,14 +24,14 @@ public class Client {
         }
     }
 
-    public void talkWithServer() {
-        try {
-            ///////////////////////////
-            // CLIENT HAS TO SEND A STRING TO INITIALIZE CONNECTION WITH SERVER !!!
-            // SERVER HAS TO BE STARTED FIRST (BEFORE CLIENTS) !!!
-            ///////////////////////////
+    public String talkWithServer(String str) {
 
-            //// dżejson test
+        ///////////////////////////
+        // CLIENT HAS TO SEND A STRING TO INITIALIZE CONNECTION WITH SERVER !!!
+        // SERVER HAS TO BE STARTED FIRST (BEFORE CLIENTS) !!!
+        ///////////////////////////
+
+        //// dżejson test
             /*String jsonString = new JSONObject()
                     .put("JSON1", "hello world1")
                     .put("JSON2", "hello world2")
@@ -41,43 +39,27 @@ public class Client {
                             .put("key1", "val")).toString();
 
             output.println( jsonString );*/
-            /////////////////////////////
+        /////////////////////////////
+        String msg = "";
 
+        try {
             DataInputStream dis = new DataInputStream(sc.socket().getInputStream());
             DataOutputStream dos = new DataOutputStream(sc.socket().getOutputStream());
 
-            // ini msg
-            dos.writeUTF("ini");
+            dos.writeUTF(str);
             dos.flush();
-            String msg;
 
-            while (true) {
-                msg = dis.readUTF();
+            msg = dis.readUTF();
 
-                // test communication - infinite echo
-                System.out.println(msg);
-                String ss = "message from the client...";
-                dos.writeUTF(ss);
-                dos.flush();
+            System.out.println(msg);
 
-                // TODO: remove this because of blocking event-driven communication nature :)
-                sleep(1000);
-            }
+            // TODO: change ending game - send a message from the server, when one disconnected
         } catch (EOFException e) {    // ending game
             System.out.println("Enemy has lost the connection...");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // TODO: remove this, when sleep is removed
-        catch (InterruptedException e) {
-            /*...*/
-            e.printStackTrace();
-        }
-    }
 
-    // entry point
-    public static void main(String[] args) {
-        Client client = new Client();
-        client.talkWithServer();
+        return msg;
     }
 }
