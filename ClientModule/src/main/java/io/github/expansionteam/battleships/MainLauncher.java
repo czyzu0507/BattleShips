@@ -1,7 +1,11 @@
 package io.github.expansionteam.battleships;
 
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -13,7 +17,14 @@ public class MainLauncher extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/gui/battleships.fxml"));
+        Injector injector = Guice.createInjector(new BattleshipsModule());
+        EventBus eventBus = injector.getInstance(EventBus.class);
+
+        Parent root = FXMLLoader.load(getClass().getResource("/gui/battleships.fxml"), null, new JavaFXBuilderFactory(), c -> {
+            final Object controller = injector.getInstance(c);
+            eventBus.register(controller);
+            return controller;
+        });
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
         primaryStage.setTitle("Battleships");
