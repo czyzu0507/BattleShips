@@ -11,7 +11,7 @@ public class BattleshipsModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(SocketClient.class).toProvider(SocketClientProvider.class);
+        bind(SocketClient.class).toProvider(SocketClientProvider.class).in(Singleton.class);
     }
 
     @Provides
