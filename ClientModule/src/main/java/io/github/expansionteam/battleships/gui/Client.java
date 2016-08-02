@@ -60,7 +60,7 @@ class Client {
                 dos.writeUTF(ss);
                 dos.flush();
 
-                // TODO: remove this shit because of blocking event-driven communication nature :)
+                // TODO: remove this because of blocking event-driven communication nature :)
                 sleep(1000);
             }
         } catch (EOFException e) {    // ending game
