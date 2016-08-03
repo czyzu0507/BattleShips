@@ -10,7 +10,7 @@ class ConnectionThread implements Runnable {
     private final SocketChannel sc1;
     private final SocketChannel sc2;
     private final int n;
-    private Game game;
+    private Game game = new Game();
 
     ConnectionThread(SocketChannel sc1, SocketChannel sc2, int n) {
         this.sc1 = sc1;
