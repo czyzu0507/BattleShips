@@ -1,21 +1,25 @@
 package io.github.expansionteam.battleships;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 class PlayerThread extends Thread {
-    final SocketChannel sc;
+    final SocketChannel socketChannel;
     private PlayerThread coupledThread = null;
 
-    DataInputStream dis = null;
-    DataOutputStream dos = null;
+    DataInputStream dataInputStream = null;
+    DataOutputStream dataOutputStream = null;
+
+    JsonHandler jsonHandler = new JsonHandler();
 
     void closeSocket() throws IOException {
-        sc.close();
+        socketChannel.close();
     }
 
-    PlayerThread(SocketChannel sc) {
-        this.sc = sc;
+    PlayerThread(SocketChannel socketChannel) {
+        this.socketChannel = socketChannel;
     }
 
     void setThreadToInform(PlayerThread playerThread) {
@@ -25,17 +29,18 @@ class PlayerThread extends Thread {
     @Override
     public void run() {
         try {
-            dis = new DataInputStream(sc.socket().getInputStream());
-            dos = new DataOutputStream(sc.socket().getOutputStream());
+            dataInputStream = new DataInputStream(socketChannel.socket().getInputStream());
+            dataOutputStream = new DataOutputStream(socketChannel.socket().getOutputStream());
 
-            String str;
+            String jsonRequest;
+            String jsonResponse;
 
             while (true) {
 
-                str = dis.readUTF();
-                System.out.println(str);
-                dos.writeUTF("response: " + str);
-                dos.flush();
+                jsonRequest = dataInputStream.readUTF();
+                jsonResponse = jsonHandler.resolveAction(jsonRequest);
+                dataOutputStream.writeUTF(jsonResponse);
+                dataOutputStream.flush();
 
             }
         } catch (IOException e) {
@@ -46,9 +51,9 @@ class PlayerThread extends Thread {
             }
         } finally {
             try {
-                sc.close();
-                dis.close();
-                dos.close();
+                socketChannel.close();
+                dataInputStream.close();
+                dataOutputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
