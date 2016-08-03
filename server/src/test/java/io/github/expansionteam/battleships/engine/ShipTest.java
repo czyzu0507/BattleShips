@@ -4,9 +4,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 @Test()
 public class ShipTest {
@@ -15,8 +18,13 @@ public class ShipTest {
     private Ship ship1;
     private Ship ship2;
 
+    Field startFieldMock = null;
+    Orientation orientationMock = null;
+    int sizeMock = 0;
+
     @BeforeClass
     private void generateShips() {
+
         firstShipFields = new TreeSet<>();
         secondShipFields = new TreeSet<>();
 
@@ -30,8 +38,8 @@ public class ShipTest {
         secondShipFields.add(new Field(3, 1));
         secondShipFields.add(new Field(4, 1));
 
-        ship1 = new Ship.ShipBuilder(firstShipFields).build();
-        ship2 = new Ship.ShipBuilder(secondShipFields).build();
+        ship1 = new Ship.ShipBuilder(firstShipFields, startFieldMock, orientationMock, sizeMock).build();
+        ship2 = new Ship.ShipBuilder(secondShipFields, startFieldMock, orientationMock, sizeMock).build();
     }
 
     @DataProvider(name = "horizontal")
@@ -58,21 +66,21 @@ public class ShipTest {
 
         return new Object[][]{
                 {ship1, ship2, false},
-                {ship1, new Ship.ShipBuilder(firstShipFields).build(), true},
-                {ship2, new Ship.ShipBuilder(secondShipFields).build(), true},
-                {ship1, new Ship.ShipBuilder(secondShipFields).build(), false},
-                {ship2, new Ship.ShipBuilder(firstShipFields).build(), false}
+                {ship1, new Ship.ShipBuilder(firstShipFields, startFieldMock, orientationMock, sizeMock).build(), true},
+                {ship2, new Ship.ShipBuilder(secondShipFields, startFieldMock, orientationMock, sizeMock).build(), true},
+                {ship1, new Ship.ShipBuilder(secondShipFields, startFieldMock, orientationMock, sizeMock).build(), false},
+                {ship2, new Ship.ShipBuilder(firstShipFields, startFieldMock, orientationMock, sizeMock).build(), false}
         };
     }
 
     @DataProvider(name = "names")
     private Object[][] provideObjectsToCheckNames() {
         return new Object[][]{
-                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1)))).build(), "Submarine"},
-                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1), new Field(1, 2)))).build(), "Destroyer"},
-                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1), new Field(1, 2), new Field(1, 3)))).build(), "Cruiser"},
-                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1), new Field(1, 2), new Field(1, 3), new Field(1, 4)))).build(), "Battleship"},
-                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1), new Field(1, 2), new Field(1, 3), new Field(1, 4), new Field(1, 5)))).build(), "Aircraft carrier"},
+                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1))), startFieldMock, orientationMock, sizeMock).build(), "Submarine"},
+                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1), new Field(1, 2))), startFieldMock, orientationMock, sizeMock).build(), "Destroyer"},
+                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1), new Field(1, 2), new Field(1, 3))), startFieldMock, orientationMock, sizeMock).build(), "Cruiser"},
+                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1), new Field(1, 2), new Field(1, 3), new Field(1, 4))), startFieldMock, orientationMock, sizeMock).build(), "Battleship"},
+                {new Ship.ShipBuilder(new HashSet<>(Arrays.asList(new Field(1, 1), new Field(1, 2), new Field(1, 3), new Field(1, 4), new Field(1, 5))), startFieldMock, orientationMock, sizeMock).build(), "Aircraft carrier"},
         };
     }
 

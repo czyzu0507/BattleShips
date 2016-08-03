@@ -10,6 +10,7 @@ class ConnectionThread implements Runnable {
     private final SocketChannel sc1;
     private final SocketChannel sc2;
     private final int n;
+    private Game game;
 
     ConnectionThread(SocketChannel sc1, SocketChannel sc2, int n) {
         this.sc1 = sc1;
@@ -19,8 +20,9 @@ class ConnectionThread implements Runnable {
 
     @Override
     public void run() {
-        PlayerThread p1 = new PlayerThread(sc1);
-        PlayerThread p2 = new PlayerThread(sc2);
+
+        PlayerThread p1 = new PlayerThread(sc1, game);
+        PlayerThread p2 = new PlayerThread(sc2, game);
 
         p1.setName("Thread_" + n + "_Player_1");
         p2.setName("Thread_" + n + "_Player_2");

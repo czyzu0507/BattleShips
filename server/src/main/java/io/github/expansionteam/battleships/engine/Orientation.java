@@ -1,5 +1,5 @@
 package io.github.expansionteam.battleships.engine;
 
-enum Orientation {
+public enum Orientation {
     HORIZONTAL, VERTICAL
 }

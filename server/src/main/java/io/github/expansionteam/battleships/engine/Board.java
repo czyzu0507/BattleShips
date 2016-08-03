@@ -17,6 +17,7 @@ public class Board implements Iterable<Field> {
 
     // 'pseudo' - builder
     public static class BoardBuilder {
+
         private final Set<Field> board = initializeSet();
         private final Map<Integer, Integer> availableShips = initializeMap();
 
@@ -42,6 +43,7 @@ public class Board implements Iterable<Field> {
         public Board build() {
             return new Board(this);
         }
+
     }
 
     public boolean appendShip(Field startingField, Orientation orientation, int length) {
@@ -63,7 +65,7 @@ public class Board implements Iterable<Field> {
             if (f.getParentShip() != null)
                 return false;
         }
-        Ship ship = new Ship.ShipBuilder(setOfShipFields).build();
+        Ship ship = new Ship.ShipBuilder(setOfShipFields, startingField, orientation, length).build();
         shipAdderHelper.decreaseShipCounter(this, length);
         ships.add(ship);
         return true;
@@ -105,6 +107,7 @@ public class Board implements Iterable<Field> {
     }
 
     static class ShipAdderHelper {
+
         // checks intersection of sets (with set of fields of other ships)
         boolean validateSet(Set<Field> set) {
             Set<Field> intersectedFields = set.stream().filter(e -> e.getParentShip() != null).collect(Collectors.toSet());
@@ -146,6 +149,11 @@ public class Board implements Iterable<Field> {
             }
             return fields;
         }
+
+    }
+
+    public Set<Ship> getShips() {
+        return ships;
     }
 
     public static class RandomShipGenerator {
