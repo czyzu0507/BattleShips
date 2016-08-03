@@ -7,6 +7,9 @@ import com.google.inject.Singleton;
 import io.github.expansionteam.battleships.logic.client.SocketClient;
 import io.github.expansionteam.battleships.logic.client.SocketClientProvider;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class BattleshipsModule extends AbstractModule {
 
     @Override
@@ -18,6 +21,11 @@ public class BattleshipsModule extends AbstractModule {
     @Singleton
     public EventBus provideEventBus() {
         return new EventBus();
+    }
+
+    @Provides
+    public ExecutorService provideExecutorService() {
+        return Executors.newSingleThreadExecutor();
     }
 
 }

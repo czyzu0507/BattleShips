@@ -11,7 +11,7 @@ import java.nio.channels.SocketChannel;
 
 public class SocketClient {
 
-    private final static Logger log = Logger.getLogger(MainLauncher.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(SocketClient.class.getSimpleName());
 
     private final SocketChannel socketChannel;
 
@@ -30,7 +30,7 @@ public class SocketClient {
             dataOutputStream.flush();
 
             message = dataInputStream.readUTF();
-            log.debug("[SERVER] Message arrived: " + message);
+            log.debug("[CLIENT] Message arrived: " + message);
 
             // TODO: change ending game - send a message from the server, when one disconnected
         } catch (EOFException e) {    // ending game

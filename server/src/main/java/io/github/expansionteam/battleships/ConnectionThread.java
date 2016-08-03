@@ -6,6 +6,7 @@ import java.nio.channels.SocketChannel;
 // TODO: change ending game - send a message from the server, when one disconnected
 // thread to manage the game of two players
 class ConnectionThread implements Runnable {
+
     private final SocketChannel sc1;
     private final SocketChannel sc2;
     private final int n;
