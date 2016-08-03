@@ -1,6 +1,7 @@
 package io.github.expansionteam.battleships.logic.client;
 
 import com.google.inject.Inject;
+import io.github.expansionteam.battleships.logic.EventMessenger;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.ExecutorService;

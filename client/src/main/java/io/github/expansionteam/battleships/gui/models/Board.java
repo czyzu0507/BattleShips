@@ -28,11 +28,10 @@ public abstract class Board extends Parent {
                 Field field = fieldsByPosition.get(Position.of(x, y));
                 row.getChildren().add(field);
             }
-            board.getChildren().removeAll();
             board.getChildren().add(row);
         }
 
-        getChildren().removeAll();
+//        getChildren().removeAll();
         getChildren().add(board);
     }
 
