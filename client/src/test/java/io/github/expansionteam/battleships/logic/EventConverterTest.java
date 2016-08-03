@@ -1,5 +1,6 @@
 package io.github.expansionteam.battleships.logic;
 
+import io.github.expansionteam.battleships.logic.events.GenerateShipsEvent;
 import io.github.expansionteam.battleships.logic.events.StartGameEvent;
 import org.testng.annotations.Test;
 
@@ -19,5 +20,16 @@ public class EventConverterTest {
         assertThat(json).isEqualTo("{\"type\":\"StartGameEvent\"}");
     }
 
+    @Test
+    public void convertGenerateShipsEventToJson() {
+        // Given
+        EventConverter eventConverter = new EventConverter();
+
+        // When
+        String json = eventConverter.convertToJson(new GenerateShipsEvent());
+
+        // Then
+        assertThat(json).isEqualTo("{\"type\":\"GenerateShipsEvent\"}");
+    }
 
 }
