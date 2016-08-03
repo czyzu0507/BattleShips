@@ -30,7 +30,7 @@ public class SocketClient {
             dataOutputStream.flush();
 
             message = dataInputStream.readUTF();
-            log.debug("[CLIENT] Message arrived: " + message);
+            log.debug("Message arrived: " + message);
 
             // TODO: change ending game - send a message from the server, when one disconnected
         } catch (EOFException e) {    // ending game

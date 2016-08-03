@@ -1,5 +1,6 @@
 package io.github.expansionteam.battleships.logic.client;
 
+import io.github.expansionteam.battleships.logic.EventMessenger;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.ExecutorService;

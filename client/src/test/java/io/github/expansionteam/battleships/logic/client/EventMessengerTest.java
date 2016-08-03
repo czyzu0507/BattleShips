@@ -1,5 +1,6 @@
 package io.github.expansionteam.battleships.logic.client;
 
+import io.github.expansionteam.battleships.logic.EventMessenger;
 import io.github.expansionteam.battleships.logic.EventProcessor;
 import org.mockito.ArgumentCaptor;
 import org.testng.annotations.Test;
