@@ -14,12 +14,15 @@ class PlayerThread extends Thread {
 
     JsonHandler jsonHandler = new JsonHandler();
 
+    private Game game;
+
     void closeSocket() throws IOException {
         socketChannel.close();
     }
 
-    PlayerThread(SocketChannel socketChannel) {
+    PlayerThread(SocketChannel socketChannel, Game game) {
         this.socketChannel = socketChannel;
+        this.game = game;
     }
 
     void setThreadToInform(PlayerThread playerThread) {
@@ -38,7 +41,7 @@ class PlayerThread extends Thread {
             while (true) {
 
                 jsonRequest = dataInputStream.readUTF();
-                jsonResponse = jsonHandler.resolveAction(jsonRequest);
+                jsonResponse = jsonHandler.resolveAction(jsonRequest, game);
                 dataOutputStream.writeUTF(jsonResponse);
                 dataOutputStream.flush();
 

@@ -3,8 +3,9 @@ package io.github.expansionteam.battleships.engine;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static io.github.expansionteam.battleships.engine.Field.State.*;
-import static io.github.expansionteam.battleships.engine.Orientation.*;
+import static io.github.expansionteam.battleships.engine.Field.State.HIT;
+import static io.github.expansionteam.battleships.engine.Field.State.NOT_HIT;
+import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
 
 public final class Field implements Comparable<Field> {
     // coordinates (in an array/mesh)
@@ -31,6 +32,14 @@ public final class Field implements Comparable<Field> {
 
     boolean isHit() {
         return state == HIT;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     enum State {
