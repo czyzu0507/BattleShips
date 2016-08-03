@@ -1,0 +1,24 @@
+2016-08-03 14:35:25 DEBUG EventHandler:22 - [LOGIC] Handle StartGameEvent.
+2016-08-03 14:35:29 DEBUG SocketClient:33 - [CLIENT] Message arrived: response: {"type":"StartGameEvent"}
+2016-08-03 14:35:29 DEBUG EventHandler:22 - [LOGIC] Handle StartGameEvent.
+2016-08-03 14:35:29 DEBUG SocketClient:33 - [CLIENT] Message arrived: response: {"type":"StartGameEvent"}
+2016-08-03 14:37:21 DEBUG EventHandler:22 - [LOGIC] Handle StartGameEvent.
+2016-08-03 14:37:25 DEBUG SocketClient:33 - [CLIENT] Message arrived: response: {"type":"StartGameEvent"}
+2016-08-03 14:37:25 DEBUG EventProcessor:22 - response: {"type":"StartGameEvent"}
+2016-08-03 14:37:25 DEBUG EventHandler:22 - [LOGIC] Handle StartGameEvent.
+2016-08-03 14:37:25 DEBUG SocketClient:33 - [CLIENT] Message arrived: response: {"type":"StartGameEvent"}
+2016-08-03 14:37:25 DEBUG EventProcessor:22 - response: {"type":"StartGameEvent"}
+2016-08-03 14:39:16 DEBUG EventHandler:22 - [LOGIC] Handle StartGameEvent.
+2016-08-03 14:39:19 DEBUG SocketClient:33 - [CLIENT] Message arrived: response: {"type":"StartGameEvent"}
+2016-08-03 14:39:19 DEBUG EventProcessor:22 - response: {"type":"StartGameEvent"}
+2016-08-03 14:39:19 DEBUG EventHandler:22 - [LOGIC] Handle StartGameEvent.
+2016-08-03 14:39:19 DEBUG SocketClient:33 - [CLIENT] Message arrived: response: {"type":"StartGameEvent"}
+2016-08-03 14:39:19 DEBUG EventProcessor:22 - response: {"type":"StartGameEvent"}
+2016-08-03 14:40:14 DEBUG EventHandler:22 - [LOGIC] Handle StartGameEvent.
+2016-08-03 14:40:17 DEBUG SocketClient:33 - [CLIENT] Message arrived: {"type":"OpponentArrivedEvent"}
+2016-08-03 14:40:17 DEBUG EventProcessor:22 - {"type":"OpponentArrivedEvent"}
+2016-08-03 14:40:17 DEBUG BattleshipsController:53 - [GUI] Handle OpponentArrivedEvent.
+2016-08-03 14:40:17 DEBUG EventHandler:22 - [LOGIC] Handle StartGameEvent.
+2016-08-03 14:40:17 DEBUG SocketClient:33 - [CLIENT] Message arrived: {"type":"OpponentArrivedEvent"}
+2016-08-03 14:40:17 DEBUG EventProcessor:22 - {"type":"OpponentArrivedEvent"}
+2016-08-03 14:40:17 DEBUG BattleshipsController:53 - [GUI] Handle OpponentArrivedEvent.

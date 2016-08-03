@@ -37,7 +37,7 @@ class PlayerThread extends Thread {
             String jsonResponse;
 
             while (true) {
-
+                
                 jsonRequest = dataInputStream.readUTF();
                 jsonResponse = jsonHandler.resolveAction(jsonRequest);
                 dataOutputStream.writeUTF(jsonResponse);
