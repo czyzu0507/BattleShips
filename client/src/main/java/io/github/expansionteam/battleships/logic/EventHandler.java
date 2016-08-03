@@ -9,15 +9,18 @@ import org.apache.log4j.Logger;
 
 public class EventHandler {
 
-    private final static Logger log = Logger.getLogger(MainLauncher.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(EventHandler.class.getSimpleName());
 
     @Inject
     private Client client;
 
+    @Inject
+    private EventConverter eventConverter;
+
     @Subscribe
     public void handle(StartGameEvent event) {
         log.debug("[LOGIC] Handle StartGameEvent.");
-        client.sendMessage("{\"type\":\"StartGameEvent\",\"data\":\"{}\"}");
+        client.sendMessage(eventConverter.convertToJson(event));
     }
 
 }

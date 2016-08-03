@@ -1,25 +1,25 @@
 package io.github.expansionteam.battleships.logic.client;
 
-import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
-import io.github.expansionteam.battleships.logic.events.OpponentArrivedEvent;
+import org.apache.log4j.Logger;
+
+import java.util.concurrent.ExecutorService;
 
 public class Client {
 
-    private EventBus eventBus;
-    private SocketClient socketClient;
+    private final static Logger log = Logger.getLogger(Client.class.getSimpleName());
+
+    private final ExecutorService executorService;
+    private final EventMessenger eventMessenger;
 
     @Inject
-    public Client(EventBus eventBus, SocketClient socketClient) {
-        this.eventBus = eventBus;
-        this.socketClient = socketClient;
+    public Client(ExecutorService executorService, EventMessenger eventMessenger) {
+        this.executorService = executorService;
+        this.eventMessenger = eventMessenger;
     }
 
     public void sendMessage(String message) {
-        new Thread(() -> {
-            String answer = socketClient.talkWithServer(message);
-            eventBus.post(new OpponentArrivedEvent());
-        }).start();
+        executorService.execute(() -> eventMessenger.send(message));
     }
 
 }

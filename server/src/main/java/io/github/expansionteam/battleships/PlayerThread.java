@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.channels.SocketChannel;
 
 class PlayerThread extends Thread {
+
     final SocketChannel sc;
     private PlayerThread coupledThread = null;
 
@@ -34,7 +35,7 @@ class PlayerThread extends Thread {
 
                 str = dis.readUTF();
                 System.out.println(str);
-                dos.writeUTF("response: " + str);
+                dos.writeUTF("{\"type\":\"OpponentArrivedEvent\"}");
                 dos.flush();
 
             }

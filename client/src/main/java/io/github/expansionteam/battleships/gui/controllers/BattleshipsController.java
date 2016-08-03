@@ -3,7 +3,6 @@ package io.github.expansionteam.battleships.gui.controllers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
-import io.github.expansionteam.battleships.MainLauncher;
 import io.github.expansionteam.battleships.gui.models.BoardFactory;
 import io.github.expansionteam.battleships.gui.models.OpponentBoard;
 import io.github.expansionteam.battleships.gui.models.PlayerBoard;
@@ -20,7 +19,7 @@ import java.util.ResourceBundle;
 
 public class BattleshipsController implements Initializable {
 
-    private final static Logger log = Logger.getLogger(MainLauncher.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(BattleshipsController.class.getSimpleName());
 
     @Inject
     private EventBus eventBus;
