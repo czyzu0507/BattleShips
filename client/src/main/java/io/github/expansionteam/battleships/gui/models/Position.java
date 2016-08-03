@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 public class Position {
 
     private static final Logger log = Logger.getLogger(Position.class.getSimpleName());
+
     private final int x;
     private final int y;
     private static final int MAX = 9;
