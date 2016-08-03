@@ -1,7 +1,6 @@
 package io.github.expansionteam.battleships.logic;
 
 import io.github.expansionteam.battleships.logic.events.StartGameEvent;
-import org.json.JSONObject;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
