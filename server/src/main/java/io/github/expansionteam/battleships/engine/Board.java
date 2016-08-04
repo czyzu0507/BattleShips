@@ -71,7 +71,8 @@ public class Board implements Iterable<Field> {
         return true;
     }
 
-    public boolean shootField(Field field) {
+    public boolean shootField(int x, int y) {
+        Field field = new Field(x, y);
         Field boardField = getFieldFromTheBoard(field);
         if (boardField.isHit()) {
             throw new IllegalStateException("Field already shot");

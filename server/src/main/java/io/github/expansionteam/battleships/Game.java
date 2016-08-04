@@ -1,7 +1,6 @@
 package io.github.expansionteam.battleships;
 
 import io.github.expansionteam.battleships.engine.Board;
-import io.github.expansionteam.battleships.engine.Field;
 import io.github.expansionteam.battleships.engine.Ship;
 import org.apache.log4j.Logger;
 
@@ -40,11 +39,10 @@ public class Game {
         }
     }
 
-    // TODO: get rid off 'new Field(...)'
     public void shoot(int x, int y) {
         if (firstPlayer()) {
-            firstPlayerBoard.shootField(new Field(x, y));
+            firstPlayerBoard.shootField(x, y);
         }
-        secondPlayerBoard.shootField((new Field(x, y)));
+        secondPlayerBoard.shootField(x, y);
     }
 }
