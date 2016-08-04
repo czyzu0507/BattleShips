@@ -35,4 +35,16 @@ public class MessageFactoryTest {
         assertThat(jsonObject.getString("type")).isEqualTo("GenerateShipsEvent");
     }
 
+    @Test
+    public void createFromJson() {
+        // Given
+        MessageFactory messageFactory = new MessageFactory();
+
+        // When
+        Message message = messageFactory.createFromJson("{}");
+
+        // Then
+        assertThat(message.getBody()).isEqualTo("{}");
+    }
+
 }

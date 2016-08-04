@@ -16,4 +16,8 @@ public class MessageFactory {
         return new Message(jsonObject.toString());
     }
 
+    public Message createFromJson(String json) {
+        return new Message(json);
+    }
+
 }
