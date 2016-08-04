@@ -40,8 +40,8 @@ public class BattleshipsController implements Initializable {
     @FXML
     VBox playerBoardArea;
 
-    private OpponentBoard opponentBoard;
-    private PlayerBoard playerBoard;
+    OpponentBoard opponentBoard;
+    PlayerBoard playerBoard;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
