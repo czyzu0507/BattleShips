@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 public class Position {
 
-    private static final Logger log = Logger.getLogger(Position.class.getSimpleName());
+    private static final Logger log = Logger.getLogger(Position.class);
 
     private final int x;
     private final int y;

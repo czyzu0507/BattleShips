@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 
 public class BattleshipsController implements Initializable {
 
-    private final static Logger log = Logger.getLogger(BattleshipsController.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(BattleshipsController.class);
 
     @Inject
     EventBus eventBus;

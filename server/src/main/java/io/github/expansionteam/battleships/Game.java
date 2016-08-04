@@ -10,7 +10,7 @@ import static io.github.expansionteam.battleships.engine.Board.*;
 
 public class Game {
 
-    private static final Logger log = Logger.getLogger(Game.class.getSimpleName());
+    private static final Logger log = Logger.getLogger(Game.class);
 
     private final Board firstPlayerBoard = new BoardBuilder().build();
     private final Board secondPlayerBoard = new BoardBuilder().build();

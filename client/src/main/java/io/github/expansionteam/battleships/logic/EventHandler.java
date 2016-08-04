@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 public class EventHandler {
 
-    private final static Logger log = Logger.getLogger(EventHandler.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(EventHandler.class);
 
     @Inject
     private Client client;

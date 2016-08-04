@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 public class EventMessenger {
 
-    private final static Logger log = Logger.getLogger(EventMessenger.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(EventMessenger.class);
 
     private final SocketClient socketClient;
     private final EventProcessor eventProcessor;

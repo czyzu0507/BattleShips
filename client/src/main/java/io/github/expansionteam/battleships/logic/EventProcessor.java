@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class EventProcessor {
 
-    private final static Logger log = Logger.getLogger(EventProcessor.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(EventProcessor.class);
 
     private final EventBus eventBus;
 

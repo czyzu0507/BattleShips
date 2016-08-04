@@ -11,7 +11,7 @@ import java.nio.channels.SocketChannel;
 
 public class SocketClient {
 
-    private final static Logger log = Logger.getLogger(SocketClient.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(SocketClient.class);
 
     private final SocketChannel socketChannel;
 
