@@ -26,7 +26,7 @@ public class EventHandler {
     }
 
     public void handleGenerateShipsEvent(GenerateShipsEvent event) {
-        log.debug("Handle StartGameEvent.");
+        log.debug("Handle GenerateShipsEvent.");
         eventProcessor.processEvent(event);
     }
 
