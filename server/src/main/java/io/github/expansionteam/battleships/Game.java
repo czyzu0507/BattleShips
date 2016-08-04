@@ -15,20 +15,36 @@ public class Game {
 
     private final Board firstPlayerBoard = new BoardBuilder().build();
     private final Board secondPlayerBoard = new BoardBuilder().build();
+    private final RandomShipGenerator randomShipGenerator = new RandomShipGenerator();
+
+    private boolean firstPlayer() {
+        return Thread.currentThread().getName().contains("Player_1");
+    }
 
     public Collection<Ship> getPlayerShips() {
-        if (Thread.currentThread().getName().contains("Player_1")) {
+        if (firstPlayer()) {
             return firstPlayerBoard.getShips();
         }
         return secondPlayerBoard.getShips();
     }
 
     public void generateRandomShips() {
-        RandomShipGenerator rsg = new RandomShipGenerator();
-        if (Thread.currentThread().getName().contains("Player_1")) {
-            rsg.generateRandomShips(firstPlayerBoard);
+        if (firstPlayer()) {
+            synchronized (randomShipGenerator) {
+                randomShipGenerator.generateRandomShips(firstPlayerBoard);
+            }
         } else {
-            rsg.generateRandomShips(secondPlayerBoard);
+            synchronized (randomShipGenerator) {
+                randomShipGenerator.generateRandomShips(secondPlayerBoard);
+            }
         }
+    }
+
+    // TODO: get rid off 'new Field(...)'
+    public void shoot(int x, int y) {
+        if (firstPlayer()) {
+            firstPlayerBoard.shootField(new Field(x, y));
+        }
+        secondPlayerBoard.shootField((new Field(x, y)));
     }
 }
