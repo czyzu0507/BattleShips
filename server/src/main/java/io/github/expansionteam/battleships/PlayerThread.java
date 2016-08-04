@@ -46,25 +46,22 @@ class PlayerThread extends Thread {
 
             }
         }
-        catch (EOFException e) {
-            try {
-                // TODO: write proper json
-              //  coupledThread.dataOutputStream.writeUTF("something ");
-                System.out.println("shutdown input");
+//        catch (EOFException e) {
+//            try {
+        // TODO: closing connection when one player is disconnected
+                /*
                 coupledThread.socketChannel.shutdownInput();
-                System.out.println("send AAAA to " + Thread.currentThread().getName());
                 coupledThread.dataOutputStream.writeUTF("AAAAAAAAAAAAAAAA");
-                System.out.println("close socket");
                 coupledThread.closeSocket();
-                System.out.println("after closing socket");
-            } catch (IOException ioExc) {
-                ioExc.printStackTrace();
-            }
-        }
+                */
+
+//            } catch (IOException ioExc) {
+//                ioExc.printStackTrace();
+//            }
+//        }
         catch (IOException e) {
-            //
-        }
-        finally {
+            e.printStackTrace();
+        } finally {
             try {
                 socketChannel.close();
             } catch (IOException e) {
