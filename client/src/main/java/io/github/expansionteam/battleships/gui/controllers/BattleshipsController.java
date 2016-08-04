@@ -3,11 +3,13 @@ package io.github.expansionteam.battleships.gui.controllers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import io.github.expansionteam.battleships.common.annotations.EventConsumer;
+import io.github.expansionteam.battleships.common.annotations.EventProducer;
+import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
+import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
+import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
+import io.github.expansionteam.battleships.common.events.StartGameEvent;
 import io.github.expansionteam.battleships.gui.models.*;
-import io.github.expansionteam.battleships.logic.events.GenerateShipsEvent;
-import io.github.expansionteam.battleships.logic.events.OpponentArrivedEvent;
-import io.github.expansionteam.battleships.logic.events.ShipsGeneratedEvent;
-import io.github.expansionteam.battleships.logic.events.StartGameEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
@@ -17,6 +19,8 @@ import org.apache.log4j.Logger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@EventProducer
+@EventConsumer
 public class BattleshipsController implements Initializable {
 
     private final static Logger log = Logger.getLogger(BattleshipsController.class);
