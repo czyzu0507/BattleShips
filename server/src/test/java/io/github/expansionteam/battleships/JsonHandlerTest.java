@@ -16,11 +16,11 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 public class JsonHandlerTest {
-    Game gameMock = mock(Game.class);
 
     @Test
     public void responsesToStartGame() {
         // given
+        Game gameMock = mock(Game.class);
         JsonHandler jsonHandler = new JsonHandler();
         String requestJson = "{\"type\":\"StartGameEvent\"}";
         String expectedResponseJson = "{\"type\":\"OpponentArrivedEvent\"}";
@@ -36,6 +36,7 @@ public class JsonHandlerTest {
     @Test
     public void responsesToNotRecognizeEvent() {
         // given
+        Game gameMock = mock(Game.class);
         JsonHandler jsonHandler = new JsonHandler();
         String requestJson = "{\"type\":\"NoSuchEvent\"}";
         String expectedResponseJson = "{\"type\":\"NotRecognizeEvent\"}";
@@ -50,6 +51,7 @@ public class JsonHandlerTest {
     @Test(expectedExceptions = JSONException.class)
     public void throwsExceptionWhenNotJson() {
         // given
+        Game gameMock = mock(Game.class);
         JsonHandler jsonHandler = new JsonHandler();
         String requestJson = "Not a Json";
 
@@ -119,5 +121,58 @@ public class JsonHandlerTest {
         assertEquals(y2, 6);
         assertEquals(orientation2, "VERTICAL");
         assertEquals(size2, 2);
+    }
+
+    @Test
+    public void responsesToHitShip() {
+
+        // given
+        JsonHandler jsonHandler = new JsonHandler();
+
+        Game gameMock = mock(Game.class);
+        when(gameMock.shoot(3, 5)).thenReturn(true);
+        String requestJson = new JSONObject()
+                .put("type", "ShootPositionEvent")
+                .put("position", new JSONObject().put("x", 3).put("y", 5))
+                .toString();
+
+        // when
+        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
+
+        JSONObject position = actualResponse.getJSONObject("position");
+        int x = position.getInt("x");
+        int y = position.getInt("y");
+
+        // then
+        assertEquals(actualResponse.getString("type"), "ShipHitEvent");
+        assertEquals(x, 3);
+        assertEquals(y, 5);
+    }
+
+    @Test
+    public void responsesToHitEmtyField() {
+
+        // given
+        JsonHandler jsonHandler = new JsonHandler();
+
+        Game gameMock = mock(Game.class);
+        when(gameMock.shoot(3, 5)).thenReturn(false);
+
+        String requestJson = new JSONObject()
+                .put("type", "ShootPositionEvent")
+                .put("position", new JSONObject().put("x", 3).put("y", 5))
+                .toString();
+
+        // when
+        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
+
+        JSONObject position = actualResponse.getJSONObject("position");
+        int x = position.getInt("x");
+        int y = position.getInt("y");
+
+        // then
+        assertEquals(actualResponse.getString("type"), "EmptyFieldHitEvent");
+        assertEquals(x, 3);
+        assertEquals(y, 5);
     }
 }

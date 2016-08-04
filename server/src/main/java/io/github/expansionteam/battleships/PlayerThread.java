@@ -1,5 +1,7 @@
 package io.github.expansionteam.battleships;
 
+import org.apache.log4j.Logger;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -8,6 +10,7 @@ import java.nio.channels.SocketChannel;
 
 class PlayerThread extends Thread {
     private final SocketChannel socketChannel;
+    private final static Logger log = Logger.getLogger(JsonHandler.class);
     private PlayerThread coupledThread = null;
     private JsonHandler jsonHandler = new JsonHandler();
     private DataInputStream dataInputStream;
@@ -40,8 +43,10 @@ class PlayerThread extends Thread {
             while (true) {
 
                 jsonRequest = dataInputStream.readUTF();
+                log.debug("Message Received: " + jsonRequest);
                 jsonResponse = jsonHandler.resolveAction(jsonRequest, game);
                 dataOutputStream.writeUTF(jsonResponse);
+                log.debug("Message Sent: " + jsonResponse);
                 dataOutputStream.flush();
 
             }

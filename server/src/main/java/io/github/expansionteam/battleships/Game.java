@@ -6,7 +6,8 @@ import org.apache.log4j.Logger;
 
 import java.util.Collection;
 
-import static io.github.expansionteam.battleships.engine.Board.*;
+import static io.github.expansionteam.battleships.engine.Board.BoardBuilder;
+import static io.github.expansionteam.battleships.engine.Board.RandomShipGenerator;
 
 public class Game {
 
