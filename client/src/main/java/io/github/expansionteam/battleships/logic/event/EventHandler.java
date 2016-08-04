@@ -25,6 +25,8 @@ public class EventHandler {
         eventProcessor.processEvent(event);
     }
 
+
+    @Subscribe
     public void handleGenerateShipsEvent(GenerateShipsEvent event) {
         log.debug("Handle GenerateShipsEvent.");
         eventProcessor.processEvent(event);
