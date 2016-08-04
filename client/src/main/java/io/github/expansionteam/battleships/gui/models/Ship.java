@@ -2,6 +2,7 @@ package io.github.expansionteam.battleships.gui.models;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Ship {
 
@@ -42,4 +43,18 @@ public class Ship {
         return fieldsByPosition;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ((o instanceof Ship) == false) {
+            return false;
+        }
+
+        Ship other = (Ship) o;
+        return Objects.equals(this.fieldsByPosition, other.fieldsByPosition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fieldsByPosition);
+    }
 }
