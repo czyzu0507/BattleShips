@@ -7167,3 +7167,39 @@
 2016-08-03 19:07:19 DEBUG BattleshipsController:56 - Handle OpponentArrivedEvent.
 2016-08-03 19:07:19 DEBUG EventHandler:29 - Handle GenerateShipsEvent.
 2016-08-03 19:07:19 DEBUG EventMessenger:21 - {"type":"GenerateShipsEvent"}
+2016-08-04 11:43:32 DEBUG EventHandler:23 - Handle StartGameEvent.
+2016-08-04 11:43:32 DEBUG EventMessenger:21 - {"type":"StartGameEvent"}
+2016-08-04 11:43:37 DEBUG SocketClient:33 - Message arrived: {"type":"OpponentArrivedEvent"}
+2016-08-04 11:43:37 DEBUG EventProcessor:23 - {"type":"OpponentArrivedEvent"}
+2016-08-04 11:43:37 DEBUG BattleshipsController:56 - Handle OpponentArrivedEvent.
+2016-08-04 11:43:37 DEBUG EventHandler:29 - Handle GenerateShipsEvent.
+2016-08-04 11:43:37 DEBUG EventMessenger:21 - {"type":"GenerateShipsEvent"}
+2016-08-04 11:43:37 DEBUG EventProcessor:23 - 
+2016-08-04 11:43:37 DEBUG EventHandler:23 - Handle StartGameEvent.
+2016-08-04 11:43:37 DEBUG EventMessenger:21 - {"type":"StartGameEvent"}
+2016-08-04 11:43:37 DEBUG SocketClient:33 - Message arrived: {"type":"OpponentArrivedEvent"}
+2016-08-04 11:43:37 DEBUG EventProcessor:23 - {"type":"OpponentArrivedEvent"}
+2016-08-04 11:43:37 DEBUG BattleshipsController:56 - Handle OpponentArrivedEvent.
+2016-08-04 11:43:37 DEBUG EventHandler:29 - Handle GenerateShipsEvent.
+2016-08-04 11:43:37 DEBUG EventMessenger:21 - {"type":"GenerateShipsEvent"}
+2016-08-04 11:43:37 DEBUG EventProcessor:23 - 
+2016-08-04 11:47:14 DEBUG EventHandler:23 - Handle StartGameEvent.
+2016-08-04 11:47:14 DEBUG EventMessenger:21 - {"type":"StartGameEvent"}
+2016-08-04 11:47:18 DEBUG SocketClient:33 - Message arrived: {"type":"OpponentArrivedEvent"}
+2016-08-04 11:47:18 DEBUG EventProcessor:23 - {"type":"OpponentArrivedEvent"}
+2016-08-04 11:47:18 DEBUG BattleshipsController:56 - Handle OpponentArrivedEvent.
+2016-08-04 11:47:18 DEBUG EventHandler:29 - Handle GenerateShipsEvent.
+2016-08-04 11:47:18 DEBUG EventMessenger:21 - {"type":"GenerateShipsEvent"}
+2016-08-04 11:47:18 DEBUG SocketClient:33 - Message arrived: {"data":{"ships":[{"orientation":"HORIZONTAL","size":4,"position":{"x":5,"y":5}},{"orientation":"HORIZONTAL","size":1,"position":{"x":1,"y":0}},{"orientation":"VERTICAL","size":2,"position":{"x":8,"y":2}},{"orientation":"VERTICAL","size":1,"position":{"x":7,"y":0}},{"orientation":"VERTICAL","size":3,"position":{"x":3,"y":2}},{"orientation":"VERTICAL","size":2,"position":{"x":0,"y":4}},{"orientation":"VERTICAL","size":1,"position":{"x":1,"y":8}},{"orientation":"HORIZONTAL","size":1,"position":{"x":3,"y":7}},{"orientation":"VERTICAL","size":2,"position":{"x":5,"y":2}},{"orientation":"HORIZONTAL","size":3,"position":{"x":5,"y":7}}]},"type":"ShipsGeneratedEvent"}
+2016-08-04 11:47:18 DEBUG EventProcessor:23 - {"data":{"ships":[{"orientation":"HORIZONTAL","size":4,"position":{"x":5,"y":5}},{"orientation":"HORIZONTAL","size":1,"position":{"x":1,"y":0}},{"orientation":"VERTICAL","size":2,"position":{"x":8,"y":2}},{"orientation":"VERTICAL","size":1,"position":{"x":7,"y":0}},{"orientation":"VERTICAL","size":3,"position":{"x":3,"y":2}},{"orientation":"VERTICAL","size":2,"position":{"x":0,"y":4}},{"orientation":"VERTICAL","size":1,"position":{"x":1,"y":8}},{"orientation":"HORIZONTAL","size":1,"position":{"x":3,"y":7}},{"orientation":"VERTICAL","size":2,"position":{"x":5,"y":2}},{"orientation":"HORIZONTAL","size":3,"position":{"x":5,"y":7}}]},"type":"ShipsGeneratedEvent"}
+2016-08-04 11:47:18 DEBUG BattleshipsController:64 - Handle ShipsGeneratedEvent.
+2016-08-04 11:47:18 DEBUG EventHandler:23 - Handle StartGameEvent.
+2016-08-04 11:47:18 DEBUG EventMessenger:21 - {"type":"StartGameEvent"}
+2016-08-04 11:47:18 DEBUG SocketClient:33 - Message arrived: {"type":"OpponentArrivedEvent"}
+2016-08-04 11:47:18 DEBUG EventProcessor:23 - {"type":"OpponentArrivedEvent"}
+2016-08-04 11:47:18 DEBUG BattleshipsController:56 - Handle OpponentArrivedEvent.
+2016-08-04 11:47:18 DEBUG EventHandler:29 - Handle GenerateShipsEvent.
+2016-08-04 11:47:18 DEBUG EventMessenger:21 - {"type":"GenerateShipsEvent"}
+2016-08-04 11:47:18 DEBUG SocketClient:33 - Message arrived: {"data":{"ships":[{"orientation":"VERTICAL","size":1,"position":{"x":2,"y":2}},{"orientation":"HORIZONTAL","size":3,"position":{"x":4,"y":2}},{"orientation":"HORIZONTAL","size":2,"position":{"x":8,"y":9}},{"orientation":"VERTICAL","size":2,"position":{"x":9,"y":1}},{"orientation":"VERTICAL","size":4,"position":{"x":8,"y":4}},{"orientation":"HORIZONTAL","size":3,"position":{"x":0,"y":7}},{"orientation":"VERTICAL","size":1,"position":{"x":4,"y":8}},{"orientation":"VERTICAL","size":1,"position":{"x":6,"y":8}},{"orientation":"HORIZONTAL","size":1,"position":{"x":0,"y":2}},{"orientation":"HORIZONTAL","size":2,"position":{"x":5,"y":4}}]},"type":"ShipsGeneratedEvent"}
+2016-08-04 11:47:18 DEBUG EventProcessor:23 - {"data":{"ships":[{"orientation":"VERTICAL","size":1,"position":{"x":2,"y":2}},{"orientation":"HORIZONTAL","size":3,"position":{"x":4,"y":2}},{"orientation":"HORIZONTAL","size":2,"position":{"x":8,"y":9}},{"orientation":"VERTICAL","size":2,"position":{"x":9,"y":1}},{"orientation":"VERTICAL","size":4,"position":{"x":8,"y":4}},{"orientation":"HORIZONTAL","size":3,"position":{"x":0,"y":7}},{"orientation":"VERTICAL","size":1,"position":{"x":4,"y":8}},{"orientation":"VERTICAL","size":1,"position":{"x":6,"y":8}},{"orientation":"HORIZONTAL","size":1,"position":{"x":0,"y":2}},{"orientation":"HORIZONTAL","size":2,"position":{"x":5,"y":4}}]},"type":"ShipsGeneratedEvent"}
+2016-08-04 11:47:18 DEBUG BattleshipsController:64 - Handle ShipsGeneratedEvent.

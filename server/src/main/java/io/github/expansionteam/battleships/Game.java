@@ -13,30 +13,22 @@ public class Game {
 
     private static final Logger log = Logger.getLogger(Game.class.getSimpleName());
 
-    private final Board playerBoard = new BoardBuilder().build();
-    private final Board enemyBoard = new BoardBuilder().build();
-
-
-    public void start() {
-    }
-
-    public static void main(String[] args) {
-
-        log.info("Logger test in server.");
-        Game game = new Game();
-
-        game.start();
-        printTmp(game.playerBoard);
-        game.playerBoard.shootField(new Field(1, 1));
-        printTmp(game.playerBoard);
-    }
+    private final Board firstPlayerBoard = new BoardBuilder().build();
+    private final Board secondPlayerBoard = new BoardBuilder().build();
 
     public Collection<Ship> getPlayerShips() {
-        return playerBoard.getShips();
+        if (Thread.currentThread().getName().contains("Player_1")) {
+            return firstPlayerBoard.getShips();
+        }
+        return secondPlayerBoard.getShips();
     }
 
     public void generateRandomShips() {
         RandomShipGenerator rsg = new RandomShipGenerator();
-        rsg.generateRandomShips(playerBoard);
+        if (Thread.currentThread().getName().contains("Player_1")) {
+            rsg.generateRandomShips(firstPlayerBoard);
+        } else {
+            rsg.generateRandomShips(secondPlayerBoard);
+        }
     }
 }
