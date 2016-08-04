@@ -19,5 +19,4 @@ public class Client {
     public void sendMessage(String message) {
         Platform.runLater(() -> eventMessenger.send(message));
     }
-
 }

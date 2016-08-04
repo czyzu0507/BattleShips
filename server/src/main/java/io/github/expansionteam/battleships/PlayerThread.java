@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 class PlayerThread extends Thread {
-
     final SocketChannel socketChannel;
     private PlayerThread coupledThread = null;
 
