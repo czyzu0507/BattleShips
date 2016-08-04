@@ -12,7 +12,7 @@ public class ProcessMessageTaskTest {
     public void run() {
         // Given
         MessageProcessor messageProcessorMock = mock(MessageProcessor.class);
-        Message message = new Message();
+        Message message = new Message("");
         ProcessMessageTask processMessageTask = new ProcessMessageTask(messageProcessorMock, message);
 
         // When
