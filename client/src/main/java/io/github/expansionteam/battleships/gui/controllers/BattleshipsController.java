@@ -70,7 +70,7 @@ public class BattleshipsController implements Initializable {
     @Subscribe
     public void handleShipsGeneratedEvent(ShipsGeneratedEvent event) {
         log.debug("Handle ShipsGeneratedEvent.");
-        
+
         event.ships.stream().forEach(s -> {
             Position position = Position.of(s.position.x, s.position.y);
 

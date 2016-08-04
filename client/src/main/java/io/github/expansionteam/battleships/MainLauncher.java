@@ -3,7 +3,6 @@ package io.github.expansionteam.battleships;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import io.github.expansionteam.battleships.logic.EventHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -21,7 +20,7 @@ public class MainLauncher extends Application {
         Injector injector = Guice.createInjector(new BattleshipsModule());
         EventBus eventBus = injector.getInstance(EventBus.class);
 
-        eventBus.register(injector.getInstance(EventHandler.class));
+        eventBus.register(injector.getInstance(io.github.expansionteam.battleships.logic.event.EventHandler.class));
 
         Parent root = FXMLLoader.load(getClass().getResource("/gui/battleships.fxml"), null, new JavaFXBuilderFactory(), c -> {
             final Object controller = injector.getInstance(c);
