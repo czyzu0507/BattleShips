@@ -30,7 +30,7 @@ public final class Field implements Comparable<Field> {
         state = HIT;
     }
 
-    boolean isHit() {
+    public boolean isHit() {
         return state == HIT;
     }
 

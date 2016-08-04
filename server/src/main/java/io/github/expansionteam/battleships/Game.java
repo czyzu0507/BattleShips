@@ -20,6 +20,10 @@ public class Game {
         return Thread.currentThread().getName().contains("Player_1");
     }
 
+    private boolean isFieldHit(Board board, int x, int y) {
+        return board.getFieldFromTheBoard(x, y).isHit();
+    }
+
     public Collection<Ship> getPlayerShips() {
         if (firstPlayer()) {
             return firstPlayerBoard.getShips();
@@ -39,10 +43,12 @@ public class Game {
         }
     }
 
-    public void shoot(int x, int y) {
+    public boolean shoot(int x, int y) {
         if (firstPlayer()) {
             firstPlayerBoard.shootField(x, y);
+            return isFieldHit(firstPlayerBoard, x, y);
         }
         secondPlayerBoard.shootField(x, y);
+        return isFieldHit(secondPlayerBoard, x, y);
     }
 }

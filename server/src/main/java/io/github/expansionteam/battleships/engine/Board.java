@@ -73,7 +73,7 @@ public class Board implements Iterable<Field> {
 
     public boolean shootField(int x, int y) {
         Field field = new Field(x, y);
-        Field boardField = getFieldFromTheBoard(field);
+        Field boardField = getFieldFromTheBoard(x, y);
         if (boardField.isHit()) {
             throw new IllegalStateException("Field already shot");
         }
@@ -93,9 +93,10 @@ public class Board implements Iterable<Field> {
     }
 
     // returns field from the board - to return pointer to the field on the board
-    Field getFieldFromTheBoard(Field field) {
+    public Field getFieldFromTheBoard(int x, int y) {
+        Field fieldToGet = new Field(x, y);
         for (Field f : board) {
-            if (f.equals(field)) {
+            if (f.equals(fieldToGet)) {
                 return f;
             }
         }
@@ -140,7 +141,7 @@ public class Board implements Iterable<Field> {
             Set<Field> fields = new HashSet<>();
 
             while (length > 0) {
-                Field fieldFromTheBoard = board.getFieldFromTheBoard(field);
+                Field fieldFromTheBoard = board.getFieldFromTheBoard(field.getX(), field.getY());
                 if (fieldFromTheBoard == null) {
                     return null;
                 }

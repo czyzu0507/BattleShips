@@ -138,7 +138,7 @@ public class BoardTest {
 
     @Test(dataProvider = "ofPosition")
     public void testGetFieldOfPosition(Field toFind, Field expected) {
-        assertEquals(board.getFieldFromTheBoard(toFind), expected);
+        assertEquals(board.getFieldFromTheBoard(toFind.getX(), toFind.getY()), expected);
     }
 
     @Test(dataProvider = "setOfShipFields")
@@ -168,7 +168,7 @@ public class BoardTest {
 
         // when
         notHitBoard.shootField(field.getX(), field.getY());
-        Field shotField = notHitBoard.getFieldFromTheBoard(field);
+        Field shotField = notHitBoard.getFieldFromTheBoard(field.getX(), field.getY());
 
         // then
         assertTrue(shotField.isHit());
@@ -179,7 +179,7 @@ public class BoardTest {
         // given
         Board board = new Board.BoardBuilder().build();
         board.appendShip(field, orientation, length);
-        Set<Field> occupiedFields = board.getFieldFromTheBoard(field).getParentShip().occupiedFields;
+        Set<Field> occupiedFields = board.getFieldFromTheBoard(field.getX(), field.getY()).getParentShip().occupiedFields;
         Set<Field> adjacentFields = Ship.generateSetOfAdjacentFields(board, occupiedFields);
 
         // when

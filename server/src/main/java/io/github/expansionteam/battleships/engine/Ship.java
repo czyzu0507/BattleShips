@@ -33,8 +33,8 @@ public class Ship {
         tmpSet = set.stream()
                 .map(Field.FieldSetGenerator::createAllPossibleAdjacentFields)
                 .flatMap(Collection::stream)
-                .filter(e -> board.getFieldFromTheBoard(e) != null)
-                .map(board::getFieldFromTheBoard)
+                .filter(e -> board.getFieldFromTheBoard(e.getX(), e.getY()) != null)
+                .map(e -> board.getFieldFromTheBoard(e.getX(), e.getY()))
                 .filter(e -> !set.contains(e))
                 .collect(Collectors.toSet());
 
