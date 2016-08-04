@@ -23,12 +23,13 @@ public class EventProcessor {
     }
 
     public void processEvent(StartGameEvent event) {
-            Message message = messageFactory.createFromEvent(event);
-            asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));
+        Message message = messageFactory.createFromEvent(event);
+        asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));
     }
 
     public void processEvent(GenerateShipsEvent event) {
-
+        Message message = messageFactory.createFromEvent(event);
+        asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));
     }
 
 }
