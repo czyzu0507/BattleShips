@@ -52,6 +52,8 @@ public class BattleshipsController implements Initializable {
         playerBoardArea.getChildren().add(playerBoard);
 
         boardArea.setVisible(false);
+
+        log.debug("Post StartGameEvent.");
         eventBus.post(new StartGameEvent());
     }
 
@@ -60,12 +62,15 @@ public class BattleshipsController implements Initializable {
         log.debug("Handle OpponentArrivedEvent.");
 
         boardArea.setVisible(true);
+
+        log.debug("Post GenerateShipsEvent.");
         eventBus.post(new GenerateShipsEvent());
     }
 
     @Subscribe
     public void handleShipsGeneratedEvent(ShipsGeneratedEvent event) {
         log.debug("Handle ShipsGeneratedEvent.");
+        
         event.ships.stream().forEach(s -> {
             Position position = Position.of(s.position.x, s.position.y);
 
