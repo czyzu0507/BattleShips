@@ -24,6 +24,14 @@ public class Position {
         return new Position(x, y);
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public Position nextPositionHorizontally() {
         return Position.of(x + 1, y);
     }
