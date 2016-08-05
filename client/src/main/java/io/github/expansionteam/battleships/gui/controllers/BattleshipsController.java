@@ -5,10 +5,7 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import io.github.expansionteam.battleships.common.annotations.EventConsumer;
 import io.github.expansionteam.battleships.common.annotations.EventProducer;
-import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
-import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
-import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
-import io.github.expansionteam.battleships.common.events.StartGameEvent;
+import io.github.expansionteam.battleships.common.events.*;
 import io.github.expansionteam.battleships.gui.models.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -101,6 +98,18 @@ public class BattleshipsController implements Initializable {
             }
             playerBoard.placeShip(ship);
         });
+    }
+
+    @Subscribe
+    public void handleEmptyFieldHitEvent(EmptyFieldHitEvent event) {
+        log.debug("Handle EmptyFieldHitEvent.");
+        opponentBoard.fieldWasShotAndMissed(Position.of(event.getPosition().getX(), event.getPosition().getY()));
+    }
+
+    @Subscribe
+    public void handleShipHitEvent(ShipHitEvent event) {
+        log.debug("Handle ShipHitEvent.");
+        opponentBoard.fieldWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
     }
 
 }

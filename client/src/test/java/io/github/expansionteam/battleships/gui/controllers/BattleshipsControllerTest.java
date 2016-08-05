@@ -1,10 +1,9 @@
 package io.github.expansionteam.battleships.gui.controllers;
 
 import com.google.common.eventbus.EventBus;
-import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
-import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
-import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
-import io.github.expansionteam.battleships.gui.models.PlayerBoard;
+import io.github.expansionteam.battleships.common.events.*;
+import io.github.expansionteam.battleships.common.events.data.*;
+import io.github.expansionteam.battleships.gui.models.*;
 import io.github.expansionteam.battleships.gui.models.Position;
 import io.github.expansionteam.battleships.gui.models.Ship;
 import io.github.expansionteam.battleships.gui.models.ShipSize;
@@ -68,6 +67,41 @@ public class BattleshipsControllerTest {
 
         assertThat(capturedShips.get(0)).isEqualTo(Ship.createHorizontal(Position.of(1, 1), ShipSize.FOUR));
         assertThat(capturedShips.get(1)).isEqualTo(Ship.createVertical(Position.of(4, 6), ShipSize.TWO));
+    }
+
+    @Test
+    public void handleEmptyFieldHitEvent() {
+        // Given
+        OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
+
+        BattleshipsController battleshipsController = new BattleshipsController();
+        battleshipsController.opponentBoard = opponentBoardMock;
+
+        // When
+        battleshipsController.handleEmptyFieldHitEvent(new EmptyFieldHitEvent(PositionData.of(3, 4)));
+
+        // Then
+        ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
+        verify(opponentBoardMock).fieldWasShotAndMissed(positionArgumentCaptor.capture());
+
+        assertThat(positionArgumentCaptor.getValue()).isEqualTo(Position.of(3, 4));
+    }
+
+    @Test
+    public void handleShipHitEvent() {
+        // Given
+        OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
+
+        BattleshipsController battleshipsController = new BattleshipsController();
+        battleshipsController.opponentBoard = opponentBoardMock;
+
+        // When
+        battleshipsController.handleShipHitEvent(new ShipHitEvent(PositionData.of(2, 2)));
+
+        // Then
+        ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
+        verify(opponentBoardMock).fieldWasShotAndHit(positionArgumentCaptor.capture());
+        assertThat(positionArgumentCaptor.getValue()).isEqualTo(Position.of(2, 2));
     }
 
     private ShipsGeneratedEvent.Ship createShip1() {
