@@ -1,9 +1,29 @@
 package io.github.expansionteam.battleships.gui.models;
 
+import com.google.inject.Inject;
+import io.github.expansionteam.battleships.gui.mouseeventhandlers.MouseClickedEventHandler;
+import io.github.expansionteam.battleships.gui.mouseeventhandlers.MouseEnteredEventHandler;
+import io.github.expansionteam.battleships.gui.mouseeventhandlers.MouseExitedEventHandler;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class BoardFactory {
+
+
+    private final MouseClickedEventHandler mouseClickedEventHandler;
+    private final MouseEnteredEventHandler mouseEnteredEventHandler;
+    private final MouseExitedEventHandler mouseExitedEventHandler;
+
+    @Inject
+    public BoardFactory(
+            MouseClickedEventHandler mouseClickedEventHandler,
+            MouseEnteredEventHandler mouseEnteredEventHandler,
+            MouseExitedEventHandler mouseExitedEventHandler) {
+        this.mouseClickedEventHandler = mouseClickedEventHandler;
+        this.mouseEnteredEventHandler = mouseEnteredEventHandler;
+        this.mouseExitedEventHandler = mouseExitedEventHandler;
+    }
 
     public PlayerBoard createEmptyPlayerBoard() {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
@@ -13,7 +33,11 @@ public class BoardFactory {
             }
         }
 
-        return new PlayerBoard(fieldsByPosition);
+        return new PlayerBoard(
+                mouseClickedEventHandler::handlePlayerBoard,
+                mouseEnteredEventHandler::handlePlayerBoard,
+                mouseExitedEventHandler::handlePlayerBoard,
+                fieldsByPosition);
     }
 
     public OpponentBoard createEmptyOpponentBoard() {
@@ -25,7 +49,11 @@ public class BoardFactory {
             }
         }
 
-        return new OpponentBoard(fieldsByPosition);
+        return new OpponentBoard(
+                mouseClickedEventHandler::handleOpponentBoard,
+                mouseEnteredEventHandler::handleOpponentBoard,
+                mouseExitedEventHandler::handleOpponentBoard,
+                fieldsByPosition);
     }
 
 }

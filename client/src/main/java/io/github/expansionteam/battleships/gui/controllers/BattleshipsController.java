@@ -31,6 +31,7 @@ public class BattleshipsController implements Initializable {
     @Inject
     BoardFactory boardFactory;
 
+
     @FXML
     BorderPane boardArea;
 
