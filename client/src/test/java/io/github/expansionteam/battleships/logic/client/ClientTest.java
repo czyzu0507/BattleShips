@@ -1,5 +1,10 @@
 package io.github.expansionteam.battleships.logic.client;
 
+public class ClientTest {
+
+    //TODO
+
+    /*import io.github.expansionteam.battleships.logic.EventMessenger;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.ExecutorService;
@@ -24,5 +29,5 @@ public class ClientTest {
         // Then
         verify(executorServiceMock, times(1)).execute(isA(Runnable.class));
     }
-
+*/
 }

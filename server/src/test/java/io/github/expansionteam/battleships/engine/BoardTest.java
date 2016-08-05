@@ -96,12 +96,12 @@ public class BoardTest {
         Board board = new Board.BoardBuilder().build();
         return new Object[][]{
                 {board.appendShip(new Field(0, 0), HORIZONTAL, 4), true},
-               // {board.appendShip(new Field(0, 2), HORIZONTAL, 4), true},
+                // {board.appendShip(new Field(0, 2), HORIZONTAL, 4), true},
                 {board.appendShip(new Field(0, 4), HORIZONTAL, 4), false},
 
                 {board.appendShip(new Field(0, 4), HORIZONTAL, 3), true},
                 {board.appendShip(new Field(0, 6), HORIZONTAL, 3), true},
-               // {board.appendShip(new Field(0, 8), HORIZONTAL, 3), true},
+                // {board.appendShip(new Field(0, 8), HORIZONTAL, 3), true},
                 {board.appendShip(new Field(4, 0), HORIZONTAL, 3), false},
         };
     }
@@ -138,7 +138,7 @@ public class BoardTest {
 
     @Test(dataProvider = "ofPosition")
     public void testGetFieldOfPosition(Field toFind, Field expected) {
-        assertEquals(board.getFieldFromTheBoard(toFind), expected);
+        assertEquals(board.getFieldFromTheBoard(toFind.getX(), toFind.getY()), expected);
     }
 
     @Test(dataProvider = "setOfShipFields")
@@ -167,8 +167,8 @@ public class BoardTest {
         Board notHitBoard = new Board.BoardBuilder().build();
 
         // when
-        notHitBoard.shootField(field);
-        Field shotField = notHitBoard.getFieldFromTheBoard(field);
+        notHitBoard.shootField(field.getX(), field.getY());
+        Field shotField = notHitBoard.getFieldFromTheBoard(field.getX(), field.getY());
 
         // then
         assertTrue(shotField.isHit());
@@ -179,11 +179,11 @@ public class BoardTest {
         // given
         Board board = new Board.BoardBuilder().build();
         board.appendShip(field, orientation, length);
-        Set<Field> occupiedFields = board.getFieldFromTheBoard(field).getParentShip().occupiedFields;
+        Set<Field> occupiedFields = board.getFieldFromTheBoard(field.getX(), field.getY()).getParentShip().occupiedFields;
         Set<Field> adjacentFields = Ship.generateSetOfAdjacentFields(board, occupiedFields);
 
         // when
-        occupiedFields.forEach(board::shootField);
+        occupiedFields.forEach(e -> board.shootField(e.getX(), e.getY()));
 
         // then
         for (Field adjacentField : adjacentFields) {

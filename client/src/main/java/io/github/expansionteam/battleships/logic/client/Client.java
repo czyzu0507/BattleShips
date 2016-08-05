@@ -1,25 +1,22 @@
 package io.github.expansionteam.battleships.logic.client;
 
 import com.google.inject.Inject;
+import io.github.expansionteam.battleships.logic.EventMessenger;
+import javafx.application.Platform;
 import org.apache.log4j.Logger;
-
-import java.util.concurrent.ExecutorService;
 
 public class Client {
 
-    private final static Logger log = Logger.getLogger(Client.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(Client.class);
 
-    private final ExecutorService executorService;
     private final EventMessenger eventMessenger;
 
     @Inject
-    public Client(ExecutorService executorService, EventMessenger eventMessenger) {
-        this.executorService = executorService;
+    public Client(EventMessenger eventMessenger) {
         this.eventMessenger = eventMessenger;
     }
 
     public void sendMessage(String message) {
-        executorService.execute(() -> eventMessenger.send(message));
+        Platform.runLater(() -> eventMessenger.send(message));
     }
-
 }

@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 public class MainLauncher extends Application {
 
-    private final static Logger log = Logger.getLogger(MainLauncher.class.getSimpleName());
+    private final static Logger log = Logger.getLogger(MainLauncher.class);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -34,7 +34,6 @@ public class MainLauncher extends Application {
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
     }
-
 
     public static void main(String[] args) {
         launch(args);

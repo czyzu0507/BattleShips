@@ -17,6 +17,7 @@ public class Board implements Iterable<Field> {
 
     // 'pseudo' - builder
     public static class BoardBuilder {
+
         private final Set<Field> board = initializeSet();
         private final Map<Integer, Integer> availableShips = initializeMap();
 
@@ -42,6 +43,7 @@ public class Board implements Iterable<Field> {
         public Board build() {
             return new Board(this);
         }
+
     }
 
     public boolean appendShip(Field startingField, Orientation orientation, int length) {
@@ -63,14 +65,15 @@ public class Board implements Iterable<Field> {
             if (f.getParentShip() != null)
                 return false;
         }
-        Ship ship = new Ship.ShipBuilder(setOfShipFields).build();
+        Ship ship = new Ship.ShipBuilder(setOfShipFields, startingField, orientation, length).build();
         shipAdderHelper.decreaseShipCounter(this, length);
         ships.add(ship);
         return true;
     }
 
-    public boolean shootField(Field field) {
-        Field boardField = getFieldFromTheBoard(field);
+    public boolean shootField(int x, int y) {
+        Field field = new Field(x, y);
+        Field boardField = getFieldFromTheBoard(x, y);
         if (boardField.isHit()) {
             throw new IllegalStateException("Field already shot");
         }
@@ -90,9 +93,10 @@ public class Board implements Iterable<Field> {
     }
 
     // returns field from the board - to return pointer to the field on the board
-    Field getFieldFromTheBoard(Field field) {
+    public Field getFieldFromTheBoard(int x, int y) {
+        Field fieldToGet = new Field(x, y);
         for (Field f : board) {
-            if (f.equals(field)) {
+            if (f.equals(fieldToGet)) {
                 return f;
             }
         }
@@ -105,6 +109,7 @@ public class Board implements Iterable<Field> {
     }
 
     static class ShipAdderHelper {
+
         // checks intersection of sets (with set of fields of other ships)
         boolean validateSet(Set<Field> set) {
             Set<Field> intersectedFields = set.stream().filter(e -> e.getParentShip() != null).collect(Collectors.toSet());
@@ -136,7 +141,7 @@ public class Board implements Iterable<Field> {
             Set<Field> fields = new HashSet<>();
 
             while (length > 0) {
-                Field fieldFromTheBoard = board.getFieldFromTheBoard(field);
+                Field fieldFromTheBoard = board.getFieldFromTheBoard(field.getX(), field.getY());
                 if (fieldFromTheBoard == null) {
                     return null;
                 }
@@ -146,6 +151,11 @@ public class Board implements Iterable<Field> {
             }
             return fields;
         }
+
+    }
+
+    public Set<Ship> getShips() {
+        return ships;
     }
 
     public static class RandomShipGenerator {

@@ -1,15 +1,24 @@
 package io.github.expansionteam.battleships.engine;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-class Ship {
+public class Ship {
     private final String name;
     protected final Set<Field> occupiedFields;
+    private final Field startField;
+    private final Orientation orientation;
+    private final int size;
 
     private Ship(ShipBuilder shipBuilder) {
         this.name = shipBuilder.name;
         this.occupiedFields = shipBuilder.set;
+        this.startField = shipBuilder.startField;
+        this.orientation = shipBuilder.orientation;
+        this.size = shipBuilder.size;
         setParents(this);
     }
 
@@ -24,8 +33,8 @@ class Ship {
         tmpSet = set.stream()
                 .map(Field.FieldSetGenerator::createAllPossibleAdjacentFields)
                 .flatMap(Collection::stream)
-                .filter(e -> board.getFieldFromTheBoard(e) != null)
-                .map(board::getFieldFromTheBoard)
+                .filter(e -> board.getFieldFromTheBoard(e.getX(), e.getY()) != null)
+                .map(e -> board.getFieldFromTheBoard(e.getX(), e.getY()))
                 .filter(e -> !set.contains(e))
                 .collect(Collectors.toSet());
 
@@ -34,6 +43,10 @@ class Ship {
 
     boolean isDestroyed() {
         return occupiedFields.stream().filter(Field::isHit).collect(Collectors.toSet()).size() == occupiedFields.size();
+    }
+
+    public Field getStartField() {
+        return startField;
     }
 
     @Override
@@ -55,15 +68,28 @@ class Ship {
         return name.equals(ship.name) && occupiedFields.equals(ship.occupiedFields);
     }
 
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    public int getSize() {
+        return size;
+    }
 
     // helper builder-like class
     static class ShipBuilder {
         private final String name;
         private final Set<Field> set;
+        private Field startField;
+        private Orientation orientation;
+        private final int size;
 
-        ShipBuilder(Set<Field> setOfFields) {
+        ShipBuilder(Set<Field> setOfFields, Field startField, Orientation orientation, int size) {
             name = map.get(setOfFields.size());
             set = setOfFields;
+            this.startField = startField;
+            this.orientation = orientation;
+            this.size = size;
         }
 
         // helper map

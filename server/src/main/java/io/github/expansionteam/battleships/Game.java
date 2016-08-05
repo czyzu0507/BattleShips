@@ -1,32 +1,55 @@
 package io.github.expansionteam.battleships;
 
 import io.github.expansionteam.battleships.engine.Board;
-import io.github.expansionteam.battleships.engine.Field;
+import io.github.expansionteam.battleships.engine.Ship;
 import org.apache.log4j.Logger;
 
-import static io.github.expansionteam.battleships.engine.Board.*;
+import java.util.Collection;
+
+import static io.github.expansionteam.battleships.engine.Board.BoardBuilder;
+import static io.github.expansionteam.battleships.engine.Board.RandomShipGenerator;
 
 public class Game {
 
-    private static final Logger log = Logger.getLogger(Game.class.getSimpleName());
+    private static final Logger log = Logger.getLogger(Game.class);
 
-    private final Board playerBoard = new BoardBuilder().build();
-    private final Board enemyBoard = new BoardBuilder().build();
+    private final Board firstPlayerBoard = new BoardBuilder().build();
+    private final Board secondPlayerBoard = new BoardBuilder().build();
+    private final RandomShipGenerator randomShipGenerator = new RandomShipGenerator();
 
-
-    public void start() {
-        RandomShipGenerator rsg = new RandomShipGenerator();
-        rsg.generateRandomShips(playerBoard);
+    private boolean firstPlayer() {
+        return Thread.currentThread().getName().contains("Player_1");
     }
 
-    public static void main(String[] args) {
+    private boolean isFieldHit(Board board, int x, int y) {
+        return board.getFieldFromTheBoard(x, y).isHit();
+    }
 
-        log.info("Logger test in server.");
-        Game game = new Game();
+    public Collection<Ship> getPlayerShips() {
+        if (firstPlayer()) {
+            return firstPlayerBoard.getShips();
+        }
+        return secondPlayerBoard.getShips();
+    }
 
-        game.start();
-        printTmp(game.playerBoard);
-        game.playerBoard.shootField(new Field(1, 1));
-        printTmp(game.playerBoard);
+    public void generateRandomShips() {
+        if (firstPlayer()) {
+            synchronized (randomShipGenerator) {
+                randomShipGenerator.generateRandomShips(firstPlayerBoard);
+            }
+        } else {
+            synchronized (randomShipGenerator) {
+                randomShipGenerator.generateRandomShips(secondPlayerBoard);
+            }
+        }
+    }
+
+    public boolean shoot(int x, int y) {
+        if (firstPlayer()) {
+            firstPlayerBoard.shootField(x, y);
+            return isFieldHit(firstPlayerBoard, x, y);
+        }
+        secondPlayerBoard.shootField(x, y);
+        return isFieldHit(secondPlayerBoard, x, y);
     }
 }
