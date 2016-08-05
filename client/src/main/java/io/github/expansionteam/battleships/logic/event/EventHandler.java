@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import io.github.expansionteam.battleships.common.annotations.EventConsumer;
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
+import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
 import org.apache.log4j.Logger;
 
@@ -29,6 +30,12 @@ public class EventHandler {
     @Subscribe
     public void handleGenerateShipsEvent(GenerateShipsEvent event) {
         log.debug("Handle GenerateShipsEvent.");
+        eventProcessor.processEvent(event);
+    }
+
+    @Subscribe
+    public void handleShootPositionEvent(ShootPositionEvent event) {
+        log.debug("Handle ShootPositionEvent.");
         eventProcessor.processEvent(event);
     }
 

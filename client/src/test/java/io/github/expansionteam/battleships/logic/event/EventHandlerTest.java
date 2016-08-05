@@ -1,6 +1,7 @@
 package io.github.expansionteam.battleships.logic.event;
 
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
+import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
 import org.testng.annotations.Test;
 
@@ -34,6 +35,20 @@ public class EventHandlerTest {
 
         // Then
         verify(eventProcessorMock).processEvent(isA(GenerateShipsEvent.class));
+    }
+
+    @Test
+    public void handleShootPositionEvent() {
+        // Given
+        EventProcessor eventProcessorMock = mock(EventProcessor.class);
+        EventHandler eventHandler = new EventHandler(eventProcessorMock);
+
+        // When
+        ShootPositionEvent.Position position = new ShootPositionEvent.Position(1, 1);
+        eventHandler.handleShootPositionEvent(new ShootPositionEvent(position));
+
+        // Then
+        verify(eventProcessorMock).processEvent(isA(ShootPositionEvent.class));
     }
 
 }
