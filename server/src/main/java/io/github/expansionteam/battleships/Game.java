@@ -1,6 +1,7 @@
 package io.github.expansionteam.battleships;
 
 import io.github.expansionteam.battleships.engine.Board;
+import io.github.expansionteam.battleships.engine.Field;
 import io.github.expansionteam.battleships.engine.Ship;
 import org.apache.log4j.Logger;
 
@@ -51,5 +52,19 @@ public class Game {
         }
         secondPlayerBoard.shootField(x, y);
         return isFieldHit(secondPlayerBoard, x, y);
+    }
+
+    public boolean isDestroyedShip(int x, int y) {
+        if (firstPlayer()) {
+            return firstPlayerBoard.isDestroyedShip(x, y);
+        }
+        return secondPlayerBoard.isDestroyedShip(x, y);
+    }
+
+    public Collection<Field> getAdjacentToShip(int x, int y) {
+        if (firstPlayer()) {
+            return firstPlayerBoard.getAdjacentToShip(x, y);
+        }
+        return secondPlayerBoard.getAdjacentToShip(x, y);
     }
 }

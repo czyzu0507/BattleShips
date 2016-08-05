@@ -26,18 +26,23 @@ public class JsonHandler {
 
                 return getShipsGeneratedEventJson(jsonResponse, ships);
             }
+
             case "ShootPositionEvent": {
 
-                JSONObject position = jsonRequest.getJSONObject("position");
+                JSONObject position = jsonRequest.getJSONObject("data").getJSONObject("position");
 
                 int x = position.getInt("x");
                 int y = position.getInt("y");
 
-                if (game.shoot(x, y)) {
+                if (!game.shoot(x, y)) {
+                    return getEmptyFieldHitEventJson(jsonResponse, position);
+                }
+
+                if (!game.isDestroyedShip(x, y)) {
                     return getShipHitEventJson(jsonResponse, position);
                 }
 
-                return getEmptyFieldHitEventJson(jsonResponse, position);
+                return getShipDestroyedEventJson(jsonResponse, position, game.getAdjacentToShip(x, y));
             }
             default:
                 return getNotRecognizedEventJson(jsonResponse);
@@ -57,27 +62,28 @@ public class JsonHandler {
     }
 
     private String getShipsGeneratedEventJson(JSONObject jsonResponse, Collection<Ship> ships) {
-        JSONArray shipsJson = new JSONArray();
+        JSONArray shipsJsonArray = new JSONArray();
+        JSONObject positionJsonObject;
+        JSONObject shipJsonObject;
 
-        int i = 0;
         for (Ship ship : ships) {
             Field startField = ship.getStartField();
             Orientation orientation = ship.getOrientation();
             int size = ship.getSize();
 
-            JSONObject position = new JSONObject()
+            positionJsonObject = new JSONObject()
                     .put("x", startField.getX())
                     .put("y", startField.getY());
 
-            JSONObject shipJson = new JSONObject()
-                    .put("position", position)
+            shipJsonObject = new JSONObject()
+                    .put("position", positionJsonObject)
                     .put("orientation", orientation.toString())
                     .put("size", size);
 
-            shipsJson.put(i++, shipJson);
+            shipsJsonArray.put(shipJsonObject);
         }
 
-        JSONObject data = new JSONObject().put("ships", shipsJson);
+        JSONObject data = new JSONObject().put("ships", shipsJsonArray);
 
         return jsonResponse
                 .put("type", "ShipsGeneratedEvent")
@@ -88,14 +94,34 @@ public class JsonHandler {
     private String getShipHitEventJson(JSONObject jsonResponse, JSONObject position) {
         return jsonResponse
                 .put("type", "ShipHitEvent")
-                .put("position", position)
+                .put("data", new JSONObject().put("position", position))
                 .toString();
     }
 
     private String getEmptyFieldHitEventJson(JSONObject jsonResponse, JSONObject position) {
         return jsonResponse
                 .put("type", "EmptyFieldHitEvent")
-                .put("position", position)
+                .put("data", new JSONObject().put("position", position))
+                .toString();
+    }
+
+    private String getShipDestroyedEventJson(JSONObject jsonResponse, JSONObject position, Collection<Field> adjacentToShip) {
+        JSONArray adjacentPositions = new JSONArray();
+        JSONObject adjacentPosition;
+
+        for (Field field : adjacentToShip) {
+            adjacentPosition = new JSONObject()
+                    .put("x", field.getX())
+                    .put("y", field.getY());
+
+            adjacentPositions.put(adjacentPosition);
+        }
+
+        return jsonResponse
+                .put("type", "ShipDestroyedEvent")
+                .put("data", new JSONObject()
+                        .put("position", position)
+                        .put("adjacent", adjacentPositions))
                 .toString();
     }
 }
