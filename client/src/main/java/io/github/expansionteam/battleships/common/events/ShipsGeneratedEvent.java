@@ -1,4 +1,4 @@
-package io.github.expansionteam.battleships.logic.events;
+package io.github.expansionteam.battleships.common.events;
 
 import java.util.ArrayList;
 import java.util.List;

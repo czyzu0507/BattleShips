@@ -4,8 +4,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import io.github.expansionteam.battleships.logic.client.SocketClient;
-import io.github.expansionteam.battleships.logic.client.SocketClientProvider;
+import io.github.expansionteam.battleships.logic.message.MessageSender;
+import io.github.expansionteam.battleships.logic.message.MessageSenderProvider;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,7 +14,7 @@ public class BattleshipsModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(SocketClient.class).toProvider(SocketClientProvider.class).in(Singleton.class);
+        bind(MessageSender.class).toProvider(MessageSenderProvider.class).in(Singleton.class);
     }
 
     @Provides

@@ -3,11 +3,13 @@ package io.github.expansionteam.battleships.gui.controllers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import io.github.expansionteam.battleships.common.annotations.EventConsumer;
+import io.github.expansionteam.battleships.common.annotations.EventProducer;
+import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
+import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
+import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
+import io.github.expansionteam.battleships.common.events.StartGameEvent;
 import io.github.expansionteam.battleships.gui.models.*;
-import io.github.expansionteam.battleships.logic.events.GenerateShipsEvent;
-import io.github.expansionteam.battleships.logic.events.OpponentArrivedEvent;
-import io.github.expansionteam.battleships.logic.events.ShipsGeneratedEvent;
-import io.github.expansionteam.battleships.logic.events.StartGameEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
@@ -17,6 +19,8 @@ import org.apache.log4j.Logger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@EventProducer
+@EventConsumer
 public class BattleshipsController implements Initializable {
 
     private final static Logger log = Logger.getLogger(BattleshipsController.class);
@@ -36,8 +40,8 @@ public class BattleshipsController implements Initializable {
     @FXML
     VBox playerBoardArea;
 
-    private OpponentBoard opponentBoard;
-    private PlayerBoard playerBoard;
+    OpponentBoard opponentBoard;
+    PlayerBoard playerBoard;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,6 +52,8 @@ public class BattleshipsController implements Initializable {
         playerBoardArea.getChildren().add(playerBoard);
 
         boardArea.setVisible(false);
+
+        log.debug("Post StartGameEvent.");
         eventBus.post(new StartGameEvent());
     }
 
@@ -56,12 +62,15 @@ public class BattleshipsController implements Initializable {
         log.debug("Handle OpponentArrivedEvent.");
 
         boardArea.setVisible(true);
+
+        log.debug("Post GenerateShipsEvent.");
         eventBus.post(new GenerateShipsEvent());
     }
 
     @Subscribe
     public void handleShipsGeneratedEvent(ShipsGeneratedEvent event) {
         log.debug("Handle ShipsGeneratedEvent.");
+
         event.ships.stream().forEach(s -> {
             Position position = Position.of(s.position.x, s.position.y);
 

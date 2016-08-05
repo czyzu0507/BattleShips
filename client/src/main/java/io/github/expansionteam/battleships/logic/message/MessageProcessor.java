@@ -1,32 +1,36 @@
-package io.github.expansionteam.battleships.logic;
+package io.github.expansionteam.battleships.logic.message;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
-import io.github.expansionteam.battleships.logic.events.OpponentArrivedEvent;
-import io.github.expansionteam.battleships.logic.events.ShipsGeneratedEvent;
+import io.github.expansionteam.battleships.common.annotations.EventProducer;
+import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
+import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class EventProcessor {
+@EventProducer
+public class MessageProcessor {
 
-    private final static Logger log = Logger.getLogger(EventProcessor.class);
+    private final static Logger log = Logger.getLogger(MessageProcessor.class);
 
     private final EventBus eventBus;
+    private final MessageSender messageSender;
 
     @Inject
-    public EventProcessor(EventBus eventBus) {
+    public MessageProcessor(EventBus eventBus, MessageSender messageSender) {
         this.eventBus = eventBus;
+        this.messageSender = messageSender;
     }
 
-    public void processJson(String json) {
-        log.debug(json);
+    public void processMessage(Message message) {
+        Message response = messageSender.sendMessageAndWaitForResponse(message);
 
-        JSONObject jsonObject = new JSONObject(json);
+        JSONObject jsonObject = new JSONObject(response.getBody());
         switch (jsonObject.getString("type")) {
             case "OpponentArrivedEvent":
-                OpponentArrivedEvent opponentArrivedEvent = new OpponentArrivedEvent();
-                eventBus.post(opponentArrivedEvent);
+                log.debug("Post OpponentArrivedEvent.");
+                eventBus.post(new OpponentArrivedEvent());
                 break;
             case "ShipsGeneratedEvent":
                 JSONArray ships = jsonObject.getJSONObject("data").getJSONArray("ships");
@@ -47,9 +51,12 @@ public class EventProcessor {
 
                     shipsGeneratedEvent.ships.add(new ShipsGeneratedEvent.Ship(position, size, orientation));
                 }
+
+                log.debug("Post ShipsGeneratedEvent.");
                 eventBus.post(shipsGeneratedEvent);
                 break;
             default:
+                log.debug("Unable to process the messages.");
                 throw new AssertionError();
         }
     }

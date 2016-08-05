@@ -3,7 +3,7 @@ package io.github.expansionteam.battleships;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import io.github.expansionteam.battleships.logic.EventHandler;
+import io.github.expansionteam.battleships.logic.event.EventHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
