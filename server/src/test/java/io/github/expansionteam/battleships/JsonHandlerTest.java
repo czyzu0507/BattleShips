@@ -23,14 +23,13 @@ public class JsonHandlerTest {
         // given
         Game gameMock = mock(Game.class);
         JsonHandler jsonHandler = new JsonHandler();
-        String requestJson = "{\"type\":\"StartGameEvent\"}";
-        String expectedResponseJson = "{\"type\":\"OpponentArrivedEvent\"}";
+        String requestJson = new JSONObject().put("type", "StartGameEvent").toString();
 
         // when
-        String actualResponse = jsonHandler.resolveAction(requestJson, gameMock);
+        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
         // then
-        assertEquals(actualResponse, expectedResponseJson);
+        assertEquals(actualResponse.get("type"), "OpponentArrivedEvent");
     }
 
     @Test
@@ -38,14 +37,13 @@ public class JsonHandlerTest {
         // given
         Game gameMock = mock(Game.class);
         JsonHandler jsonHandler = new JsonHandler();
-        String requestJson = "{\"type\":\"NoSuchEvent\"}";
-        String expectedResponseJson = "{\"type\":\"NotRecognizeEvent\"}";
+        String requestJson = new JSONObject().put("type", "NoSuchEvent").toString();
 
         // when
-        String actualResponse = jsonHandler.resolveAction(requestJson, gameMock);
+        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
         // then
-        assertEquals(actualResponse, expectedResponseJson);
+        assertEquals(actualResponse.get("type"), "NotRecognizeEvent");
     }
 
     @Test(expectedExceptions = JSONException.class)

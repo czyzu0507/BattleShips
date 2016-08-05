@@ -52,12 +52,14 @@ class JsonHandler {
     private String getNotRecognizedEventJson(JSONObject jsonResponse) {
         return jsonResponse
                 .put("type", "NotRecognizeEvent")
+                .put("data", new JSONObject())
                 .toString();
     }
 
     private String getOpponentArrivedEventJson(JSONObject jsonResponse) {
         return jsonResponse
                 .put("type", "OpponentArrivedEvent")
+                .put("data", new JSONObject())
                 .toString();
     }
 
