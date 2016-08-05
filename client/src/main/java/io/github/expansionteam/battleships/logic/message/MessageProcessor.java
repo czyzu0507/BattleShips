@@ -3,8 +3,11 @@ package io.github.expansionteam.battleships.logic.message;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import io.github.expansionteam.battleships.common.annotations.EventProducer;
+import io.github.expansionteam.battleships.common.events.EmptyFieldHitEvent;
 import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
+import io.github.expansionteam.battleships.common.events.ShipHitEvent;
 import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
+import io.github.expansionteam.battleships.common.events.data.PositionData;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,11 +31,12 @@ public class MessageProcessor {
 
         JSONObject jsonObject = new JSONObject(response.getBody());
         switch (jsonObject.getString("type")) {
-            case "OpponentArrivedEvent":
+            case "OpponentArrivedEvent": {
                 log.debug("Post OpponentArrivedEvent.");
                 eventBus.post(new OpponentArrivedEvent());
                 break;
-            case "ShipsGeneratedEvent":
+            }
+            case "ShipsGeneratedEvent": {
                 JSONArray ships = jsonObject.getJSONObject("data").getJSONArray("ships");
 
                 ShipsGeneratedEvent shipsGeneratedEvent = new ShipsGeneratedEvent();
@@ -55,9 +59,29 @@ public class MessageProcessor {
                 log.debug("Post ShipsGeneratedEvent.");
                 eventBus.post(shipsGeneratedEvent);
                 break;
-            default:
+            }
+            case "EmptyFieldHitEvent": { // tests!
+                JSONObject data = jsonObject.getJSONObject("data");
+                int x = data.getJSONObject("position").getInt("x");
+                int y = data.getJSONObject("position").getInt("y");
+
+                log.debug("Post EmptyFieldHitEvent");
+                eventBus.post(new EmptyFieldHitEvent(PositionData.of(x, y)));
+                break;
+            }
+            case "ShipHitEvent": { // tests!
+                JSONObject data = jsonObject.getJSONObject("data");
+                int x = data.getJSONObject("position").getInt("x");
+                int y = data.getJSONObject("position").getInt("y");
+
+                log.debug("Post ShipHitEvent");
+                eventBus.post(new ShipHitEvent(PositionData.of(x, y)));
+                break;
+            }
+            default: {
                 log.debug("Unable to process the messages.");
                 throw new AssertionError();
+            }
         }
     }
 
