@@ -31,7 +31,6 @@ public abstract class Board extends Parent {
             board.getChildren().add(row);
         }
 
-//        getChildren().removeAll();
         getChildren().add(board);
     }
 
