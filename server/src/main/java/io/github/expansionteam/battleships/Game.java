@@ -26,31 +26,35 @@ public class Game {
         return board.getFieldFromTheBoard(x, y).isHit();
     }
 
+    private Board currentBoard() {
+        return firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+    }
+
     public Collection<Ship> getPlayerShips() {
-        Board board = firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+        Board board = currentBoard();
         return board.getShips();
     }
 
     public void generateRandomShips() {
-        Board board = firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+        Board board = currentBoard();
         synchronized (randomShipGenerator) {
             randomShipGenerator.generateRandomShips(board);
         }
     }
 
     public boolean shoot(int x, int y) {
-        Board board = firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+        Board board = currentBoard();
         board.shootField(x, y);
         return isFieldHit(board, x, y);
     }
 
     public boolean isDestroyedShip(int x, int y) {
-        Board board = firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+        Board board = currentBoard();
         return board.isDestroyedShip(x, y);
     }
 
     public Collection<Field> getAdjacentToShip(int x, int y) {
-        Board board = firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+        Board board = currentBoard();
         return board.getAdjacentToShip(x, y);
     }
 }
