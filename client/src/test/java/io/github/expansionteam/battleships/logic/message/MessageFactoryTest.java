@@ -1,6 +1,7 @@
 package io.github.expansionteam.battleships.logic.message;
 
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
+import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
@@ -33,6 +34,22 @@ public class MessageFactoryTest {
         // Then
         JSONObject jsonObject = new JSONObject(message.getBody());
         assertThat(jsonObject.getString("type")).isEqualTo("GenerateShipsEvent");
+    }
+
+    @Test
+    public void createMessageFromShootPositionEvent() {
+        // Given
+        MessageFactory messageFactory = new MessageFactory();
+
+        // When
+        ShootPositionEvent shootPositionEvent = new ShootPositionEvent(new ShootPositionEvent.Position(1, 3));
+        Message message = messageFactory.createFromEvent(shootPositionEvent);
+
+        // Then
+        JSONObject jsonObject = new JSONObject(message.getBody());
+        assertThat(jsonObject.getString("type")).isEqualTo("ShootPositionEvent");
+        assertThat(jsonObject.getJSONObject("data").getJSONObject("position").getInt("x")).isEqualTo(1);
+        assertThat(jsonObject.getJSONObject("data").getJSONObject("position").getInt("y")).isEqualTo(3);
     }
 
     @Test
