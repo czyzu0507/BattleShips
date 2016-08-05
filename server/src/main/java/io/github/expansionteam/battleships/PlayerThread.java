@@ -9,7 +9,7 @@ import java.nio.channels.SocketChannel;
 
 class PlayerThread extends Thread {
     private final SocketChannel socketChannel;
-    private final static Logger log = Logger.getLogger(JsonHandler.class);
+    private final static Logger log = Logger.getLogger(PlayerThread.class);
     private final JsonHandler jsonHandler = new JsonHandler();
 
     // TODO: consider moving it to local vars (depends on handling players disconnetion)
@@ -48,19 +48,6 @@ class PlayerThread extends Thread {
 
             }
         }
-//        catch (EOFException e) {
-//            try {
-        // TODO: closing connection when one player is disconnected
-                /*
-                coupledThread.socketChannel.shutdownInput();
-                coupledThread.dataOutputStream.writeUTF("AAAAAAAAAAAAAAAA");
-                coupledThread.closeSocket();
-                */
-
-//            } catch (IOException ioExc) {
-//                ioExc.printStackTrace();
-//            }
-//        }
         catch (IOException e) {
             log.error("FAILED", e);
         } finally {

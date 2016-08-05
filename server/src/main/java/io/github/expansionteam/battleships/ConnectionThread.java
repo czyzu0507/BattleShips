@@ -11,7 +11,7 @@ class ConnectionThread implements Runnable {
     private final int gameIndex;
     private final Game game = new Game();
 
-    private final static Logger log = getLogger(Server.class);
+    private final static Logger log = getLogger(ConnectionThread.class);
 
     ConnectionThread(SocketChannel sc1, SocketChannel sc2, int gameIndex) {
         this.sc1 = sc1;
