@@ -1,17 +1,17 @@
 package io.github.expansionteam.battleships.common.events.data;
 
-public class Position {
+public class PositionData {
 
     private final int x;
     private final int y;
 
-    private Position(int x, int y) {
+    private PositionData(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public static Position of(int x, int y) {
-        return new Position(x, y);
+    public static PositionData of(int x, int y) {
+        return new PositionData(x, y);
     }
 
     public int getX() {
