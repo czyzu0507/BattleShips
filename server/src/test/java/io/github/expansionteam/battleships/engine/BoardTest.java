@@ -4,10 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import static io.github.expansionteam.battleships.engine.Orientation.HORIZONTAL;
 import static io.github.expansionteam.battleships.engine.Orientation.VERTICAL;
@@ -189,5 +186,98 @@ public class BoardTest {
         for (Field adjacentField : adjacentFields) {
             assertEquals(adjacentField.isHit(), true);
         }
+    }
+
+    @Test
+    public void isDestroyed() {
+        // given
+        Board board = new Board.BoardBuilder().build();
+        board.appendShip(new Field(3, 5), HORIZONTAL, 1);
+        board.shootField(3, 5);
+
+        // when
+        boolean destroyed = board.isDestroyedShip(3, 5);
+
+        // then
+        assertEquals(destroyed, true);
+    }
+
+    @Test
+    public void isNotDestroyed() {
+        // given
+        Board board = new Board.BoardBuilder().build();
+        board.appendShip(new Field(3, 5), HORIZONTAL, 3);
+        board.shootField(3, 5);
+
+        // when
+        boolean destroyed = board.isDestroyedShip(3, 5);
+
+        // then
+        assertEquals(destroyed, false);
+    }
+
+    @Test
+    public void isNotAShip() {
+        // given
+        Board board = new Board.BoardBuilder().build();
+
+        // when
+        boolean destroyed = board.isDestroyedShip(3, 5);
+
+        // then
+        assertEquals(destroyed, false);
+    }
+
+    @Test
+    public void getsEmptyToNotAShip() {
+        // given
+        Board board = new Board.BoardBuilder().build();
+
+        // when
+        Collection<Field> actualAdjacentFields = board.getAdjacentToShip(2, 5);
+
+        // then
+        assertEquals(actualAdjacentFields.size(), 0);
+    }
+
+    @Test
+    public void getsAdjacentToShipInCenter() {
+        // given
+        Board board = new Board.BoardBuilder().build();
+        board.appendShip(new Field(2, 5), HORIZONTAL, 1);
+
+        Collection<Field> expectedAdjacent = new HashSet<>();
+        expectedAdjacent.add(new Field(1, 4));
+        expectedAdjacent.add(new Field(2, 4));
+        expectedAdjacent.add(new Field(3, 4));
+        expectedAdjacent.add(new Field(1, 5));
+        expectedAdjacent.add(new Field(3, 5));
+        expectedAdjacent.add(new Field(1, 6));
+        expectedAdjacent.add(new Field(2, 6));
+        expectedAdjacent.add(new Field(3, 6));
+
+        // when
+        Collection<Field> actualAdjacentFields = board.getAdjacentToShip(2, 5);
+
+        // then
+        assertEquals(actualAdjacentFields, expectedAdjacent);
+    }
+
+    @Test
+    public void getsAdjacentToShipInCorner() {
+        // given
+        Board board = new Board.BoardBuilder().build();
+        board.appendShip(new Field(0, 0), HORIZONTAL, 1);
+
+        Collection<Field> expectedAdjacent = new HashSet<>();
+        expectedAdjacent.add(new Field(0, 1));
+        expectedAdjacent.add(new Field(1, 0));
+        expectedAdjacent.add(new Field(1, 1));
+
+        // when
+        Collection<Field> actualAdjacentFields = board.getAdjacentToShip(0, 0);
+
+        // then
+        assertEquals(actualAdjacentFields, expectedAdjacent);
     }
 }

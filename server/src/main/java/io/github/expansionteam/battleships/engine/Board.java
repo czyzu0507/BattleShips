@@ -19,6 +19,7 @@ public class Board implements Iterable<Field> {
     public static class BoardBuilder {
 
         private final Set<Field> board = initializeSet();
+
         private final Map<Integer, Integer> availableShips = initializeMap();
 
         private static Set<Field> initializeSet() {
@@ -72,7 +73,6 @@ public class Board implements Iterable<Field> {
     }
 
     public boolean shootField(int x, int y) {
-        Field field = new Field(x, y);
         Field boardField = getFieldFromTheBoard(x, y);
         if (boardField.isHit()) {
             throw new IllegalStateException("Field already shot");
@@ -84,6 +84,24 @@ public class Board implements Iterable<Field> {
         }
         markAdjacentFieldsAsHit(ship);
         return true;
+    }
+
+    public boolean isDestroyedShip(int x, int y) {
+        Field field = getFieldFromTheBoard(x, y);
+        Ship parentShip = field.getParentShip();
+        if (parentShip == null) {
+            return false;
+        }
+        return parentShip.isDestroyed();
+    }
+
+    public Collection<Field> getAdjacentToShip(int x, int y) {
+        Field field = getFieldFromTheBoard(x, y);
+        Ship parentShip = field.getParentShip();
+        if (parentShip == null) {
+            return Collections.emptySet();
+        }
+        return Ship.generateSetOfAdjacentFields(this, parentShip.occupiedFields);
     }
 
     // when the ship is destroyed

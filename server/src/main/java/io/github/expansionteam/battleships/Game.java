@@ -55,12 +55,16 @@ public class Game {
     }
 
     public boolean isDestroyedShip(int x, int y) {
-        // TODO: implement
-        return false;
+        if (firstPlayer()) {
+            return firstPlayerBoard.isDestroyedShip(x, y);
+        }
+        return secondPlayerBoard.isDestroyedShip(x, y);
     }
 
     public Collection<Field> getAdjacentToShip(int x, int y) {
-        // TODO: implement
-        return null;
+        if (firstPlayer()) {
+            return firstPlayerBoard.getAdjacentToShip(x, y);
+        }
+        return secondPlayerBoard.getAdjacentToShip(x, y);
     }
 }
