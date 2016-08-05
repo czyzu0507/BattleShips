@@ -8,12 +8,12 @@ import org.json.JSONObject;
 
 import java.util.Collection;
 
-public class JsonHandler {
+class JsonHandler {
 
     String resolveAction(String json, Game game) {
-        JSONObject jsonRequest = new JSONObject(json);
-        String type = jsonRequest.getString("type");
-        JSONObject jsonResponse = new JSONObject();
+        final JSONObject jsonRequest = new JSONObject(json);
+        final String type = jsonRequest.getString("type");
+        final JSONObject jsonResponse = new JSONObject();
 
         switch (type) {
             case "StartGameEvent": {

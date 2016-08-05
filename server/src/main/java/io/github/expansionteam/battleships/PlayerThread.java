@@ -10,16 +10,14 @@ import java.nio.channels.SocketChannel;
 class PlayerThread extends Thread {
     private final SocketChannel socketChannel;
     private final static Logger log = Logger.getLogger(JsonHandler.class);
+    private final JsonHandler jsonHandler = new JsonHandler();
+
+    // TODO: consider moving it to local vars (depends on handling players disconnetion)
     private PlayerThread coupledThread = null;
-    private JsonHandler jsonHandler = new JsonHandler();
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
 
-    private Game game;
-
-    private void closeSocket() throws IOException {
-        socketChannel.close();
-    }
+    private final Game game;
 
     PlayerThread(SocketChannel socketChannel, Game game) {
         this.socketChannel = socketChannel;
@@ -64,12 +62,12 @@ class PlayerThread extends Thread {
 //            }
 //        }
         catch (IOException e) {
-            e.printStackTrace();
+            log.error("FAILED", e);
         } finally {
             try {
                 socketChannel.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("FAILED", e);
             }
         }
     }
