@@ -28,7 +28,6 @@ public class JsonHandlerTest {
 
         // when
         String actualResponse = jsonHandler.resolveAction(requestJson, gameMock);
-        JSONObject jsonObject = new JSONObject(actualResponse);
 
         // then
         assertEquals(actualResponse, expectedResponseJson);
@@ -132,17 +131,20 @@ public class JsonHandlerTest {
 
         Game gameMock = mock(Game.class);
         when(gameMock.shoot(3, 5)).thenReturn(true);
+
+        JSONObject position = new JSONObject()
+                .put("position", new JSONObject().put("x", 3).put("y", 5));
         String requestJson = new JSONObject()
                 .put("type", "ShootPositionEvent")
-                .put("position", new JSONObject().put("x", 3).put("y", 5))
+                .put("data", position)
                 .toString();
 
         // when
         JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
-        JSONObject position = actualResponse.getJSONObject("position");
-        int x = position.getInt("x");
-        int y = position.getInt("y");
+        JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
+        int x = shootPosition.getInt("x");
+        int y = shootPosition.getInt("y");
 
         // then
         assertEquals(actualResponse.getString("type"), "ShipHitEvent");
@@ -159,17 +161,19 @@ public class JsonHandlerTest {
         Game gameMock = mock(Game.class);
         when(gameMock.shoot(3, 5)).thenReturn(false);
 
+        JSONObject position = new JSONObject()
+                .put("position", new JSONObject().put("x", 3).put("y", 5));
         String requestJson = new JSONObject()
                 .put("type", "ShootPositionEvent")
-                .put("position", new JSONObject().put("x", 3).put("y", 5))
+                .put("data", position)
                 .toString();
 
         // when
         JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
-        JSONObject position = actualResponse.getJSONObject("position");
-        int x = position.getInt("x");
-        int y = position.getInt("y");
+        JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
+        int x = shootPosition.getInt("x");
+        int y = shootPosition.getInt("y");
 
         // then
         assertEquals(actualResponse.getString("type"), "EmptyFieldHitEvent");
@@ -198,9 +202,13 @@ public class JsonHandlerTest {
 
         when(gameMock.getAdjacentToShip(2, 5)).thenReturn(fieldMocks);
 
+
+        JSONObject position = new JSONObject()
+                .put("position", new JSONObject().put("x", 2).put("y", 5));
+
         String requestJson = new JSONObject()
                 .put("type", "ShootPositionEvent")
-                .put("position", new JSONObject().put("x", 2).put("y", 5))
+                .put("data", position)
                 .toString();
 
         ArrayList<Integer> expectedAdjacentCoordinates = new ArrayList<>();
@@ -224,11 +232,11 @@ public class JsonHandlerTest {
         // when
         JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
-        JSONObject shootPosition = actualResponse.getJSONObject("position");
+        JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
         int x = shootPosition.getInt("x");
         int y = shootPosition.getInt("y");
 
-        JSONArray adjacent = actualResponse.getJSONArray("adjacent");
+        JSONArray adjacent = actualResponse.getJSONObject("data").getJSONArray("adjacent");
         Collection<Integer> actualAdjacentCoordinates = new ArrayList<>();
         for (int i = 0; i < adjacent.length(); i++) {
             JSONObject adjacentPosition = adjacent.getJSONObject(i);

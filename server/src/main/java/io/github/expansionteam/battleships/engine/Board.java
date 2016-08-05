@@ -19,7 +19,6 @@ public class Board implements Iterable<Field> {
     public static class BoardBuilder {
 
         private final Set<Field> board = initializeSet();
-
         private final Map<Integer, Integer> availableShips = initializeMap();
 
         private static Set<Field> initializeSet() {

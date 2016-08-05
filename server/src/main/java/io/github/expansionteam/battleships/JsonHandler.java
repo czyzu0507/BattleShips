@@ -29,7 +29,7 @@ public class JsonHandler {
 
             case "ShootPositionEvent": {
 
-                JSONObject position = jsonRequest.getJSONObject("position");
+                JSONObject position = jsonRequest.getJSONObject("data").getJSONObject("position");
 
                 int x = position.getInt("x");
                 int y = position.getInt("y");
@@ -62,28 +62,28 @@ public class JsonHandler {
     }
 
     private String getShipsGeneratedEventJson(JSONObject jsonResponse, Collection<Ship> ships) {
-        JSONArray shipsJson = new JSONArray();
-        JSONObject position;
-        JSONObject shipJson;
+        JSONArray shipsJsonArray = new JSONArray();
+        JSONObject positionJsonObject;
+        JSONObject shipJsonObject;
 
         for (Ship ship : ships) {
             Field startField = ship.getStartField();
             Orientation orientation = ship.getOrientation();
             int size = ship.getSize();
 
-            position = new JSONObject()
+            positionJsonObject = new JSONObject()
                     .put("x", startField.getX())
                     .put("y", startField.getY());
 
-            shipJson = new JSONObject()
-                    .put("position", position)
+            shipJsonObject = new JSONObject()
+                    .put("position", positionJsonObject)
                     .put("orientation", orientation.toString())
                     .put("size", size);
 
-            shipsJson.put(shipJson);
+            shipsJsonArray.put(shipJsonObject);
         }
 
-        JSONObject data = new JSONObject().put("ships", shipsJson);
+        JSONObject data = new JSONObject().put("ships", shipsJsonArray);
 
         return jsonResponse
                 .put("type", "ShipsGeneratedEvent")
@@ -94,14 +94,14 @@ public class JsonHandler {
     private String getShipHitEventJson(JSONObject jsonResponse, JSONObject position) {
         return jsonResponse
                 .put("type", "ShipHitEvent")
-                .put("position", position)
+                .put("data", new JSONObject().put("position", position))
                 .toString();
     }
 
     private String getEmptyFieldHitEventJson(JSONObject jsonResponse, JSONObject position) {
         return jsonResponse
                 .put("type", "EmptyFieldHitEvent")
-                .put("position", position)
+                .put("data", new JSONObject().put("position", position))
                 .toString();
     }
 
@@ -119,8 +119,9 @@ public class JsonHandler {
 
         return jsonResponse
                 .put("type", "ShipDestroyedEvent")
-                .put("position", position)
-                .put("adjacent", adjacentPositions)
+                .put("data", new JSONObject()
+                        .put("position", position)
+                        .put("adjacent", adjacentPositions))
                 .toString();
     }
 }
