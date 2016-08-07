@@ -26,45 +26,35 @@ public class Game {
         return board.getFieldFromTheBoard(x, y).isHit();
     }
 
+    private Board currentBoard() {
+        return firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+    }
+
     public Collection<Ship> getPlayerShips() {
-        if (firstPlayer()) {
-            return firstPlayerBoard.getShips();
-        }
-        return secondPlayerBoard.getShips();
+        Board board = currentBoard();
+        return board.getShips();
     }
 
     public void generateRandomShips() {
-        if (firstPlayer()) {
-            synchronized (randomShipGenerator) {
-                randomShipGenerator.generateRandomShips(firstPlayerBoard);
-            }
-        } else {
-            synchronized (randomShipGenerator) {
-                randomShipGenerator.generateRandomShips(secondPlayerBoard);
-            }
+        Board board = currentBoard();
+        synchronized (randomShipGenerator) {
+            randomShipGenerator.generateRandomShips(board);
         }
     }
 
     public boolean shoot(int x, int y) {
-        if (firstPlayer()) {
-            firstPlayerBoard.shootField(x, y);
-            return isFieldHit(firstPlayerBoard, x, y);
-        }
-        secondPlayerBoard.shootField(x, y);
-        return isFieldHit(secondPlayerBoard, x, y);
+        Board board = currentBoard();
+        board.shootField(x, y);
+        return isFieldHit(board, x, y);
     }
 
     public boolean isDestroyedShip(int x, int y) {
-        if (firstPlayer()) {
-            return firstPlayerBoard.isDestroyedShip(x, y);
-        }
-        return secondPlayerBoard.isDestroyedShip(x, y);
+        Board board = currentBoard();
+        return board.isDestroyedShip(x, y);
     }
 
     public Collection<Field> getAdjacentToShip(int x, int y) {
-        if (firstPlayer()) {
-            return firstPlayerBoard.getAdjacentToShip(x, y);
-        }
-        return secondPlayerBoard.getAdjacentToShip(x, y);
+        Board board = currentBoard();
+        return board.getAdjacentToShip(x, y);
     }
 }

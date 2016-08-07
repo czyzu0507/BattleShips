@@ -3,13 +3,15 @@ package io.github.expansionteam.battleships;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
-// TODO: change ending game - send a message from the server, when one disconnected
-// thread to manage the game of two players
-class ConnectionThread implements Runnable {
+import static org.apache.log4j.Logger.*;
+import org.apache.log4j.Logger;
 
+class ConnectionThread implements Runnable {
     private final SocketChannel sc1, sc2;
     private final int gameIndex;
     private final Game game = new Game();
+
+    private final static Logger log = getLogger(ConnectionThread.class);
 
     ConnectionThread(SocketChannel sc1, SocketChannel sc2, int gameIndex) {
         this.sc1 = sc1;
@@ -19,7 +21,6 @@ class ConnectionThread implements Runnable {
 
     @Override
     public void run() {
-
         PlayerThread p1 = new PlayerThread(sc1, game);
         PlayerThread p2 = new PlayerThread(sc2, game);
 
@@ -29,7 +30,6 @@ class ConnectionThread implements Runnable {
         p1.start();
         p2.start();
 
-        // important?
         p1.setThreadToInform(p2);
         p2.setThreadToInform(p1);
 
@@ -37,17 +37,16 @@ class ConnectionThread implements Runnable {
             p1.join();
             p2.join();
         } catch (InterruptedException e) {
-            // TODO: log + handle exception
-            e.printStackTrace();
+            log.error("FAILED", e);
         }
 
         try {
             sc1.close();
             sc2.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("FAILED", e);
         }
 
-        System.out.println("AFTER CLOSE - socket closed... Terminating thread...");
+        log.info("AFTER CLOSE - socket closed... Terminating thread...");
     }
 }
