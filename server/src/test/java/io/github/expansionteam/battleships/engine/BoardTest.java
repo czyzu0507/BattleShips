@@ -189,7 +189,7 @@ public class BoardTest {
     }
 
     @Test
-    public void isDestroyed() {
+    public void willDestroyGivenShip() {
         // given
         Board board = new Board.BoardBuilder().build();
         board.appendShip(new Field(3, 5), HORIZONTAL, 1);
@@ -203,7 +203,7 @@ public class BoardTest {
     }
 
     @Test
-    public void isNotDestroyed() {
+    public void willNotDestroyGivenShip() {
         // given
         Board board = new Board.BoardBuilder().build();
         board.appendShip(new Field(3, 5), HORIZONTAL, 3);

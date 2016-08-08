@@ -18,18 +18,6 @@ public class Game {
     private final Board secondPlayerBoard = new BoardBuilder().build();
     private final RandomShipGenerator randomShipGenerator = new RandomShipGenerator();
 
-    private boolean firstPlayer() {
-        return Thread.currentThread().getName().contains("Player_1");
-    }
-
-    private boolean isFieldHit(Board board, int x, int y) {
-        return board.getFieldFromTheBoard(x, y).isHit();
-    }
-
-    private Board currentBoard() {
-        return firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
-    }
-
     public Collection<Ship> getPlayerShips() {
         Board board = currentBoard();
         return board.getShips();
@@ -42,19 +30,35 @@ public class Game {
         }
     }
 
-    public boolean shoot(int x, int y) {
-        Board board = currentBoard();
-        board.shootField(x, y);
-        return isFieldHit(board, x, y);
+    public boolean shootOpponentField(int x, int y) {
+        return opponentBoard().shootField(x, y);
     }
 
-    public boolean isDestroyedShip(int x, int y) {
-        Board board = currentBoard();
-        return board.isDestroyedShip(x, y);
+    public boolean isOpponentShipDestroyed(int x, int y) {
+        return opponentBoard().isDestroyedShip(x, y);
     }
 
-    public Collection<Field> getAdjacentToShip(int x, int y) {
-        Board board = currentBoard();
-        return board.getAdjacentToShip(x, y);
+    public boolean isOpponentShipHit(int x, int y) {
+        return isShipField(opponentBoard(), x, y);
+    }
+
+    public Collection<Field> getAdjacentToOpponentShip(int x, int y) {
+        return opponentBoard().getAdjacentToShip(x, y);
+    }
+
+    private Board currentBoard() {
+        return firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+    }
+
+    private Board opponentBoard() {
+        return firstPlayer() ? secondPlayerBoard : firstPlayerBoard;
+    }
+
+    private boolean firstPlayer() {
+        return Thread.currentThread().getName().contains("Player_1");
+    }
+
+    private boolean isShipField(Board board, int x, int y) {
+        return board.getFieldFromTheBoard(x, y).isShip();
     }
 }

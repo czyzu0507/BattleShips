@@ -74,7 +74,7 @@ public class Board implements Iterable<Field> {
     public boolean shootField(int x, int y) {
         Field boardField = getFieldFromTheBoard(x, y);
         if (boardField.isHit()) {
-            throw new IllegalStateException("Field already shot");
+            return false;
         }
         boardField.markAsHit();
         Ship ship = boardField.getParentShip();
@@ -88,19 +88,13 @@ public class Board implements Iterable<Field> {
     public boolean isDestroyedShip(int x, int y) {
         Field field = getFieldFromTheBoard(x, y);
         Ship parentShip = field.getParentShip();
-        if (parentShip == null) {
-            return false;
-        }
-        return parentShip.isDestroyed();
+        return parentShip == null ? false : parentShip.isDestroyed();
     }
 
     public Collection<Field> getAdjacentToShip(int x, int y) {
         Field field = getFieldFromTheBoard(x, y);
         Ship parentShip = field.getParentShip();
-        if (parentShip == null) {
-            return Collections.emptySet();
-        }
-        return Ship.generateSetOfAdjacentFields(this, parentShip.occupiedFields);
+        return parentShip == null ? Collections.emptySet() : Ship.generateSetOfAdjacentFields(this, parentShip.occupiedFields);
     }
 
     // when the ship is destroyed
@@ -195,20 +189,5 @@ public class Board implements Iterable<Field> {
                 return Orientation.HORIZONTAL;
             }
         }
-    }
-
-    // PRINT HELPER - TO SEE WHAT HAPPENS ON THE BOARD :)
-    // TODO: remove this later
-    public static void printTmp(Board board) {
-        Iterator<Field> iter = board.iterator();
-        int n = 0;
-        while (iter.hasNext()) {
-            System.out.print(iter.next() + "  ");
-            ++n;
-            if (n % 10 == 0)
-                System.out.println();
-        }
-        System.out.println();
-        System.out.println();
     }
 }

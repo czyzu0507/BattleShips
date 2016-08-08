@@ -30,8 +30,12 @@ public final class Field implements Comparable<Field> {
         state = HIT;
     }
 
-    public boolean isHit() {
+    boolean isHit() {
         return state == HIT;
+    }
+
+    public boolean isShip() {
+        return shipParent != null;
     }
 
     public int getX() {
