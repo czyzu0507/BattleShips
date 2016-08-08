@@ -15,13 +15,12 @@ public class OpponentBoard extends Board {
     }
 
     public void fieldWasShotAndHit(Position position) {
-        fieldsByPosition.put(position, Field.FieldBuilder.opponentField(position).occupied().shot().build());
-        updateBoard();
+        fieldsByPosition.get(position).occupy();
+        fieldsByPosition.get(position).shoot();
     }
 
     public void fieldWasShotAndMissed(Position position) {
-        fieldsByPosition.put(position, Field.FieldBuilder.opponentField(position).shot().build());
-        updateBoard();
+        fieldsByPosition.get(position).shoot();
     }
 
 }

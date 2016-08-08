@@ -7,6 +7,8 @@ import io.github.expansionteam.battleships.common.events.data.ShipData;
 import io.github.expansionteam.battleships.common.events.data.ShipOrientationData;
 import io.github.expansionteam.battleships.common.events.data.ShipSizeData;
 import io.github.expansionteam.battleships.gui.models.*;
+import io.github.expansionteam.battleships.gui.models.Ship;
+import io.github.expansionteam.battleships.gui.models.ShipSize;
 import javafx.scene.layout.BorderPane;
 import org.mockito.ArgumentCaptor;
 import org.testng.annotations.Test;

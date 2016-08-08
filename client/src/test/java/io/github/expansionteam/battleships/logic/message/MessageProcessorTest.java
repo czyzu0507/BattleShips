@@ -8,7 +8,6 @@ import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
 import io.github.expansionteam.battleships.common.events.data.PositionData;
 import io.github.expansionteam.battleships.common.events.data.ShipData;
 import io.github.expansionteam.battleships.common.events.data.ShipOrientationData;
-import io.github.expansionteam.battleships.gui.models.ShipOrientation;
 import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.EmptyFieldHitEventResponseMessageProcessor;
 import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.OpponentArrivedResponseMessageProcessor;
 import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.ShipHitEventResponseMessageProcessor;

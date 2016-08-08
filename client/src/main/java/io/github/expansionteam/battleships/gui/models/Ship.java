@@ -2,22 +2,20 @@ package io.github.expansionteam.battleships.gui.models;
 
 import com.google.common.base.MoreObjects;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Ship {
 
     private final Position position;
     private final ShipSize size;
     private final ShipOrientation orientation;
-    private final Map<Position, Field> fieldsByPosition;
+    private final Set<Position> positions;
 
-    Ship(Position position, ShipSize size, ShipOrientation orientation, Map<Position, Field> fieldsByPosition) {
+    Ship(Position position, ShipSize size, ShipOrientation orientation, Set<Position> positions) {
         this.position = position;
         this.size = size;
         this.orientation = orientation;
-        this.fieldsByPosition = fieldsByPosition;
+        this.positions = positions;
     }
 
     public static Ship createHorizontal(Position position, ShipSize shipSize) {
@@ -29,12 +27,12 @@ public class Ship {
     }
 
     private static Ship create(Position position, ShipSize size, ShipOrientation orientation) {
-        Map<Position, Field> fieldsByPosition = new HashMap<>();
+        Set<Position> positions = new HashSet<>();
 
         Position oldPosition = position;
 
         for (int i = 0; i < size.getValue(); i++) {
-            fieldsByPosition.put(position, Field.FieldBuilder.playerField(position).occupied().build());
+            positions.add(position);
 
             if (i == size.getValue() - 1) {
                 break;
@@ -46,7 +44,7 @@ public class Ship {
             }
         }
 
-        return new Ship(oldPosition, size, orientation, fieldsByPosition);
+        return new Ship(oldPosition, size, orientation, positions);
     }
 
     public Position getPosition() {
@@ -61,8 +59,8 @@ public class Ship {
         return orientation;
     }
 
-    public Map<Position, Field> getFieldsByPosition() {
-        return fieldsByPosition;
+    public Set<Position> getPositions() {
+        return positions;
     }
 
     @Override
@@ -72,12 +70,12 @@ public class Ship {
         }
 
         Ship other = (Ship) o;
-        return Objects.equals(this.fieldsByPosition, other.fieldsByPosition);
+        return Objects.equals(this.positions, other.positions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fieldsByPosition);
+        return Objects.hash(positions);
     }
 
     @Override

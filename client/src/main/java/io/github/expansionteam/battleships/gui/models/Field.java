@@ -10,16 +10,13 @@ public abstract class Field extends Rectangle {
     private static final int FIELD_SIZE = 30;
 
     private final Position position;
-    private boolean isOccupied;
-    private boolean wasShot;
+    private boolean isOccupied = false;
+    private boolean wasShot = false;
 
-    Field(Position position, boolean isOccupied, boolean wasShot) {
+    Field(Position position) {
         super(FIELD_SIZE, FIELD_SIZE);
 
         this.position = position;
-        this.isOccupied = isOccupied;
-        this.wasShot = wasShot;
-
         updateCss();
     }
 
@@ -37,6 +34,11 @@ public abstract class Field extends Rectangle {
 
     public void shoot() {
         wasShot = true;
+        updateCss();
+    }
+
+    public void occupy() {
+        isOccupied = true;
         updateCss();
     }
 
@@ -75,52 +77,52 @@ public abstract class Field extends Rectangle {
         return Objects.hash(position);
     }
 
-    public static class FieldBuilder {
-
-        private enum FieldType {
-            OPPONENT, PLAYER;
-        }
-
-        private final FieldType fieldType;
-        private final Position position;
-
-        private boolean occupied = false;
-        private boolean shot = false;
-
-        FieldBuilder(FieldType fieldType, Position position) {
-            this.fieldType = fieldType;
-            this.position = position;
-        }
-
-        public static FieldBuilder opponentField(Position position) {
-            return new FieldBuilder(FieldType.OPPONENT, position);
-        }
-
-        public static FieldBuilder playerField(Position position) {
-            return new FieldBuilder(FieldType.PLAYER, position);
-        }
-
-        public FieldBuilder occupied() {
-            this.occupied = true;
-            return this;
-        }
-
-        public FieldBuilder shot() {
-            this.shot = true;
-            return this;
-        }
-
-        public Field build() {
-            switch (fieldType) {
-                case OPPONENT:
-                    return new OpponentField(position, occupied, shot);
-                case PLAYER:
-                    return new PlayerField(position, occupied, shot);
-                default:
-                    throw new AssertionError();
-            }
-        }
-
-    }
+//    public static class FieldBuilder {
+//
+//        private enum FieldType {
+//            OPPONENT, PLAYER;
+//        }
+//
+//        private final FieldType fieldType;
+//        private final Position position;
+//
+//        private boolean occupied = false;
+//        private boolean shot = false;
+//
+//        FieldBuilder(FieldType fieldType, Position position) {
+//            this.fieldType = fieldType;
+//            this.position = position;
+//        }
+//
+//        public static FieldBuilder opponentField(Position position) {
+//            return new FieldBuilder(FieldType.OPPONENT, position);
+//        }
+//
+//        public static FieldBuilder playerField(Position position) {
+//            return new FieldBuilder(FieldType.PLAYER, position);
+//        }
+//
+//        public FieldBuilder occupied() {
+//            this.occupied = true;
+//            return this;
+//        }
+//
+//        public FieldBuilder shot() {
+//            this.shot = true;
+//            return this;
+//        }
+//
+//        public Field build() {
+//            switch (fieldType) {
+//                case OPPONENT:
+//                    return new OpponentField(position, occupied, shot);
+//                case PLAYER:
+//                    return new PlayerField(position, occupied, shot);
+//                default:
+//                    throw new AssertionError();
+//            }
+//        }
+//
+//    }
 
 }

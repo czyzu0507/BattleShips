@@ -15,8 +15,7 @@ public class PlayerBoard extends Board {
     }
 
     public void placeShip(Ship ship) {
-        ship.getFieldsByPosition().forEach((p, f) -> fieldsByPosition.put(p, f));
-        updateBoard();
+        ship.getPositions().forEach(p -> fieldsByPosition.get(p).occupy());
     }
 
 }

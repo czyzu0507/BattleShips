@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class BoardFactory {
 
-
     private final MouseClickedEventHandler mouseClickedEventHandler;
     private final MouseEnteredEventHandler mouseEnteredEventHandler;
     private final MouseExitedEventHandler mouseExitedEventHandler;
@@ -29,7 +28,8 @@ public class BoardFactory {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                fieldsByPosition.put(Position.of(x, y), Field.FieldBuilder.playerField(Position.of(x, y)).build());
+                Position position = Position.of(x, y);
+                fieldsByPosition.put(position, new PlayerField(position));
             }
         }
 
@@ -44,8 +44,8 @@ public class BoardFactory {
         Map<Position, Field> fieldsByPosition = new HashMap<>();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                Field field = Field.FieldBuilder.opponentField(Position.of(x, y)).build();
-                fieldsByPosition.put(Position.of(x, y), field);
+                Position position = Position.of(x, y);
+                fieldsByPosition.put(position, new OpponentField(position));
             }
         }
 

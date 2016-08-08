@@ -7,6 +7,7 @@ import io.github.expansionteam.battleships.common.annotations.EventConsumer;
 import io.github.expansionteam.battleships.common.annotations.EventProducer;
 import io.github.expansionteam.battleships.common.events.*;
 import io.github.expansionteam.battleships.gui.models.*;
+import io.github.expansionteam.battleships.gui.models.Ship;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;

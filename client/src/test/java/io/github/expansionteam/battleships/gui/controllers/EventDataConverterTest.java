@@ -7,8 +7,6 @@ import io.github.expansionteam.battleships.common.events.data.ShipSizeData;
 import io.github.expansionteam.battleships.gui.models.Ship;
 import io.github.expansionteam.battleships.gui.models.ShipOrientation;
 import io.github.expansionteam.battleships.gui.models.ShipSize;
-import io.github.expansionteam.battleships.logic.event.EventHandler;
-import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
