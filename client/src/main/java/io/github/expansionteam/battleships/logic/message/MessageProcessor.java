@@ -30,7 +30,7 @@ public class MessageProcessor {
         Message responseMessage = messageSender.sendMessageAndWaitForResponse(message);
 
         if (!responseMessageProcessorsByType.containsKey(responseMessage.getType())) {
-            log.error("Unable to process this message: " + message);
+            log.error("Unable to process this message: " + responseMessage);
             throw new IllegalArgumentException("Unable to process this message.");
         }
 
