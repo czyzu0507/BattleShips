@@ -120,6 +120,10 @@ public class Board implements Iterable<Field> {
         return null;
     }
 
+    public boolean placingShipsFinished() {
+        return availableShips.values().stream().mapToInt(i -> i).sum() == 0;
+    }
+
     @Override
     public Iterator<Field> iterator() {
         return board.iterator();

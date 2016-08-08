@@ -3,6 +3,9 @@ package io.github.expansionteam.battleships;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
+import static io.github.expansionteam.battleships.ConnectionThread.GameState.*;
+import static io.github.expansionteam.battleships.ConnectionThread.Player.*;
+import static java.lang.Thread.sleep;
 import static org.apache.log4j.Logger.*;
 import org.apache.log4j.Logger;
 
@@ -10,6 +13,7 @@ class ConnectionThread implements Runnable {
     private final SocketChannel sc1, sc2;
     private final int gameIndex;
     private final Game game = new Game();
+    private GameState gameState = INITIAL;
 
     private final static Logger log = getLogger(ConnectionThread.class);
 
@@ -21,8 +25,8 @@ class ConnectionThread implements Runnable {
 
     @Override
     public void run() {
-        PlayerThread p1 = new PlayerThread(sc1, game);
-        PlayerThread p2 = new PlayerThread(sc2, game);
+        PlayerThread p1 = new PlayerThread(sc1, this, PLAYER1);
+        PlayerThread p2 = new PlayerThread(sc2, this, PLAYER2);
 
         p1.setName("Game_" + gameIndex + "_Player_1");
         p2.setName("Game_" + gameIndex + "_Player_2");
@@ -32,6 +36,21 @@ class ConnectionThread implements Runnable {
 
         p1.setThreadToInform(p2);
         p2.setThreadToInform(p1);
+
+        synchronized (this) {
+            gameState = GENERATING_SHIPS;
+        }
+
+        while (!game.generatingShipsFinished()) {
+            try {
+                sleep(250);
+            }
+            catch (InterruptedException e) {
+                log.trace(e);
+            }
+        }
+
+        gameState = TURN_GAME;
 
         try {
             p1.join();
@@ -48,5 +67,52 @@ class ConnectionThread implements Runnable {
         }
 
         log.info("AFTER CLOSE - socket closed... Terminating thread...");
+    }
+
+    Game getGameObject() {
+        return this.game;
+    }
+
+    synchronized GameState getGameState() {
+        return this.gameState;
+    }
+
+    synchronized void switchPlayer() {
+            gameState.switchPlayer();
+    }
+
+    enum GameState {
+        INITIAL {
+            @Override
+            public Player getPlayer() {
+                return BOTH;
+            }
+        },
+        GENERATING_SHIPS {
+            @Override
+            public Player getPlayer() {
+                return BOTH;
+            }
+        },
+        TURN_GAME {
+            private Player current = PLAYER1;
+
+            @Override
+            public Player getPlayer() {
+                return current;
+            }
+
+            @Override
+            public void switchPlayer() {
+                current = (current == PLAYER1) ? PLAYER2 : PLAYER1;
+            }
+        };
+
+        public abstract Player getPlayer();
+        public void switchPlayer() {}
+    }
+
+    enum Player {
+        BOTH, PLAYER1, PLAYER2
     }
 }
