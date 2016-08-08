@@ -53,23 +53,23 @@ public class BattleshipsController implements Initializable {
 
         boardArea.setVisible(false);
 
-        log.trace("Post StartGameEvent.");
+        log.debug("Post StartGameEvent.");
         eventBus.post(new StartGameEvent());
     }
 
     @Subscribe
     public void handleOpponentArrivedEvent(OpponentArrivedEvent event) {
-        log.trace("Handle OpponentArrivedEvent.");
+        log.debug("Handle OpponentArrivedEvent.");
 
         boardArea.setVisible(true);
 
-        log.trace("Post GenerateShipsEvent.");
+        log.debug("Post GenerateShipsEvent.");
         eventBus.post(new GenerateShipsEvent());
     }
 
     @Subscribe
     public void handleShipsGeneratedEvent(ShipsGeneratedEvent event) {
-        log.trace("Handle ShipsGeneratedEvent.");
+        log.debug("Handle ShipsGeneratedEvent.");
 
         event.getShips().stream().forEach(s -> {
             Ship ship = eventDataConverter.convertShipDataToShipGuiModel(s);
@@ -79,13 +79,13 @@ public class BattleshipsController implements Initializable {
 
     @Subscribe
     public void handleEmptyFieldHitEvent(EmptyFieldHitEvent event) {
-        log.trace("Handle EmptyFieldHitEvent.");
+        log.debug("Handle EmptyFieldHitEvent.");
         opponentBoard.fieldWasShotAndMissed(Position.of(event.getPosition().getX(), event.getPosition().getY()));
     }
 
     @Subscribe
     public void handleShipHitEvent(ShipHitEvent event) {
-        log.trace("Handle ShipHitEvent.");
+        log.debug("Handle ShipHitEvent.");
         opponentBoard.fieldWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
     }
 

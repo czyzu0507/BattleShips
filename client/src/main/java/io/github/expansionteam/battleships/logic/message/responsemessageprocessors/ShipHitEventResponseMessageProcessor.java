@@ -24,7 +24,7 @@ public class ShipHitEventResponseMessageProcessor implements ResponseMessageProc
         int x = positionJsonObject.getInt("x");
         int y = positionJsonObject.getInt("y");
 
-        log.trace("Post ShipHitEvent.");
+        log.debug("Post ShipHitEvent.");
         eventBus.post(new ShipHitEvent(PositionData.of(x, y)));
     }
 

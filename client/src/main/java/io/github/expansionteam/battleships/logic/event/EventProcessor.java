@@ -27,21 +27,21 @@ public class EventProcessor {
     }
 
     public void processEvent(StartGameEvent event) {
-        log.trace("Process StartGameEvent.");
+        log.debug("Process StartGameEvent.");
 
         Message message = messageFactory.createFromEvent(event);
         asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));
     }
 
     public void processEvent(GenerateShipsEvent event) {
-        log.trace("Process GenerateShipsEvent.");
+        log.debug("Process GenerateShipsEvent.");
 
         Message message = messageFactory.createFromEvent(event);
         asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));
     }
 
     public void processEvent(ShootPositionEvent event) {
-        log.trace("Process ShootPositionEvent.");
+        log.debug("Process ShootPositionEvent.");
 
         Message message = messageFactory.createFromEvent(event);
         asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));

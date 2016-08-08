@@ -18,7 +18,7 @@ public class OpponentArrivedResponseMessageProcessor implements ResponseMessageP
 
     @Override
     public void processResponseMessage(Message responseMessage) {
-        log.trace("Post OpponentArrivedEvent.");
+        log.debug("Post OpponentArrivedEvent.");
         eventBus.post(new OpponentArrivedEvent());
     }
 

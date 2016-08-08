@@ -46,7 +46,7 @@ public class ShipsGeneratedResponseMessageProcessor implements ResponseMessagePr
             shipsData.add(new ShipData(positionData, sizeData, orientationData));
         }
 
-        log.trace("Post ShipsGeneratedEvent.");
+        log.debug("Post ShipsGeneratedEvent.");
         eventBus.post(new ShipsGeneratedEvent(shipsData));
     }
 
