@@ -3,33 +3,36 @@ package io.github.expansionteam.battleships.logic.message;
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
 import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MessageFactory {
 
     public Message createFromEvent(StartGameEvent event) {
-        JSONObject jsonObject = new JSONObject().put("type", "StartGameEvent");
-        return new Message(jsonObject.toString());
+        return new Message("StartGameEvent", new JSONObject());
     }
 
     public Message createFromEvent(GenerateShipsEvent event) {
-        JSONObject jsonObject = new JSONObject().put("type", "GenerateShipsEvent");
-        return new Message(jsonObject.toString());
+        return new Message("GenerateShipsEvent", new JSONObject());
     }
 
     public Message createFromEvent(ShootPositionEvent event) {
-        JSONObject jsonObject = new JSONObject()
-                .put("type", "ShootPositionEvent")
-                .put("data", new JSONObject()
-                        .put("position", new JSONObject()
-                                .put("x", event.position.x)
-                                .put("y", event.position.y)));
-
-        return new Message(jsonObject.toString());
+        return new Message("ShootPositionEvent", new JSONObject()
+                .put("position", new JSONObject()
+                        .put("x", event.position.x)
+                        .put("y", event.position.y)));
     }
 
-    public Message createFromJson(String json) {
-        return new Message(json);
+    public Message createFromJson(String jsonText) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonText);
+            String type = jsonObject.getString("type");
+            JSONObject data = jsonObject.getJSONObject("data");
+
+            return new Message(type, data);
+        } catch (JSONException ex) {
+            throw new IllegalArgumentException("The jsonText argument must be a valid json text that represents a message.");
+        }
     }
 
 }

@@ -6,10 +6,17 @@ import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
 import io.github.expansionteam.battleships.common.events.ShipHitEvent;
 import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
 import io.github.expansionteam.battleships.common.events.data.PositionData;
+import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.EmptyFieldHitEventResponseMessageProcessor;
+import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.OpponentArrivedResponseMessageProcessor;
+import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.ShipHitEventResponseMessageProcessor;
+import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.ShipsGeneratedResponseMessageProcessor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mockito.ArgumentCaptor;
 import org.testng.annotations.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.isA;
@@ -23,13 +30,16 @@ public class MessageProcessorTest {
         EventBus eventBusMock = mock(EventBus.class);
 
         MessageSender messageSenderMock = mock(MessageSender.class);
-        Message responseMessage = new Message(new JSONObject().put("type", "OpponentArrivedEvent").toString());
+        Message responseMessage = new Message("OpponentArrivedEvent", new JSONObject());
         when(messageSenderMock.sendMessageAndWaitForResponse(isA(Message.class))).thenReturn(responseMessage);
 
-        MessageProcessor messageProcessor = new MessageProcessor(eventBusMock, messageSenderMock);
+        Map<String, ResponseMessageProcessor> responseMessageProcessorsByType = new HashMap<>();
+        responseMessageProcessorsByType.put("OpponentArrivedEvent", new OpponentArrivedResponseMessageProcessor(eventBusMock));
+
+        MessageProcessor messageProcessor = new MessageProcessor(eventBusMock, messageSenderMock, responseMessageProcessorsByType);
 
         // When
-        messageProcessor.processMessage(new Message(""));
+        messageProcessor.processMessage(new Message("", new JSONObject()));
 
         // Then
         verify(eventBusMock).post(isA(OpponentArrivedEvent.class));
@@ -41,21 +51,21 @@ public class MessageProcessorTest {
         EventBus eventBusMock = mock(EventBus.class);
 
         MessageSender messageSenderMock = mock(MessageSender.class);
-        Message responseMessage = new Message(new JSONObject()
-                .put("type", "ShipsGeneratedEvent")
-                .put("data", new JSONObject()
-                        .put("ships", new JSONArray()
-                                .put(new JSONObject()
-                                        .put("position", new JSONObject().put("x", 1).put("y", 2))
-                                        .put("orientation", "HORIZONTAL")
-                                        .put("size", 3))))
-                .toString());
+        Message responseMessage = new Message("ShipsGeneratedEvent", new JSONObject()
+                .put("ships", new JSONArray()
+                        .put(new JSONObject()
+                                .put("position", new JSONObject().put("x", 1).put("y", 2))
+                                .put("orientation", "HORIZONTAL")
+                                .put("size", 3))));
         when(messageSenderMock.sendMessageAndWaitForResponse(isA(Message.class))).thenReturn(responseMessage);
 
-        MessageProcessor messageProcessor = new MessageProcessor(eventBusMock, messageSenderMock);
+        Map<String, ResponseMessageProcessor> responseMessageProcessorsByType = new HashMap<>();
+        responseMessageProcessorsByType.put("ShipsGeneratedEvent", new ShipsGeneratedResponseMessageProcessor(eventBusMock));
+
+        MessageProcessor messageProcessor = new MessageProcessor(eventBusMock, messageSenderMock, responseMessageProcessorsByType);
 
         // When
-        messageProcessor.processMessage(new Message(""));
+        messageProcessor.processMessage(new Message("", new JSONObject()));
 
         // Then
         ArgumentCaptor<ShipsGeneratedEvent> shipsGeneratedEventArgumentCaptor = ArgumentCaptor.forClass(ShipsGeneratedEvent.class);
@@ -74,17 +84,17 @@ public class MessageProcessorTest {
         EventBus eventBusMock = mock(EventBus.class);
 
         MessageSender messageSenderMock = mock(MessageSender.class);
-        Message responseMessage = new Message(new JSONObject()
-                .put("type", "EmptyFieldHitEvent")
-                .put("data", new JSONObject()
-                        .put("position", new JSONObject().put("x", 3).put("y", 6)))
-                .toString());
+        Message responseMessage = new Message("EmptyFieldHitEvent", new JSONObject()
+                .put("position", new JSONObject().put("x", 3).put("y", 6)));
         when(messageSenderMock.sendMessageAndWaitForResponse(isA(Message.class))).thenReturn(responseMessage);
 
-        MessageProcessor messageProcessor = new MessageProcessor(eventBusMock, messageSenderMock);
+        Map<String, ResponseMessageProcessor> responseMessageProcessorsByType = new HashMap<>();
+        responseMessageProcessorsByType.put("EmptyFieldHitEvent", new EmptyFieldHitEventResponseMessageProcessor(eventBusMock));
+
+        MessageProcessor messageProcessor = new MessageProcessor(eventBusMock, messageSenderMock, responseMessageProcessorsByType);
 
         // When
-        messageProcessor.processMessage(new Message(""));
+        messageProcessor.processMessage(new Message("", new JSONObject()));
 
         // Then
         ArgumentCaptor<EmptyFieldHitEvent> emptyFieldHitEventArgumentCaptor = ArgumentCaptor.forClass(EmptyFieldHitEvent.class);
@@ -101,17 +111,17 @@ public class MessageProcessorTest {
         EventBus eventBusMock = mock(EventBus.class);
 
         MessageSender messageSenderMock = mock(MessageSender.class);
-        Message responseMessage = new Message(new JSONObject()
-                .put("type", "ShipHitEvent")
-                .put("data", new JSONObject()
-                        .put("position", new JSONObject().put("x", 2).put("y", 8)))
-                .toString());
+        Message responseMessage = new Message("ShipHitEvent", new JSONObject()
+                .put("position", new JSONObject().put("x", 2).put("y", 8)));
         when(messageSenderMock.sendMessageAndWaitForResponse(isA(Message.class))).thenReturn(responseMessage);
 
-        MessageProcessor messageProcessor = new MessageProcessor(eventBusMock, messageSenderMock);
+        Map<String, ResponseMessageProcessor> responseMessageProcessorsByType = new HashMap<>();
+        responseMessageProcessorsByType.put("ShipHitEvent", new ShipHitEventResponseMessageProcessor(eventBusMock));
+
+        MessageProcessor messageProcessor = new MessageProcessor(eventBusMock, messageSenderMock, responseMessageProcessorsByType);
 
         // When
-        messageProcessor.processMessage(new Message(""));
+        messageProcessor.processMessage(new Message("", new JSONObject()));
 
         // Then
         ArgumentCaptor<ShipHitEvent> shipHitEventArgumentCaptor = ArgumentCaptor.forClass(ShipHitEvent.class);

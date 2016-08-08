@@ -4,6 +4,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import io.github.expansionteam.battleships.logic.message.MessageProcessor;
+import io.github.expansionteam.battleships.logic.message.MessageProcessorProvider;
 import io.github.expansionteam.battleships.logic.message.MessageSender;
 import io.github.expansionteam.battleships.logic.message.MessageSenderProvider;
 
@@ -14,6 +16,7 @@ public class BattleshipsModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        bind(MessageProcessor.class).toProvider(MessageProcessorProvider.class);
         bind(MessageSender.class).toProvider(MessageSenderProvider.class).in(Singleton.class);
     }
 

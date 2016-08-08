@@ -3,14 +3,9 @@ package io.github.expansionteam.battleships.logic.message;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import io.github.expansionteam.battleships.common.annotations.EventProducer;
-import io.github.expansionteam.battleships.common.events.EmptyFieldHitEvent;
-import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
-import io.github.expansionteam.battleships.common.events.ShipHitEvent;
-import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
-import io.github.expansionteam.battleships.common.events.data.PositionData;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import java.util.Map;
 
 @EventProducer
 public class MessageProcessor {
@@ -19,70 +14,27 @@ public class MessageProcessor {
 
     private final EventBus eventBus;
     private final MessageSender messageSender;
+    private final Map<String, ResponseMessageProcessor> responseMessageProcessorsByType;
 
     @Inject
-    public MessageProcessor(EventBus eventBus, MessageSender messageSender) {
+    public MessageProcessor(
+            EventBus eventBus,
+            MessageSender messageSender,
+            Map<String, ResponseMessageProcessor> responseMessageProcessorsByType) {
         this.eventBus = eventBus;
         this.messageSender = messageSender;
+        this.responseMessageProcessorsByType = responseMessageProcessorsByType;
     }
 
     public void processMessage(Message message) {
-        Message response = messageSender.sendMessageAndWaitForResponse(message);
+        Message responseMessage = messageSender.sendMessageAndWaitForResponse(message);
 
-        JSONObject jsonObject = new JSONObject(response.getBody());
-        switch (jsonObject.getString("type")) {
-            case "OpponentArrivedEvent": {
-                log.debug("Post OpponentArrivedEvent.");
-                eventBus.post(new OpponentArrivedEvent());
-                break;
-            }
-            case "ShipsGeneratedEvent": {
-                JSONArray ships = jsonObject.getJSONObject("data").getJSONArray("ships");
-
-                ShipsGeneratedEvent shipsGeneratedEvent = new ShipsGeneratedEvent();
-                for (int i = 0; i < ships.length(); i++) {
-                    ShipsGeneratedEvent.Ship.Position position = new ShipsGeneratedEvent.Ship.Position(
-                            ships.getJSONObject(i).getJSONObject("position").getInt("x"),
-                            ships.getJSONObject(i).getJSONObject("position").getInt("y"));
-                    int size = ships.getJSONObject(i).getInt("size");
-
-                    ShipsGeneratedEvent.Ship.Orientation orientation;
-                    if (ships.getJSONObject(i).getString("orientation").equals("HORIZONTAL")) {
-                        orientation = ShipsGeneratedEvent.Ship.Orientation.HORIZONTAL;
-                    } else {
-                        orientation = ShipsGeneratedEvent.Ship.Orientation.VERTICAL;
-                    }
-
-                    shipsGeneratedEvent.ships.add(new ShipsGeneratedEvent.Ship(position, size, orientation));
-                }
-
-                log.debug("Post ShipsGeneratedEvent.");
-                eventBus.post(shipsGeneratedEvent);
-                break;
-            }
-            case "EmptyFieldHitEvent": { // tests!
-                JSONObject data = jsonObject.getJSONObject("data");
-                int x = data.getJSONObject("position").getInt("x");
-                int y = data.getJSONObject("position").getInt("y");
-
-                log.debug("Post EmptyFieldHitEvent");
-                eventBus.post(new EmptyFieldHitEvent(PositionData.of(x, y)));
-                break;
-            }
-            case "ShipHitEvent": { // tests!
-                JSONObject data = jsonObject.getJSONObject("data");
-                int x = data.getJSONObject("position").getInt("x");
-                int y = data.getJSONObject("position").getInt("y");
-
-                log.debug("Post ShipHitEvent");
-                eventBus.post(new ShipHitEvent(PositionData.of(x, y)));
-                break;
-            }
-            default: {
-                log.debug("Unable to process the messages.");
-                throw new AssertionError();
-            }
+        if (!responseMessageProcessorsByType.containsKey(responseMessage.getType())) {
+            log.error("Unable to process this message: " + message);
+            throw new IllegalArgumentException("Unable to process this message.");
         }
+
+        responseMessageProcessorsByType.get(responseMessage.getType()).processResponseMessage(responseMessage);
     }
 
 }

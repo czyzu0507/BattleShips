@@ -19,8 +19,8 @@ public class MessageFactoryTest {
         Message message = messageFactory.createFromEvent(new StartGameEvent());
 
         // Then
-        JSONObject jsonObject = new JSONObject(message.getBody());
-        assertThat(jsonObject.getString("type")).isEqualTo("StartGameEvent");
+        assertThat(message.getType()).isEqualTo("StartGameEvent");
+        assertThat(message.getData()).isNotNull();
     }
 
     @Test
@@ -32,8 +32,8 @@ public class MessageFactoryTest {
         Message message = messageFactory.createFromEvent(new GenerateShipsEvent());
 
         // Then
-        JSONObject jsonObject = new JSONObject(message.getBody());
-        assertThat(jsonObject.getString("type")).isEqualTo("GenerateShipsEvent");
+        assertThat(message.getType()).isEqualTo("GenerateShipsEvent");
+        assertThat(message.getData()).isNotNull();
     }
 
     @Test
@@ -46,10 +46,9 @@ public class MessageFactoryTest {
         Message message = messageFactory.createFromEvent(shootPositionEvent);
 
         // Then
-        JSONObject jsonObject = new JSONObject(message.getBody());
-        assertThat(jsonObject.getString("type")).isEqualTo("ShootPositionEvent");
-        assertThat(jsonObject.getJSONObject("data").getJSONObject("position").getInt("x")).isEqualTo(1);
-        assertThat(jsonObject.getJSONObject("data").getJSONObject("position").getInt("y")).isEqualTo(3);
+        assertThat(message.getType()).isEqualTo("ShootPositionEvent");
+        assertThat(message.getData().getJSONObject("position").getInt("x")).isEqualTo(1);
+        assertThat(message.getData().getJSONObject("position").getInt("y")).isEqualTo(3);
     }
 
     @Test
@@ -58,10 +57,14 @@ public class MessageFactoryTest {
         MessageFactory messageFactory = new MessageFactory();
 
         // When
-        Message message = messageFactory.createFromJson("{}");
+        Message message = messageFactory.createFromJson(new JSONObject()
+                .put("type", "Type")
+                .put("data", new JSONObject())
+                .toString());
 
         // Then
-        assertThat(message.getBody()).isEqualTo("{}");
+        assertThat(message.getType()).isEqualTo("Type");
+        assertThat(message.getData()).isNotNull();
     }
 
 }
