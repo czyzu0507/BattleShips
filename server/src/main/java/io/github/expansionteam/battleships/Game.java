@@ -65,4 +65,8 @@ public class Game {
     private boolean isShipField(Board board, int x, int y) {
         return board.getFieldFromTheBoard(x, y).isShip();
     }
+
+    public boolean generatingShipsFinished() {
+        return firstPlayerBoard.placingShipsFinished() && secondPlayerBoard.placingShipsFinished();
+    }
 }
