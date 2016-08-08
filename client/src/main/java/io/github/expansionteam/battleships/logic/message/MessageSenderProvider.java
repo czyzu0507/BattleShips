@@ -34,7 +34,7 @@ public class MessageSenderProvider implements Provider<MessageSender> {
             return new MessageSender(socketChannel, messageFactory);
         } catch (IOException ex) {
             log.debug("Unable to connect to server.");
-            ex.printStackdebug();
+            ex.printStackTrace();
         }
 
         return null;

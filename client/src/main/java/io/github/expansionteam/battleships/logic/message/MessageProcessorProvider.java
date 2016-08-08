@@ -3,10 +3,7 @@ package io.github.expansionteam.battleships.logic.message;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.EmptyFieldHitEventResponseMessageProcessor;
-import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.OpponentArrivedResponseMessageProcessor;
-import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.ShipHitEventResponseMessageProcessor;
-import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.ShipsGeneratedResponseMessageProcessor;
+import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.*;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
@@ -32,6 +29,7 @@ public class MessageProcessorProvider implements Provider<MessageProcessor> {
         responseMessageProcessorsByType.put("ShipsGeneratedEvent", new ShipsGeneratedResponseMessageProcessor(eventBus));
         responseMessageProcessorsByType.put("ShipHitEvent", new ShipHitEventResponseMessageProcessor(eventBus));
         responseMessageProcessorsByType.put("EmptyFieldHitEvent", new EmptyFieldHitEventResponseMessageProcessor(eventBus));
+        responseMessageProcessorsByType.put("ShipDestroyedEvent", new ShipDestroyedEventResponseMessageProcessor(eventBus));
 
         return new MessageProcessor(eventBus, messageSender, responseMessageProcessorsByType);
     }

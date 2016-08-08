@@ -28,6 +28,7 @@ public class MessageProcessor {
 
     public void processMessage(Message message) {
         Message responseMessage = messageSender.sendMessageAndWaitForResponse(message);
+        log.debug("Processing message: " + responseMessage);
 
         if (!responseMessageProcessorsByType.containsKey(responseMessage.getType())) {
             log.error("Unable to process this message: " + responseMessage);

@@ -89,4 +89,12 @@ public class BattleshipsController implements Initializable {
         opponentBoard.fieldWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
     }
 
+    @Subscribe
+    public void handleShipDestroyedEvent(ShipDestroyedEvent event) {
+        log.debug("Handle ShipDestroyedEvent.");
+
+        opponentBoard.fieldWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
+        event.getAdjacentPositions().stream().forEach(p -> opponentBoard.fieldWasShotAndMissed(Position.of(p.getX(), p.getY())));
+    }
+
 }
