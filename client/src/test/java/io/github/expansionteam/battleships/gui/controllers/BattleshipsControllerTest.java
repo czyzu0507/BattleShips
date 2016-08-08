@@ -2,15 +2,16 @@ package io.github.expansionteam.battleships.gui.controllers;
 
 import com.google.common.eventbus.EventBus;
 import io.github.expansionteam.battleships.common.events.*;
-import io.github.expansionteam.battleships.common.events.data.*;
+import io.github.expansionteam.battleships.common.events.data.PositionData;
+import io.github.expansionteam.battleships.common.events.data.ShipData;
+import io.github.expansionteam.battleships.common.events.data.ShipOrientationData;
+import io.github.expansionteam.battleships.common.events.data.ShipSizeData;
 import io.github.expansionteam.battleships.gui.models.*;
-import io.github.expansionteam.battleships.gui.models.Position;
-import io.github.expansionteam.battleships.gui.models.Ship;
-import io.github.expansionteam.battleships.gui.models.ShipSize;
 import javafx.scene.layout.BorderPane;
 import org.mockito.ArgumentCaptor;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,23 +41,27 @@ public class BattleshipsControllerTest {
     public void handleShipsGeneratedEvent() {
         // Given
         EventBus eventBusMock = mock(EventBus.class);
+        EventDataConverter eventDataConverterMock = mock(EventDataConverter.class);
+        when(eventDataConverterMock.convertShipDataToShipGuiModel(isA(ShipData.class))).thenReturn(
+                Ship.createHorizontal(Position.of(1, 1), ShipSize.FOUR),
+                Ship.createVertical(Position.of(4, 6), ShipSize.TWO
+                ));
+
         BorderPane boardAreaMock = mock(BorderPane.class);
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.eventBus = eventBusMock;
+        battleshipsController.eventDataConverter = eventDataConverterMock;
         battleshipsController.boardArea = boardAreaMock;
         battleshipsController.playerBoard = playerBoardMock;
 
         // When
-        ShipsGeneratedEvent.Ship ship1 = createShip1();
-        ShipsGeneratedEvent.Ship ship2 = createShip2();
+        List<ShipData> shipsData = new ArrayList<>();
+        shipsData.add(createShip1());
+        shipsData.add(createShip2());
 
-        ShipsGeneratedEvent shipsGeneratedEvent = new ShipsGeneratedEvent();
-        shipsGeneratedEvent.ships.add(ship1);
-        shipsGeneratedEvent.ships.add(ship2);
-
-        battleshipsController.handleShipsGeneratedEvent(shipsGeneratedEvent);
+        battleshipsController.handleShipsGeneratedEvent(new ShipsGeneratedEvent(shipsData));
 
         // Then
         ArgumentCaptor<Ship> shipArgumentCaptor = ArgumentCaptor.forClass(Ship.class);
@@ -104,18 +109,12 @@ public class BattleshipsControllerTest {
         assertThat(positionArgumentCaptor.getValue()).isEqualTo(Position.of(2, 2));
     }
 
-    private ShipsGeneratedEvent.Ship createShip1() {
-        return new ShipsGeneratedEvent.Ship(
-                new ShipsGeneratedEvent.Ship.Position(1, 1),
-                4,
-                ShipsGeneratedEvent.Ship.Orientation.HORIZONTAL);
+    private ShipData createShip1() {
+        return new ShipData(PositionData.of(1, 1), ShipSizeData.of(4), ShipOrientationData.HORIZONTAL);
     }
 
-    private ShipsGeneratedEvent.Ship createShip2() {
-        return new ShipsGeneratedEvent.Ship(
-                new ShipsGeneratedEvent.Ship.Position(4, 6),
-                2,
-                ShipsGeneratedEvent.Ship.Orientation.VERTICAL);
+    private ShipData createShip2() {
+        return new ShipData(PositionData.of(4, 6), ShipSizeData.of(2), ShipOrientationData.VERTICAL);
     }
 
 }

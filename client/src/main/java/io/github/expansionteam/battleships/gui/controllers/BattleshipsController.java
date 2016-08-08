@@ -28,6 +28,8 @@ public class BattleshipsController implements Initializable {
     @Inject
     BoardFactory boardFactory;
 
+    @Inject
+    EventDataConverter eventDataConverter;
 
     @FXML
     BorderPane boardArea;
@@ -51,64 +53,39 @@ public class BattleshipsController implements Initializable {
 
         boardArea.setVisible(false);
 
-        log.debug("Post StartGameEvent.");
+        log.trace("Post StartGameEvent.");
         eventBus.post(new StartGameEvent());
     }
 
     @Subscribe
     public void handleOpponentArrivedEvent(OpponentArrivedEvent event) {
-        log.debug("Handle OpponentArrivedEvent.");
+        log.trace("Handle OpponentArrivedEvent.");
 
         boardArea.setVisible(true);
 
-        log.debug("Post GenerateShipsEvent.");
+        log.trace("Post GenerateShipsEvent.");
         eventBus.post(new GenerateShipsEvent());
     }
 
     @Subscribe
     public void handleShipsGeneratedEvent(ShipsGeneratedEvent event) {
-        log.debug("Handle ShipsGeneratedEvent.");
+        log.trace("Handle ShipsGeneratedEvent.");
 
-        event.ships.stream().forEach(s -> {
-            Position position = Position.of(s.position.x, s.position.y);
-
-            ShipSize size;
-            switch (s.size) {
-                case 1:
-                    size = ShipSize.ONE;
-                    break;
-                case 2:
-                    size = ShipSize.TWO;
-                    break;
-                case 3:
-                    size = ShipSize.THREE;
-                    break;
-                case 4:
-                    size = ShipSize.FOUR;
-                    break;
-                default:
-                    throw new AssertionError();
-            }
-
-            Ship ship;
-            if (s.orientation.equals(ShipsGeneratedEvent.Ship.Orientation.HORIZONTAL)) {
-                ship = Ship.createHorizontal(position, size);
-            } else {
-                ship = Ship.createVertical(position, size);
-            }
+        event.getShips().stream().forEach(s -> {
+            Ship ship = eventDataConverter.convertShipDataToShipGuiModel(s);
             playerBoard.placeShip(ship);
         });
     }
 
     @Subscribe
     public void handleEmptyFieldHitEvent(EmptyFieldHitEvent event) {
-        log.debug("Handle EmptyFieldHitEvent.");
+        log.trace("Handle EmptyFieldHitEvent.");
         opponentBoard.fieldWasShotAndMissed(Position.of(event.getPosition().getX(), event.getPosition().getY()));
     }
 
     @Subscribe
     public void handleShipHitEvent(ShipHitEvent event) {
-        log.debug("Handle ShipHitEvent.");
+        log.trace("Handle ShipHitEvent.");
         opponentBoard.fieldWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
     }
 

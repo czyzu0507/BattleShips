@@ -1,23 +1,17 @@
 package io.github.expansionteam.battleships.common.events;
 
+import io.github.expansionteam.battleships.common.events.data.PositionData;
+
 public class ShootPositionEvent {
 
-    public final Position position;
+    private final PositionData position;
 
-    public ShootPositionEvent(Position position) {
+    public ShootPositionEvent(PositionData position) {
         this.position = position;
     }
 
-    public static class Position {
-
-        public final int x;
-        public final int y;
-
-        public Position(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
+    public PositionData getPosition() {
+        return position;
     }
 
 }

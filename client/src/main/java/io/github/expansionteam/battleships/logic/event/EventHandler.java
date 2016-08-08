@@ -22,20 +22,20 @@ public class EventHandler {
 
     @Subscribe
     public void handleStartGameEvent(StartGameEvent event) {
-        log.debug("Handle StartGameEvent.");
+        log.trace("Handle StartGameEvent.");
         eventProcessor.processEvent(event);
     }
 
 
     @Subscribe
     public void handleGenerateShipsEvent(GenerateShipsEvent event) {
-        log.debug("Handle GenerateShipsEvent.");
+        log.trace("Handle GenerateShipsEvent.");
         eventProcessor.processEvent(event);
     }
 
     @Subscribe
     public void handleShootPositionEvent(ShootPositionEvent event) {
-        log.debug("Handle ShootPositionEvent.");
+        log.trace("Handle ShootPositionEvent.");
         eventProcessor.processEvent(event);
     }
 

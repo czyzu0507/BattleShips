@@ -6,6 +6,9 @@ import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
 import io.github.expansionteam.battleships.common.events.ShipHitEvent;
 import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
 import io.github.expansionteam.battleships.common.events.data.PositionData;
+import io.github.expansionteam.battleships.common.events.data.ShipData;
+import io.github.expansionteam.battleships.common.events.data.ShipOrientationData;
+import io.github.expansionteam.battleships.gui.models.ShipOrientation;
 import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.EmptyFieldHitEventResponseMessageProcessor;
 import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.OpponentArrivedResponseMessageProcessor;
 import io.github.expansionteam.battleships.logic.message.responsemessageprocessors.ShipHitEventResponseMessageProcessor;
@@ -71,11 +74,11 @@ public class MessageProcessorTest {
         ArgumentCaptor<ShipsGeneratedEvent> shipsGeneratedEventArgumentCaptor = ArgumentCaptor.forClass(ShipsGeneratedEvent.class);
         verify(eventBusMock).post(shipsGeneratedEventArgumentCaptor.capture());
 
-        ShipsGeneratedEvent.Ship ship = shipsGeneratedEventArgumentCaptor.getValue().ships.get(0);
-        assertThat(ship.position.x).isEqualTo(1);
-        assertThat(ship.position.y).isEqualTo(2);
-        assertThat(ship.orientation).isEqualTo(ShipsGeneratedEvent.Ship.Orientation.HORIZONTAL);
-        assertThat(ship.size).isEqualTo(3);
+        ShipData shipData = shipsGeneratedEventArgumentCaptor.getValue().getShips().get(0);
+        assertThat(shipData.getPosition().getX()).isEqualTo(1);
+        assertThat(shipData.getPosition().getY()).isEqualTo(2);
+        assertThat(shipData.getOrientation()).isEqualTo(ShipOrientationData.HORIZONTAL);
+        assertThat(shipData.getSize().getValue()).isEqualTo(3);
     }
 
     @Test

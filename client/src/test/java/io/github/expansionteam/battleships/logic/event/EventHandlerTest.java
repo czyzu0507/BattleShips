@@ -3,6 +3,7 @@ package io.github.expansionteam.battleships.logic.event;
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
 import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
+import io.github.expansionteam.battleships.common.events.data.PositionData;
 import org.testng.annotations.Test;
 
 import static org.mockito.Matchers.isA;
@@ -44,7 +45,7 @@ public class EventHandlerTest {
         EventHandler eventHandler = new EventHandler(eventProcessorMock);
 
         // When
-        ShootPositionEvent.Position position = new ShootPositionEvent.Position(1, 1);
+        PositionData position = PositionData.of(1, 1);
         eventHandler.handleShootPositionEvent(new ShootPositionEvent(position));
 
         // Then

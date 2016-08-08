@@ -3,6 +3,7 @@ package io.github.expansionteam.battleships.logic.event;
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
 import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
+import io.github.expansionteam.battleships.common.events.data.PositionData;
 import io.github.expansionteam.battleships.logic.AsyncTask;
 import io.github.expansionteam.battleships.logic.message.MessageFactory;
 import io.github.expansionteam.battleships.logic.message.MessageProcessor;
@@ -59,7 +60,7 @@ public class EventProcessorTest {
         EventProcessor eventProcessor = new EventProcessor(asyncTaskMock, messageFactoryMock, messageProcessorMock);
 
         // When
-        eventProcessor.processEvent(new ShootPositionEvent(new ShootPositionEvent.Position(1, 3)));
+        eventProcessor.processEvent(new ShootPositionEvent(PositionData.of(1, 3)));
 
         // Then
         verify(messageFactoryMock).createFromEvent(isA(ShootPositionEvent.class));

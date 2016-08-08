@@ -2,10 +2,17 @@ package io.github.expansionteam.battleships.logic.message.responsemessageprocess
 
 import com.google.common.eventbus.EventBus;
 import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
+import io.github.expansionteam.battleships.common.events.data.PositionData;
+import io.github.expansionteam.battleships.common.events.data.ShipData;
+import io.github.expansionteam.battleships.common.events.data.ShipOrientationData;
+import io.github.expansionteam.battleships.common.events.data.ShipSizeData;
 import io.github.expansionteam.battleships.logic.message.Message;
 import io.github.expansionteam.battleships.logic.message.ResponseMessageProcessor;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShipsGeneratedResponseMessageProcessor implements ResponseMessageProcessor {
 
@@ -21,25 +28,26 @@ public class ShipsGeneratedResponseMessageProcessor implements ResponseMessagePr
     public void processResponseMessage(Message responseMessage) {
         JSONArray ships = responseMessage.getData().getJSONArray("ships");
 
-        ShipsGeneratedEvent shipsGeneratedEvent = new ShipsGeneratedEvent();
+        List<ShipData> shipsData = new ArrayList<>();
         for (int i = 0; i < ships.length(); i++) {
-            ShipsGeneratedEvent.Ship.Position position = new ShipsGeneratedEvent.Ship.Position(
+            PositionData positionData = PositionData.of(
                     ships.getJSONObject(i).getJSONObject("position").getInt("x"),
                     ships.getJSONObject(i).getJSONObject("position").getInt("y"));
-            int size = ships.getJSONObject(i).getInt("size");
 
-            ShipsGeneratedEvent.Ship.Orientation orientation;
+            ShipSizeData sizeData = ShipSizeData.of(ships.getJSONObject(i).getInt("size"));
+
+            ShipOrientationData orientationData;
             if (ships.getJSONObject(i).getString("orientation").equals("HORIZONTAL")) {
-                orientation = ShipsGeneratedEvent.Ship.Orientation.HORIZONTAL;
+                orientationData = ShipOrientationData.HORIZONTAL;
             } else {
-                orientation = ShipsGeneratedEvent.Ship.Orientation.VERTICAL;
+                orientationData = ShipOrientationData.VERTICAL;
             }
 
-            shipsGeneratedEvent.ships.add(new ShipsGeneratedEvent.Ship(position, size, orientation));
+            shipsData.add(new ShipData(positionData, sizeData, orientationData));
         }
 
         log.trace("Post ShipsGeneratedEvent.");
-        eventBus.post(shipsGeneratedEvent);
+        eventBus.post(new ShipsGeneratedEvent(shipsData));
     }
 
 }

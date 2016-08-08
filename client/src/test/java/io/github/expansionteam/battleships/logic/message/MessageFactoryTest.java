@@ -3,6 +3,7 @@ package io.github.expansionteam.battleships.logic.message;
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
 import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
+import io.github.expansionteam.battleships.common.events.data.PositionData;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
 
@@ -42,7 +43,7 @@ public class MessageFactoryTest {
         MessageFactory messageFactory = new MessageFactory();
 
         // When
-        ShootPositionEvent shootPositionEvent = new ShootPositionEvent(new ShootPositionEvent.Position(1, 3));
+        ShootPositionEvent shootPositionEvent = new ShootPositionEvent(PositionData.of(1, 3));
         Message message = messageFactory.createFromEvent(shootPositionEvent);
 
         // Then

@@ -19,8 +19,8 @@ public class MessageFactory {
     public Message createFromEvent(ShootPositionEvent event) {
         return new Message("ShootPositionEvent", new JSONObject()
                 .put("position", new JSONObject()
-                        .put("x", event.position.x)
-                        .put("y", event.position.y)));
+                        .put("x", event.getPosition().getX())
+                        .put("y", event.getPosition().getY())));
     }
 
     public Message createFromJson(String jsonText) {

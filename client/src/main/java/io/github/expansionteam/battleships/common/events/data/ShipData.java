@@ -3,12 +3,12 @@ package io.github.expansionteam.battleships.common.events.data;
 public class ShipData {
 
     private final PositionData position;
-    private final ShipSizeData shipSize;
-    private final OrientationData orientation;
+    private final ShipSizeData size;
+    private final ShipOrientationData orientation;
 
-    public ShipData(PositionData position, ShipSizeData shipSize, OrientationData orientation) {
+    public ShipData(PositionData position, ShipSizeData size, ShipOrientationData orientation) {
         this.position = position;
-        this.shipSize = shipSize;
+        this.size = size;
         this.orientation = orientation;
     }
 
@@ -16,11 +16,11 @@ public class ShipData {
         return position;
     }
 
-    public ShipSizeData getShipSize() {
-        return shipSize;
+    public ShipSizeData getSize() {
+        return size;
     }
 
-    public OrientationData getOrientation() {
+    public ShipOrientationData getOrientation() {
         return orientation;
     }
 
