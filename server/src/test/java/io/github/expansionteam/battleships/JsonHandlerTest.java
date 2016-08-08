@@ -130,23 +130,19 @@ public class JsonHandlerTest {
         Game gameMock = mock(Game.class);
         when(gameMock.shoot(3, 5)).thenReturn(true);
 
-        JSONObject position = new JSONObject()
-                .put("position", new JSONObject().put("x", 3).put("y", 5));
-        String requestJson = new JSONObject()
-                .put("type", "ShootPositionEvent")
-                .put("data", position)
-                .toString();
+        String requestJson = createEvent("ShootPositionEvent", 3, 5);
 
         // when
         JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
-        JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
-        int x = shootPosition.getInt("x");
-        int y = shootPosition.getInt("y");
-
         // then
         assertEquals(actualResponse.getString("type"), "ShipHitEvent");
+
+        JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
+        int x = shootPosition.getInt("x");
         assertEquals(x, 3);
+
+        int y = shootPosition.getInt("y");
         assertEquals(y, 5);
     }
 
@@ -159,28 +155,24 @@ public class JsonHandlerTest {
         Game gameMock = mock(Game.class);
         when(gameMock.shoot(3, 5)).thenReturn(false);
 
-        JSONObject position = new JSONObject()
-                .put("position", new JSONObject().put("x", 3).put("y", 5));
-        String requestJson = new JSONObject()
-                .put("type", "ShootPositionEvent")
-                .put("data", position)
-                .toString();
+        String requestJson = createEvent("ShootPositionEvent", 3, 5);
 
         // when
         JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
-        JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
-        int x = shootPosition.getInt("x");
-        int y = shootPosition.getInt("y");
-
         // then
         assertEquals(actualResponse.getString("type"), "EmptyFieldHitEvent");
+
+        JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
+        int x = shootPosition.getInt("x");
         assertEquals(x, 3);
+
+        int y = shootPosition.getInt("y");
         assertEquals(y, 5);
     }
 
     @Test
-    public <T> void responsesToDestroyingShip() {
+    public void responsesToDestroyingShip() {
         // given
         JsonHandler jsonHandler = new JsonHandler();
 
@@ -188,64 +180,80 @@ public class JsonHandlerTest {
         when(gameMock.shoot(2, 5)).thenReturn(true);
         when(gameMock.isDestroyedShip(2, 5)).thenReturn(true);
 
-        Collection<Field> fieldMocks = new ArrayList<>();
-        fieldMocks.add(new Field(1, 4));
-        fieldMocks.add(new Field(2, 4));
-        fieldMocks.add(new Field(3, 4));
-        fieldMocks.add(new Field(1, 5));
-        fieldMocks.add(new Field(3, 5));
-        fieldMocks.add(new Field(1, 6));
-        fieldMocks.add(new Field(2, 6));
-        fieldMocks.add(new Field(3, 6));
-
+        Collection<Field> fieldMocks = createAdjacentFields(2, 5);
         when(gameMock.getAdjacentToShip(2, 5)).thenReturn(fieldMocks);
 
-
-        JSONObject position = new JSONObject()
-                .put("position", new JSONObject().put("x", 2).put("y", 5));
-
-        String requestJson = new JSONObject()
-                .put("type", "ShootPositionEvent")
-                .put("data", position)
-                .toString();
-
-        ArrayList<Integer> expectedAdjacentCoordinates = new ArrayList<>();
-        expectedAdjacentCoordinates.add(1);
-        expectedAdjacentCoordinates.add(4);
-        expectedAdjacentCoordinates.add(2);
-        expectedAdjacentCoordinates.add(4);
-        expectedAdjacentCoordinates.add(3);
-        expectedAdjacentCoordinates.add(4);
-        expectedAdjacentCoordinates.add(1);
-        expectedAdjacentCoordinates.add(5);
-        expectedAdjacentCoordinates.add(3);
-        expectedAdjacentCoordinates.add(5);
-        expectedAdjacentCoordinates.add(1);
-        expectedAdjacentCoordinates.add(6);
-        expectedAdjacentCoordinates.add(2);
-        expectedAdjacentCoordinates.add(6);
-        expectedAdjacentCoordinates.add(3);
-        expectedAdjacentCoordinates.add(6);
+        String requestJson = createEvent("ShootPositionEvent", 2, 5);
+        Collection<Integer> expectedAdjacentCoordinates = createAdjacentCoordinates(2, 5);
 
         // when
         JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
+        // then
+        assertEquals(actualResponse.getString("type"), "ShipDestroyedEvent");
+
         JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
         int x = shootPosition.getInt("x");
+        assertEquals(x, 2);
+
         int y = shootPosition.getInt("y");
+        assertEquals(y, 5);
 
         JSONArray adjacent = actualResponse.getJSONObject("data").getJSONArray("adjacent");
+        Collection<Integer> actualAdjacentCoordinates = createAdjacentCoordinatesOfJSON(adjacent);
+        assertEquals(actualAdjacentCoordinates, expectedAdjacentCoordinates);
+    }
+
+    private String createEvent(String event, int x, int y) {
+        JSONObject position = new JSONObject()
+                .put("position", new JSONObject().put("x", x).put("y", y));
+
+        return new JSONObject()
+                .put("type", event)
+                .put("data", position)
+                .toString();
+    }
+
+    private Collection<Integer> createAdjacentCoordinatesOfJSON(JSONArray adjacent) {
         Collection<Integer> actualAdjacentCoordinates = new ArrayList<>();
         for (int i = 0; i < adjacent.length(); i++) {
             JSONObject adjacentPosition = adjacent.getJSONObject(i);
             actualAdjacentCoordinates.add(adjacentPosition.getInt("x"));
             actualAdjacentCoordinates.add(adjacentPosition.getInt("y"));
         }
+        return actualAdjacentCoordinates;
+    }
 
-        // then
-        assertEquals(actualResponse.getString("type"), "ShipDestroyedEvent");
-        assertEquals(x, 2);
-        assertEquals(y, 5);
-        assertEquals(actualAdjacentCoordinates, expectedAdjacentCoordinates);
+    private Collection<Integer> createAdjacentCoordinates(int x, int y) {
+        Collection<Integer> expectedAdjacentCoordinates = new ArrayList<>();
+        for (int i = x - 1; i <= x + 1; i++) {
+            if (x < 0 || x > 9) {
+                continue;
+            }
+            for (int j = y - 1; j <= y + 1; j++) {
+                if (y < 0 || y > 9 || (i == x && j == y)) {
+                    continue;
+                }
+                expectedAdjacentCoordinates.add(i);
+                expectedAdjacentCoordinates.add(j);
+            }
+        }
+        return expectedAdjacentCoordinates;
+    }
+
+    private Collection<Field> createAdjacentFields(int x, int y) {
+        Collection<Field> fieldMocks = new ArrayList<>();
+        for (int i = x - 1; i <= x + 1; i++) {
+            if (x < 0 || x > 9) {
+                continue;
+            }
+            for (int j = y - 1; j <= y + 1; j++) {
+                if (y < 0 || y > 9 || (i == x && j == y)) {
+                    continue;
+                }
+                fieldMocks.add(new Field(i, j));
+            }
+        }
+        return fieldMocks;
     }
 }
