@@ -6,6 +6,7 @@ import io.github.expansionteam.battleships.engine.Ship;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -120,52 +121,40 @@ public class JsonHandlerTest {
         assertEquals(orientation2, "VERTICAL");
         assertEquals(size2, 2);
     }
-
-    @Test
-    public void responsesToHitShip() {
-
-        // given
-        JsonHandler jsonHandler = new JsonHandler();
-
-        Game gameMock = mock(Game.class);
-        when(gameMock.shoot(3, 5)).thenReturn(true);
-
-        String requestJson = createEvent("ShootPositionEvent", 3, 5);
-
-        // when
-        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
-
-        // then
-        assertEquals(actualResponse.getString("type"), "ShipHitEvent");
-
-        JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
-        int x = shootPosition.getInt("x");
-        assertEquals(x, 3);
-
-        int y = shootPosition.getInt("y");
-        assertEquals(y, 5);
+    
+    @DataProvider
+    private Object[][] shootFieldSituations() {
+        return new Object[][]{
+                {true, false, false, "EmptyFieldHitEvent"},
+                {true, true, false, "ShipHitEvent"},
+                {false, false, false, "FieldAlreadyShot"}
+        };
     }
 
-    @Test
-    public void responsesToHitEmptyField() {
-
+    @Test(dataProvider = "shootFieldSituations")
+    public void responsesToShotField(boolean valid, boolean ship, boolean destroyed, String event) {
         // given
         JsonHandler jsonHandler = new JsonHandler();
 
         Game gameMock = mock(Game.class);
-        when(gameMock.shoot(3, 5)).thenReturn(false);
+        when(gameMock.shoot(2, 5)).thenReturn(valid);
+        when(gameMock.isShipHit(2, 5)).thenReturn(ship);
+        when(gameMock.isDestroyedShip(2, 5)).thenReturn(destroyed);
 
-        String requestJson = createEvent("ShootPositionEvent", 3, 5);
+        Collection<Field> fieldMocks = createAdjacentFields(2, 5);
+        when(gameMock.getAdjacentToShip(2, 5)).thenReturn(fieldMocks);
+
+        String requestJson = createEvent("ShootPositionEvent", 2, 5);
 
         // when
         JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
         // then
-        assertEquals(actualResponse.getString("type"), "EmptyFieldHitEvent");
+        assertEquals(actualResponse.getString("type"), event);
 
         JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
         int x = shootPosition.getInt("x");
-        assertEquals(x, 3);
+        assertEquals(x, 2);
 
         int y = shootPosition.getInt("y");
         assertEquals(y, 5);
@@ -178,6 +167,7 @@ public class JsonHandlerTest {
 
         Game gameMock = mock(Game.class);
         when(gameMock.shoot(2, 5)).thenReturn(true);
+        when(gameMock.isShipHit(2, 5)).thenReturn(true);
         when(gameMock.isDestroyedShip(2, 5)).thenReturn(true);
 
         Collection<Field> fieldMocks = createAdjacentFields(2, 5);

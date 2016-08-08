@@ -31,14 +31,16 @@ public class Game {
     }
 
     public boolean shoot(int x, int y) {
-        Board board = currentBoard();
-        board.shootField(x, y);
-        return isFieldHit(board, x, y) && isShipField(board, x, y);
+        return currentBoard().shootField(x, y);
     }
 
     public boolean isDestroyedShip(int x, int y) {
         Board board = currentBoard();
         return board.isDestroyedShip(x, y);
+    }
+
+    public boolean isShipHit(int x, int y) {
+        return isShipField(currentBoard(), x, y);
     }
 
     public Collection<Field> getAdjacentToShip(int x, int y) {
@@ -52,10 +54,6 @@ public class Game {
 
     private boolean firstPlayer() {
         return Thread.currentThread().getName().contains("Player_1");
-    }
-
-    private boolean isFieldHit(Board board, int x, int y) {
-        return board.getFieldFromTheBoard(x, y).isHit();
     }
 
     private boolean isShipField(Board board, int x, int y) {
