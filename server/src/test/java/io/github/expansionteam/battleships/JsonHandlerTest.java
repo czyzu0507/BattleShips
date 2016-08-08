@@ -137,12 +137,12 @@ public class JsonHandlerTest {
         JsonHandler jsonHandler = new JsonHandler();
 
         Game gameMock = mock(Game.class);
-        when(gameMock.shoot(2, 5)).thenReturn(valid);
-        when(gameMock.isShipHit(2, 5)).thenReturn(ship);
-        when(gameMock.isDestroyedShip(2, 5)).thenReturn(destroyed);
+        when(gameMock.shootOpponentField(2, 5)).thenReturn(valid);
+        when(gameMock.isOpponentShipHit(2, 5)).thenReturn(ship);
+        when(gameMock.isOpponentShipDestroyed(2, 5)).thenReturn(destroyed);
 
         Collection<Field> fieldMocks = createAdjacentFields(2, 5);
-        when(gameMock.getAdjacentToShip(2, 5)).thenReturn(fieldMocks);
+        when(gameMock.getAdjacentToOpponentShip(2, 5)).thenReturn(fieldMocks);
 
         String requestJson = createEvent("ShootPositionEvent", 2, 5);
 
@@ -166,12 +166,12 @@ public class JsonHandlerTest {
         JsonHandler jsonHandler = new JsonHandler();
 
         Game gameMock = mock(Game.class);
-        when(gameMock.shoot(2, 5)).thenReturn(true);
-        when(gameMock.isShipHit(2, 5)).thenReturn(true);
-        when(gameMock.isDestroyedShip(2, 5)).thenReturn(true);
+        when(gameMock.shootOpponentField(2, 5)).thenReturn(true);
+        when(gameMock.isOpponentShipHit(2, 5)).thenReturn(true);
+        when(gameMock.isOpponentShipDestroyed(2, 5)).thenReturn(true);
 
         Collection<Field> fieldMocks = createAdjacentFields(2, 5);
-        when(gameMock.getAdjacentToShip(2, 5)).thenReturn(fieldMocks);
+        when(gameMock.getAdjacentToOpponentShip(2, 5)).thenReturn(fieldMocks);
 
         String requestJson = createEvent("ShootPositionEvent", 2, 5);
         Collection<Integer> expectedAdjacentCoordinates = createAdjacentCoordinates(2, 5);

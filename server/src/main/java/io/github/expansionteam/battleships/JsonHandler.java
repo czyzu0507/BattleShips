@@ -33,19 +33,19 @@ class JsonHandler {
                 int x = position.getInt("x");
                 int y = position.getInt("y");
 
-                if (!game.shoot(x, y)) {
+                if (!game.shootOpponentField(x, y)) {
                     return getFieldAlreadyShotEvent(jsonResponse, position);
                 }
 
-                if (!game.isShipHit(x, y)) {
+                if (!game.isOpponentShipHit(x, y)) {
                     return getEmptyFieldHitEventJson(jsonResponse, position);
                 }
 
-                if (!game.isDestroyedShip(x, y)) {
+                if (!game.isOpponentShipDestroyed(x, y)) {
                     return getShipHitEventJson(jsonResponse, position);
                 }
 
-                return getShipDestroyedEventJson(jsonResponse, position, game.getAdjacentToShip(x, y));
+                return getShipDestroyedEventJson(jsonResponse, position, game.getAdjacentToOpponentShip(x, y));
             }
             default:
                 return getNotRecognizedEventJson(jsonResponse);
@@ -100,6 +100,10 @@ class JsonHandler {
         return getJsonEvent(jsonResponse, "EmptyFieldHitEvent", new JSONObject().put("position", position));
     }
 
+    private String getFieldAlreadyShotEvent(JSONObject jsonResponse, JSONObject position) {
+        return getJsonEvent(jsonResponse, "FieldAlreadyShot", new JSONObject().put("position", position));
+    }
+
     private String getShipDestroyedEventJson(JSONObject jsonResponse, JSONObject position, Collection<Field> adjacentToShip) {
         JSONArray adjacentPositions = new JSONArray();
         JSONObject adjacentPosition;
@@ -111,19 +115,8 @@ class JsonHandler {
 
             adjacentPositions.put(adjacentPosition);
         }
-
-        return jsonResponse
-                .put("type", "ShipDestroyedEvent")
-                .put("data", new JSONObject()
-                        .put("position", position)
-                        .put("adjacent", adjacentPositions))
-                .toString();
-    }
-
-    private String getFieldAlreadyShotEvent(JSONObject jsonResponse, JSONObject position) {
-        return jsonResponse
-                .put("type", "FieldAlreadyShot")
-                .put("data", new JSONObject().put("position", position))
-                .toString();
+        return getJsonEvent(jsonResponse, "ShipDestroyedEvent", new JSONObject()
+                .put("position", position)
+                .put("adjacent", adjacentPositions));
     }
 }

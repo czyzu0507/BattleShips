@@ -30,26 +30,28 @@ public class Game {
         }
     }
 
-    public boolean shoot(int x, int y) {
-        return currentBoard().shootField(x, y);
+    public boolean shootOpponentField(int x, int y) {
+        return opponentBoard().shootField(x, y);
     }
 
-    public boolean isDestroyedShip(int x, int y) {
-        Board board = currentBoard();
-        return board.isDestroyedShip(x, y);
+    public boolean isOpponentShipDestroyed(int x, int y) {
+        return opponentBoard().isDestroyedShip(x, y);
     }
 
-    public boolean isShipHit(int x, int y) {
-        return isShipField(currentBoard(), x, y);
+    public boolean isOpponentShipHit(int x, int y) {
+        return isShipField(opponentBoard(), x, y);
     }
 
-    public Collection<Field> getAdjacentToShip(int x, int y) {
-        Board board = currentBoard();
-        return board.getAdjacentToShip(x, y);
+    public Collection<Field> getAdjacentToOpponentShip(int x, int y) {
+        return opponentBoard().getAdjacentToShip(x, y);
     }
 
     private Board currentBoard() {
         return firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
+    }
+
+    private Board opponentBoard() {
+        return firstPlayer() ? secondPlayerBoard : firstPlayerBoard;
     }
 
     private boolean firstPlayer() {
