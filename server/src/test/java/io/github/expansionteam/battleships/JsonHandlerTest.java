@@ -13,11 +13,40 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
 public class JsonHandlerTest {
+
+    @Test
+    public void applyShoot() {
+        // given
+        JsonHandler jsonHandler = new JsonHandler();
+
+        Game gameMock = mock(Game.class);
+        String requestJson = createEvent("ShootPositionEvent", 2, 5);
+
+        // when
+        jsonHandler.apply(requestJson, gameMock);
+
+        // then
+        verify(gameMock, times(1)).shootOpponentField(2, 5);
+    }
+
+    @Test
+    public void applyGeneratingShips() {
+        // given
+        JsonHandler jsonHandler = new JsonHandler();
+
+        Game gameMock = mock(Game.class);
+        String requestJson = new JSONObject().put("type", "GenerateShipsEvent").toString();
+
+        // when
+        jsonHandler.apply(requestJson, gameMock);
+
+        // then
+        verify(gameMock, times(1)).generateRandomShips();
+    }
 
     @Test
     public void responsesToStartGame() {
@@ -27,7 +56,7 @@ public class JsonHandlerTest {
         String requestJson = new JSONObject().put("type", "StartGameEvent").toString();
 
         // when
-        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock, true));
+        JSONObject actualResponse = new JSONObject(jsonHandler.createMessage(requestJson, gameMock, true));
 
         // then
         assertEquals(actualResponse.get("type"), "OpponentArrivedEvent");
@@ -41,7 +70,7 @@ public class JsonHandlerTest {
         String requestJson = new JSONObject().put("type", "NoSuchEvent").toString();
 
         // when
-        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock, true));
+        JSONObject actualResponse = new JSONObject(jsonHandler.createMessage(requestJson, gameMock, true));
 
         // then
         assertEquals(actualResponse.get("type"), "NotRecognizeEvent");
@@ -55,7 +84,7 @@ public class JsonHandlerTest {
         String requestJson = "Not a Json";
 
         // when
-        jsonHandler.resolveAction(requestJson, gameMock, true);
+        jsonHandler.apply(requestJson, gameMock);
     }
 
     @Test
@@ -90,7 +119,7 @@ public class JsonHandlerTest {
                 .toString();
 
         // when
-        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock, true));
+        JSONObject actualResponse = new JSONObject(jsonHandler.createMessage(requestJson, gameMock, true));
         JSONObject data = actualResponse.getJSONObject("data");
         JSONArray ships = data.getJSONArray("ships");
 
@@ -125,12 +154,12 @@ public class JsonHandlerTest {
     @DataProvider
     private Object[][] shootFieldSituations() {
         return new Object[][]{
-                {true, false, true, "PlayerEmptyFieldHitEvent"},
-                {true, false, false, "OpponentEmptyFieldHitEvent"},
-                {true, true, true, "PlayerShipHitEvent"},
-                {true, true, false, "OpponentShipHitEvent"},
-                {false, false, true, "PlayerFieldAlreadyShot"},
-                {false, false, false, "OpponentFieldAlreadyShot"}
+                {true, false, true, "OpponentEmptyFieldHitEvent"},
+                {true, false, false, "PlayerEmptyFieldHitEvent"},
+                {true, true, true, "OpponentShipHitEvent"},
+                {true, true, false, "PlayerShipHitEvent"},
+                {false, false, true, "OpponentFieldAlreadyShot"},
+                {false, false, false, "PlayerFieldAlreadyShot"}
         };
     }
 
@@ -140,7 +169,7 @@ public class JsonHandlerTest {
         JsonHandler jsonHandler = new JsonHandler();
 
         Game gameMock = mock(Game.class);
-        when(gameMock.shootOpponentField(2, 5)).thenReturn(valid);
+        when(gameMock.isOpponentFieldHit(2, 5)).thenReturn(valid);
         when(gameMock.isOpponentShipHit(2, 5)).thenReturn(ship);
         when(gameMock.isOpponentShipDestroyed(2, 5)).thenReturn(false);
 
@@ -150,7 +179,7 @@ public class JsonHandlerTest {
         String requestJson = createEvent("ShootPositionEvent", 2, 5);
 
         // when
-        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock, player));
+        JSONObject actualResponse = new JSONObject(jsonHandler.createMessage(requestJson, gameMock, player));
 
         // then
         assertEquals(actualResponse.getString("type"), event);
@@ -166,10 +195,10 @@ public class JsonHandlerTest {
     @DataProvider
     private Object[][] destroyedShipSituations() {
         return new Object[][]{
-                {false, true, "PlayerShipDestroyedEvent"},
-                {false, false, "OpponentShipDestroyedEvent"},
-                {true, true, "PlayerWonEvent"},
-                {true, false, "OpponentWonEvent"},
+                {false, true, "OpponentShipDestroyedEvent"},
+                {false, false, "PlayerShipDestroyedEvent"},
+                {true, true, "OpponentWonEvent"},
+                {true, false, "PlayerWonEvent"},
         };
     }
 
@@ -179,7 +208,7 @@ public class JsonHandlerTest {
         JsonHandler jsonHandler = new JsonHandler();
 
         Game gameMock = mock(Game.class);
-        when(gameMock.shootOpponentField(2, 5)).thenReturn(true);
+        when(gameMock.isOpponentFieldHit(2, 5)).thenReturn(true);
         when(gameMock.isOpponentShipHit(2, 5)).thenReturn(true);
         when(gameMock.isOpponentShipDestroyed(2, 5)).thenReturn(true);
         when(gameMock.isEnded()).thenReturn(gameEnd);
@@ -191,7 +220,7 @@ public class JsonHandlerTest {
         Collection<Integer> expectedAdjacentCoordinates = createAdjacentCoordinates(2, 5);
 
         // when
-        JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock, player));
+        JSONObject actualResponse = new JSONObject(jsonHandler.createMessage(requestJson, gameMock, player));
 
         // then
         assertEquals(actualResponse.getString("type"), event);
