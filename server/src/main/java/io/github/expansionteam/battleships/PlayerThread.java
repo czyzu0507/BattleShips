@@ -85,13 +85,32 @@ class PlayerThread extends Thread {
 
             cyclicBarrier.await();
 
+            while (parentThread.getGameState() == TURN_GAME) {
 
-            while (true) {
+                if (parentThread.getGameState().getPlayer() == currentPlayer) {
+                    String request = readFromClient();
+                    String ans = generateJSONResponse(request);
+                    writeToClient(ans);
+                    coupledThread.dataOutputStream.writeUTF(ans);
 
-                String jsonRequest = readFromClient();
-                String defaultResponse = generateJSONResponse(jsonRequest);
-                writeToClient(defaultResponse);
+//                    ++i;
+//                    System.out.println("A "+ i);
+//                    if ( i % 2 == 0) {
+//                       parentThread.getGameState().switchPlayer();
+//                        coupledThread.interrupt();
+//                        System.out.println("SWITCHING");
+//                    }
+                } else {
+                    String req = readFromClient();
+                    try {
+                        synchronized (this) {
+                            wait();
+                        }
 
+                    } catch (InterruptedException e) {
+                        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAaa");
+                    }
+                }
 
             }
 
