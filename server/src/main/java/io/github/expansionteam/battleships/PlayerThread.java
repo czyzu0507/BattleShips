@@ -41,14 +41,13 @@ class PlayerThread extends Thread {
 
                 jsonRequest = dataInputStream.readUTF();
                 log.debug("Message Received: " + jsonRequest);
-                jsonResponse = jsonHandler.resolveAction(jsonRequest, game);
+                jsonResponse = jsonHandler.resolveAction(jsonRequest, game, true);
                 dataOutputStream.writeUTF(jsonResponse);
                 log.debug("Message Sent: " + jsonResponse);
                 dataOutputStream.flush();
 
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error("FAILED", e);
         } finally {
             try {
