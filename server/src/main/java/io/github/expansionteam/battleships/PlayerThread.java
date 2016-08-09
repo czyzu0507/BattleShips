@@ -9,8 +9,9 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
-import static io.github.expansionteam.battleships.ConnectionThread.*;
-import static io.github.expansionteam.battleships.ConnectionThread.GameState.*;
+import static io.github.expansionteam.battleships.ConnectionThread.GameState.GENERATING_SHIPS;
+import static io.github.expansionteam.battleships.ConnectionThread.GameState.TURN_GAME;
+import static io.github.expansionteam.battleships.ConnectionThread.Player;
 
 class PlayerThread extends Thread {
     private final SocketChannel socketChannel;
@@ -45,18 +46,14 @@ class PlayerThread extends Thread {
         coupledThread = playerThread;
     }
 
-    private void talkWithClient() throws IOException {
-        writeToClient(generateJSONResponse(readFromClient()));
-    }
-
     private String readFromClient() throws IOException {
         String jsonRequest = dataInputStream.readUTF();
         log.debug("Message Received: " + jsonRequest);
         return jsonRequest;
     }
 
-    private String generateJSONResponse(String jsonRequest) {
-        return jsonHandler.resolveAction(jsonRequest, parentThread.getGameObject(), true);
+    private String generateJSONResponse(String jsonRequest, boolean player) {
+        return jsonHandler.createMessage(jsonRequest, parentThread.getGameObject(), player);
     }
 
     private void writeToClient(String answer) throws IOException {
@@ -72,7 +69,7 @@ class PlayerThread extends Thread {
 
             while (parentThread.getGameState() == GENERATING_SHIPS) {
                 String request = readFromClient();
-                String answer = generateJSONResponse(request);
+                String answer = generateJSONResponse(request, true);
                 String type = JsonHandler.getJSONType(answer);
                 writeToClient(answer);
 
@@ -89,9 +86,9 @@ class PlayerThread extends Thread {
 
                 if (parentThread.getGameState().getPlayer() == currentPlayer) {
                     String request = readFromClient();
-                    String ans = generateJSONResponse(request);
-                    writeToClient(ans);
-                    coupledThread.dataOutputStream.writeUTF(ans);
+                    jsonHandler.apply(request, parentThread.getGameObject());
+                    writeToClient(generateJSONResponse(request, true));
+                    coupledThread.dataOutputStream.writeUTF(generateJSONResponse(request, false));
 
 //                    ++i;
 //                    System.out.println("A "+ i);

@@ -75,7 +75,7 @@ public class Board implements Iterable<Field> {
     public boolean shootField(int x, int y) {
         Field boardField = getFieldFromTheBoard(x, y);
         if (boardField.isHit()) {
-           return false;
+            return false;
         }
         boardField.markAsHit();
         Ship ship = boardField.getParentShip();
@@ -84,6 +84,11 @@ public class Board implements Iterable<Field> {
         }
         markAdjacentFieldsAsHit(ship);
         return true;
+    }
+
+    public boolean isFieldHit(int x, int y) {
+        Field field = getFieldFromTheBoard(x, y);
+        return field.isHit();
     }
 
     public boolean isDestroyedShip(int x, int y) {
