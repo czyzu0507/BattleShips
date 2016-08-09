@@ -128,6 +128,23 @@ public class BoardTest {
         };
     }
 
+    @DataProvider
+    private Object[][] allShipDestroyedData() {
+        Board board1 = new Board.BoardBuilder().build();
+        Board board2 = new Board.BoardBuilder().build();
+        board1.appendShip(new Field(2, 2), HORIZONTAL, 1);
+        board1.shootField(2, 2);
+
+        board2.appendShip(new Field(2, 2), HORIZONTAL, 1);
+        board2.appendShip(new Field(5, 5), HORIZONTAL, 1);
+        board1.shootField(2, 2);
+
+        return new Object[][]{
+                {board1, true},
+                {board2, false},
+        };
+    }
+
     @Test(dataProvider = "positions")
     public void testIfBoardContainsParticularField(Field field, boolean expected) {
         assertEquals(boardSet.contains(field), expected);
@@ -279,5 +296,13 @@ public class BoardTest {
 
         // then
         assertEquals(actualAdjacentFields, expectedAdjacent);
+    }
+
+    @Test(dataProvider = "allShipDestroyedData")
+    public void allShipsDestroyed(Board board, boolean allDestroyed) {
+
+        // given & when && then
+        assertEquals(board.areAllShipsDestroyed(), allDestroyed);
+
     }
 }

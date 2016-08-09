@@ -19,6 +19,7 @@ public class Board implements Iterable<Field> {
     public static class BoardBuilder {
 
         private final Set<Field> board = initializeSet();
+
         private final Map<Integer, Integer> availableShips = initializeMap();
 
         private static Set<Field> initializeSet() {
@@ -91,6 +92,10 @@ public class Board implements Iterable<Field> {
         return parentShip == null ? false : parentShip.isDestroyed();
     }
 
+    public boolean areAllShipsDestroyed() {
+        return ships.stream().allMatch(ship -> ship.isDestroyed());
+    }
+
     public Collection<Field> getAdjacentToShip(int x, int y) {
         Field field = getFieldFromTheBoard(x, y);
         Ship parentShip = field.getParentShip();
@@ -98,6 +103,7 @@ public class Board implements Iterable<Field> {
     }
 
     // when the ship is destroyed
+
     private void markAdjacentFieldsAsHit(Ship hitShip) {
         Set<Field> fields = Ship.generateSetOfAdjacentFields(this, hitShip.occupiedFields);
         fields.forEach(Field::markAsHit);
