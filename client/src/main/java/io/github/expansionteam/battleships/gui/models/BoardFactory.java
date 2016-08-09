@@ -25,7 +25,7 @@ public class BoardFactory {
     }
 
     public PlayerBoard createEmptyPlayerBoard() {
-        Map<Position, Field> fieldsByPosition = new HashMap<>();
+        Map<Position, PlayerField> fieldsByPosition = new HashMap<>();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 Position position = Position.of(x, y);
@@ -41,7 +41,7 @@ public class BoardFactory {
     }
 
     public OpponentBoard createEmptyOpponentBoard() {
-        Map<Position, Field> fieldsByPosition = new HashMap<>();
+        Map<Position, OpponentField> fieldsByPosition = new HashMap<>();
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 Position position = Position.of(x, y);

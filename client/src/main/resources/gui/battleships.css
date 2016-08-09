@@ -12,7 +12,8 @@
 
 .field-was-shot-miss {
     -fx-fill: #76797A;
-    -fx-stroke: #000;
+    -fx-stroke: #2798F5;
+    /*-fx-stroke: #000;*/
     -fx-stroke-width:2;
 }
 
@@ -31,5 +32,17 @@
 .field-shot-hint-legal {
     -fx-fill: #62B547;
     -fx-stroke: #2798F5;
+    -fx-stroke-width:2;
+}
+
+.empty-field-shot-hint-illegal {
+    -fx-fill: #E6320E;
+    -fx-stroke: #2798F5;
+    -fx-stroke-width:2;
+}
+
+.occupied-field-shot-hint-illegal {
+    -fx-fill: #E6320E;
+    -fx-stroke: #E6320E;
     -fx-stroke-width:2;
 }
