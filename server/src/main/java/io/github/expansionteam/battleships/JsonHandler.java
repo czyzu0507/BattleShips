@@ -45,7 +45,11 @@ class JsonHandler {
                     return getShipHitEventJson(jsonResponse, position);
                 }
 
-                return getShipDestroyedEventJson(jsonResponse, position, game.getAdjacentToOpponentShip(x, y));
+                if (!game.isEnded()) {
+                    return getShipDestroyedEventJson(jsonResponse, position, game.getAdjacentToOpponentShip(x, y));
+                }
+
+                return getGameWonEventJson(jsonResponse, position, game.getAdjacentToOpponentShip(x, y));
             }
             default:
                 return getNotRecognizedEventJson(jsonResponse);
@@ -105,6 +109,18 @@ class JsonHandler {
     }
 
     private String getShipDestroyedEventJson(JSONObject jsonResponse, JSONObject position, Collection<Field> adjacentToShip) {
+        return getJsonEvent(jsonResponse, "ShipDestroyedEvent", new JSONObject()
+                .put("position", position)
+                .put("adjacent", createAdjacentPositionJsonArray(adjacentToShip)));
+    }
+
+    private String getGameWonEventJson(JSONObject jsonResponse, JSONObject position, Collection<Field> adjacentToShip) {
+        return getJsonEvent(jsonResponse, "GameWonEvent", new JSONObject()
+                .put("position", position)
+                .put("adjacent", createAdjacentPositionJsonArray(adjacentToShip)));
+    }
+
+    private JSONArray createAdjacentPositionJsonArray(Collection<Field> adjacentToShip) {
         JSONArray adjacentPositions = new JSONArray();
         JSONObject adjacentPosition;
 
@@ -115,8 +131,6 @@ class JsonHandler {
 
             adjacentPositions.put(adjacentPosition);
         }
-        return getJsonEvent(jsonResponse, "ShipDestroyedEvent", new JSONObject()
-                .put("position", position)
-                .put("adjacent", adjacentPositions));
+        return adjacentPositions;
     }
 }

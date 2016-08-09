@@ -46,6 +46,10 @@ public class Game {
         return opponentBoard().getAdjacentToShip(x, y);
     }
 
+    public boolean isEnded() {
+        return opponentBoard().areAllShipsDestroyed();
+    }
+
     private Board currentBoard() {
         return firstPlayer() ? firstPlayerBoard : secondPlayerBoard;
     }

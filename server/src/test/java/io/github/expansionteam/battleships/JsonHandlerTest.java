@@ -121,7 +121,7 @@ public class JsonHandlerTest {
         assertEquals(orientation2, "VERTICAL");
         assertEquals(size2, 2);
     }
-    
+
     @DataProvider
     private Object[][] shootFieldSituations() {
         return new Object[][]{
@@ -160,8 +160,16 @@ public class JsonHandlerTest {
         assertEquals(y, 5);
     }
 
-    @Test
-    public void responsesToDestroyingShip() {
+    @DataProvider
+    private Object[][] destroyShipSituations() {
+        return new Object[][]{
+                {false, "ShipDestroyedEvent"},
+                {true, "GameWonEvent"},
+        };
+    }
+
+    @Test(dataProvider = "destroyShipSituations")
+    public void responsesToDestroyingShip(boolean gameEnd, String event) {
         // given
         JsonHandler jsonHandler = new JsonHandler();
 
@@ -169,6 +177,7 @@ public class JsonHandlerTest {
         when(gameMock.shootOpponentField(2, 5)).thenReturn(true);
         when(gameMock.isOpponentShipHit(2, 5)).thenReturn(true);
         when(gameMock.isOpponentShipDestroyed(2, 5)).thenReturn(true);
+        when(gameMock.isEnded()).thenReturn(gameEnd);
 
         Collection<Field> fieldMocks = createAdjacentFields(2, 5);
         when(gameMock.getAdjacentToOpponentShip(2, 5)).thenReturn(fieldMocks);
@@ -180,7 +189,7 @@ public class JsonHandlerTest {
         JSONObject actualResponse = new JSONObject(jsonHandler.resolveAction(requestJson, gameMock));
 
         // then
-        assertEquals(actualResponse.getString("type"), "ShipDestroyedEvent");
+        assertEquals(actualResponse.getString("type"), event);
 
         JSONObject shootPosition = actualResponse.getJSONObject("data").getJSONObject("position");
         int x = shootPosition.getInt("x");
