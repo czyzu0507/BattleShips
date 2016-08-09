@@ -12,6 +12,7 @@ import java.util.concurrent.CyclicBarrier;
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.GENERATING_SHIPS;
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.TURN_GAME;
 import static io.github.expansionteam.battleships.ConnectionThread.Player;
+import static io.github.expansionteam.battleships.JsonHandler.*;
 
 class PlayerThread extends Thread {
     private final SocketChannel socketChannel;
@@ -71,7 +72,7 @@ class PlayerThread extends Thread {
                 String request = readFromClient();
                 jsonRequestState = jsonHandler.apply(request, parentThread.getGameObject());
                 String answer = generateJSONResponse(request, true, jsonRequestState);
-                String type = JsonHandler.getJSONType(answer);
+                String type = getJSONType(answer);
                 writeToClient(answer);
 
                 if (type.equals("ShipsGeneratedEvent")) {
@@ -88,18 +89,19 @@ class PlayerThread extends Thread {
                 if (parentThread.getGameState().getPlayer() == currentPlayer) {
                     String request = readFromClient();
                     jsonRequestState = jsonHandler.apply(request, parentThread.getGameObject());
-                    writeToClient(generateJSONResponse(request, true, jsonRequestState));
+                    String response = generateJSONResponse(request, true, jsonRequestState);
+                    writeToClient(response);
                     coupledThread.dataOutputStream.writeUTF(generateJSONResponse(request, false, jsonRequestState));
 
-//                    ++i;
-//                    System.out.println("A "+ i);
-//                    if ( i % 2 == 0) {
-//                       parentThread.getGameState().switchPlayer();
-//                        coupledThread.interrupt();
-//                        System.out.println("SWITCHING");
-//                    }
+                    log.info(parentThread.getGameState().getPlayer());
+                    log.debug(response);
+
+                    if (getJSONType(response).equals("EmptyFieldHitEvent")) {
+                        parentThread.getGameState().switchPlayer();
+                        coupledThread.interrupt();
+                    }
                 } else {
-                    String req = readFromClient();
+                    writeToClient("ready");
                     try {
                         synchronized (this) {
                             wait();
@@ -109,12 +111,9 @@ class PlayerThread extends Thread {
                         log.trace(e);
                     }
                 }
-
             }
 
-        } catch (IOException e) {
-            log.trace(e);
-        } catch (InterruptedException | BrokenBarrierException e) {
+        } catch (IOException | InterruptedException | BrokenBarrierException e) {
             log.trace(e);
         } finally {
             try {
