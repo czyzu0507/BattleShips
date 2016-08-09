@@ -6,7 +6,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.*;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import static io.github.expansionteam.battleships.ConnectionThread.*;
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.*;
@@ -17,47 +18,86 @@ class PlayerThread extends Thread {
     private final JsonHandler jsonHandler = new JsonHandler();
     private final Player currentPlayer;
 
-    // TODO: consider moving it to local vars (depends on handling players disconnetion)
     private PlayerThread coupledThread = null;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
-
     private final ConnectionThread parentThread;
+
+    private CyclicBarrier cyclicBarrier;
 
     PlayerThread(SocketChannel socketChannel, ConnectionThread parentThread, Player currentPlayer) {
         this.socketChannel = socketChannel;
         this.parentThread = parentThread;
         this.currentPlayer = currentPlayer;
+        try {
+            dataInputStream = new DataInputStream(socketChannel.socket().getInputStream());
+            dataOutputStream = new DataOutputStream(socketChannel.socket().getOutputStream());
+        } catch (IOException e) {
+            log.trace(e);
+        }
+    }
+
+    void setCyclicBarrier(CyclicBarrier cyclicBarrier) {
+        this.cyclicBarrier = cyclicBarrier;
     }
 
     void setThreadToInform(PlayerThread playerThread) {
         coupledThread = playerThread;
     }
 
+    private void talkWithClient() throws IOException {
+        writeToClient(generateJSONResponse(readFromClient()));
+    }
+
+    private String readFromClient() throws IOException {
+        String jsonRequest = dataInputStream.readUTF();
+        log.debug("Message Received: " + jsonRequest);
+        return jsonRequest;
+    }
+
+    private String generateJSONResponse(String jsonRequest) {
+        return jsonHandler.resolveAction(jsonRequest, parentThread.getGameObject(), true);
+    }
+
+    private void writeToClient(String answer) throws IOException {
+        dataOutputStream.writeUTF(answer);
+        log.debug("Message Sent: " + answer);
+        dataOutputStream.flush();
+    }
+
     @Override
     public void run() {
         try {
-            dataInputStream = new DataInputStream(socketChannel.socket().getInputStream());
-            dataOutputStream = new DataOutputStream(socketChannel.socket().getOutputStream());
-
-            sleep(1000);
+            sleep(50);
 
             while (parentThread.getGameState() == GENERATING_SHIPS) {
+                String request = readFromClient();
+                String answer = generateJSONResponse(request);
+                String type = JsonHandler.getJSONType(answer);
+                writeToClient(answer);
 
-                String jsonRequest = dataInputStream.readUTF();
-                log.debug("Message Received: " + jsonRequest);
-                String jsonResponse = jsonHandler.resolveAction(jsonRequest, parentThread.getGameObject(), true);
-                dataOutputStream.writeUTF(jsonResponse);
-                log.debug("Message Sent: " + jsonResponse);
-                dataOutputStream.flush();
+                if (type.equals("ShipsGeneratedEvent")) {
+                    break;
+                }
 
+                sleep(100);
             }
-            System.out.println("HERE");
+
+            cyclicBarrier.await();
+
+
             while (true) {
-                talkWithClient();
-                sleep(1);
+
+                String jsonRequest = readFromClient();
+                String defaultResponse = generateJSONResponse(jsonRequest);
+                writeToClient(defaultResponse);
+
+
             }
-        } catch (Exception e) {
+
+        } catch (IOException e) {
+            log.trace(e);
+        } catch (InterruptedException | BrokenBarrierException e) {
             log.trace(e);
         } finally {
             try {
@@ -66,32 +106,5 @@ class PlayerThread extends Thread {
                 log.trace(e);
             }
         }
-    }
-
-    private void talkWithClient() throws IOException {
-        String jsonRequest = "", jsonResponse;
-        Callable<String> readClientTask = () -> dataInputStream.readUTF();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<String> jsonRequestFuture = executor.submit(readClientTask);
-
-        try {
-            jsonRequest = jsonRequestFuture.get(50, TimeUnit.MILLISECONDS);
-            executor.shutdownNow();
-        } catch (TimeoutException | InterruptedException | ExecutionException e) {
-            log.trace(e);
-        }
-
-        log.debug(jsonRequest);
-
-        if (jsonRequest.length() == 0) {
-            // jsonRequestFuture.cancel(false);
-            return;
-        }
-
-        log.debug("Message Received: " + jsonRequest);
-        jsonResponse = jsonHandler.resolveAction(jsonRequest, parentThread.getGameObject(), true);
-        dataOutputStream.writeUTF(jsonResponse);
-        log.debug("Message Sent: " + jsonResponse);
-        dataOutputStream.flush();
     }
 }

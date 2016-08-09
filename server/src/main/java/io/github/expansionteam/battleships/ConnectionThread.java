@@ -2,6 +2,8 @@ package io.github.expansionteam.battleships;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.*;
 import static io.github.expansionteam.battleships.ConnectionThread.Player.*;
@@ -14,6 +16,7 @@ class ConnectionThread implements Runnable {
     private final int gameIndex;
     private final Game game = new Game();
     private GameState gameState = INITIAL;
+    private CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
 
     private final static Logger log = getLogger(ConnectionThread.class);
 
@@ -30,6 +33,9 @@ class ConnectionThread implements Runnable {
 
         p1.setName("Game_" + gameIndex + "_Player_1");
         p2.setName("Game_" + gameIndex + "_Player_2");
+
+        p1.setCyclicBarrier(cyclicBarrier);
+        p2.setCyclicBarrier(cyclicBarrier);
 
         p1.start();
         p2.start();
@@ -51,6 +57,13 @@ class ConnectionThread implements Runnable {
         }
 
         gameState = TURN_GAME;
+
+        try {
+            cyclicBarrier.await();
+        }
+        catch (InterruptedException | BrokenBarrierException e) {
+            log.trace(e);
+        }
 
         try {
             p1.join();

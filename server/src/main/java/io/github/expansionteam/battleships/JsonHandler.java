@@ -9,6 +9,9 @@ import org.json.JSONObject;
 import java.util.Collection;
 
 class JsonHandler {
+    static String getJSONType(String json) {
+        return new JSONObject(json).getString("type");
+    }
 
     String resolveAction(String json, Game game, boolean player) {
         final JSONObject jsonRequest = new JSONObject(json);
