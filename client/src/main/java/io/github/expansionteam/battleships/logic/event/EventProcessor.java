@@ -2,6 +2,7 @@ package io.github.expansionteam.battleships.logic.event;
 
 import com.google.inject.Inject;
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
+import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
 import io.github.expansionteam.battleships.logic.AsyncTask;
 import io.github.expansionteam.battleships.logic.message.Message;
@@ -34,6 +35,13 @@ public class EventProcessor {
 
     public void processEvent(GenerateShipsEvent event) {
         log.debug("Process GenerateShipsEvent.");
+
+        Message message = messageFactory.createFromEvent(event);
+        asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));
+    }
+
+    public void processEvent(ShootPositionEvent event) {
+        log.debug("Process ShootPositionEvent.");
 
         Message message = messageFactory.createFromEvent(event);
         asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));

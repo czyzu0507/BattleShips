@@ -1,5 +1,6 @@
 package io.github.expansionteam.battleships.logic.message;
 
+import org.json.JSONObject;
 import org.testng.annotations.Test;
 
 import static org.mockito.Matchers.isA;
@@ -12,7 +13,7 @@ public class ProcessMessageTaskTest {
     public void run() {
         // Given
         MessageProcessor messageProcessorMock = mock(MessageProcessor.class);
-        Message message = new Message("");
+        Message message = new Message("", new JSONObject());
         ProcessMessageTask processMessageTask = new ProcessMessageTask(messageProcessorMock, message);
 
         // When

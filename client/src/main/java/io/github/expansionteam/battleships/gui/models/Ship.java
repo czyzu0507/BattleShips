@@ -1,32 +1,40 @@
 package io.github.expansionteam.battleships.gui.models;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import com.google.common.base.MoreObjects;
+
+import java.util.*;
 
 public class Ship {
 
-    private final Map<Position, Field> fieldsByPosition;
+    private final Position position;
+    private final ShipSize size;
+    private final ShipOrientation orientation;
+    private final Set<Position> positions;
 
-    Ship(Map<Position, Field> fieldsByPosition) {
-        this.fieldsByPosition = fieldsByPosition;
+    Ship(Position position, ShipSize size, ShipOrientation orientation, Set<Position> positions) {
+        this.position = position;
+        this.size = size;
+        this.orientation = orientation;
+        this.positions = positions;
     }
 
     public static Ship createHorizontal(Position position, ShipSize shipSize) {
-        return create(ShipOrientation.HORIZONTAL, position, shipSize);
+        return create(position, shipSize, ShipOrientation.HORIZONTAL);
     }
 
     public static Ship createVertical(Position position, ShipSize shipSize) {
-        return create(ShipOrientation.VERTICAL, position, shipSize);
+        return create(position, shipSize, ShipOrientation.VERTICAL);
     }
 
-    private static Ship create(ShipOrientation orientation, Position position, ShipSize shipSize) {
-        Map<Position, Field> fieldsByPosition = new HashMap<>();
+    private static Ship create(Position position, ShipSize size, ShipOrientation orientation) {
+        Set<Position> positions = new HashSet<>();
 
-        for (int i = 0; i < shipSize.getValue(); i++) {
-            fieldsByPosition.put(position, Field.FieldBuilder.playerField(position).occupied().build());
+        Position oldPosition = position;
 
-            if (i == shipSize.getValue() - 1) {
+        for (int i = 0; i < size.getValue(); i++) {
+            positions.add(position);
+
+            if (i == size.getValue() - 1) {
                 break;
             }
             if (orientation.equals(ShipOrientation.HORIZONTAL)) {
@@ -36,11 +44,23 @@ public class Ship {
             }
         }
 
-        return new Ship(fieldsByPosition);
+        return new Ship(oldPosition, size, orientation, positions);
     }
 
-    public Map<Position, Field> getFieldsByPosition() {
-        return fieldsByPosition;
+    public Position getPosition() {
+        return position;
+    }
+
+    public ShipSize getSize() {
+        return size;
+    }
+
+    public ShipOrientation getOrientation() {
+        return orientation;
+    }
+
+    public Set<Position> getPositions() {
+        return positions;
     }
 
     @Override
@@ -50,11 +70,21 @@ public class Ship {
         }
 
         Ship other = (Ship) o;
-        return Objects.equals(this.fieldsByPosition, other.fieldsByPosition);
+        return Objects.equals(this.positions, other.positions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fieldsByPosition);
+        return Objects.hash(positions);
     }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(Ship.class)
+                .add("position", position)
+                .add("size", size)
+                .add("orientation", orientation)
+                .toString();
+    }
+
 }

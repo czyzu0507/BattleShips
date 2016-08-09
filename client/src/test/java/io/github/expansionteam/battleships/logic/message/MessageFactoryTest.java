@@ -1,7 +1,9 @@
 package io.github.expansionteam.battleships.logic.message;
 
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
+import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
+import io.github.expansionteam.battleships.common.events.data.PositionData;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
 
@@ -18,8 +20,8 @@ public class MessageFactoryTest {
         Message message = messageFactory.createFromEvent(new StartGameEvent());
 
         // Then
-        JSONObject jsonObject = new JSONObject(message.getBody());
-        assertThat(jsonObject.getString("type")).isEqualTo("StartGameEvent");
+        assertThat(message.getType()).isEqualTo("StartGameEvent");
+        assertThat(message.getData()).isNotNull();
     }
 
     @Test
@@ -31,8 +33,23 @@ public class MessageFactoryTest {
         Message message = messageFactory.createFromEvent(new GenerateShipsEvent());
 
         // Then
-        JSONObject jsonObject = new JSONObject(message.getBody());
-        assertThat(jsonObject.getString("type")).isEqualTo("GenerateShipsEvent");
+        assertThat(message.getType()).isEqualTo("GenerateShipsEvent");
+        assertThat(message.getData()).isNotNull();
+    }
+
+    @Test
+    public void createMessageFromShootPositionEvent() {
+        // Given
+        MessageFactory messageFactory = new MessageFactory();
+
+        // When
+        ShootPositionEvent shootPositionEvent = new ShootPositionEvent(PositionData.of(1, 3));
+        Message message = messageFactory.createFromEvent(shootPositionEvent);
+
+        // Then
+        assertThat(message.getType()).isEqualTo("ShootPositionEvent");
+        assertThat(message.getData().getJSONObject("position").getInt("x")).isEqualTo(1);
+        assertThat(message.getData().getJSONObject("position").getInt("y")).isEqualTo(3);
     }
 
     @Test
@@ -41,10 +58,14 @@ public class MessageFactoryTest {
         MessageFactory messageFactory = new MessageFactory();
 
         // When
-        Message message = messageFactory.createFromJson("{}");
+        Message message = messageFactory.createFromJson(new JSONObject()
+                .put("type", "Type")
+                .put("data", new JSONObject())
+                .toString());
 
         // Then
-        assertThat(message.getBody()).isEqualTo("{}");
+        assertThat(message.getType()).isEqualTo("Type");
+        assertThat(message.getData()).isNotNull();
     }
 
 }

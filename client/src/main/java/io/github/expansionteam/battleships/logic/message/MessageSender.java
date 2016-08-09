@@ -27,18 +27,18 @@ public class MessageSender {
             DataInputStream inputStream = new DataInputStream(socketChannel.socket().getInputStream());
             DataOutputStream outputStream = new DataOutputStream(socketChannel.socket().getOutputStream());
 
-            outputStream.writeUTF(message.getBody());
+            outputStream.writeUTF(message.toString());
             outputStream.flush();
 
-            String json = inputStream.readUTF();
-            return messageFactory.createFromJson(json);
-        } catch (EOFException e) {
-            log.debug("Enemy has lost the connection.");
-        } catch (IOException e) {
-            e.printStackTrace();
+            String jsonText = inputStream.readUTF();
+            return messageFactory.createFromJson(jsonText);
+        } catch (EOFException ex) {
+            log.info("Enemy has lost the connection.");
+        } catch (IOException ex) {
+            log.error("", ex);
         }
 
-        log.debug("Error.");
-        throw new IllegalStateException("Error.");
+        throw new IllegalStateException("We should handle that but for now I don't know how.");
     }
+
 }
