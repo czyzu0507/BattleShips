@@ -13,6 +13,7 @@ import static io.github.expansionteam.battleships.ConnectionThread.*;
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.GENERATING_SHIPS;
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.TURN_GAME;
 import static io.github.expansionteam.battleships.ConnectionThread.Player;
+import static io.github.expansionteam.battleships.ConnectionThread.Player.*;
 import static io.github.expansionteam.battleships.JsonHandler.*;
 
 class PlayerThread extends Thread {
@@ -74,14 +75,14 @@ class PlayerThread extends Thread {
         try {
             sleep(50);
             RequestState requestState;
+
             while (parentThread.getGameState() == GENERATING_SHIPS) {
                 String request = readFromClient();
                 requestState = jsonHandler.apply(request, parentThread.getGameObject());
-                String answer = generateJSONResponse(request, true, requestState);
-                String type = getJSONType(answer);
+                String answer = generateJSONResponse(request, currentPlayer == PLAYER1, requestState);
                 writeToClient(answer);
 
-                if (type.equals("ShipsGeneratedEvent")) {
+                if (getJSONType(answer).equals("ShipsGeneratedEvent")) {
                     break;
                 }
 
