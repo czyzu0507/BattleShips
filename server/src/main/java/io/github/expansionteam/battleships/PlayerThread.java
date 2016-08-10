@@ -52,8 +52,8 @@ class PlayerThread extends Thread {
         return jsonRequest;
     }
 
-    private String generateJSONResponse(String jsonRequest, boolean player) {
-        return jsonHandler.createMessage(jsonRequest, parentThread.getGameObject(), player);
+    private String generateJSONResponse(String jsonRequest, boolean player, RequestState jsonRequestState) {
+        return jsonHandler.createMessage(jsonRequest, parentThread.getGameObject(), player, jsonRequestState);
     }
 
     private void writeToClient(String answer) throws IOException {
@@ -66,10 +66,11 @@ class PlayerThread extends Thread {
     public void run() {
         try {
             sleep(50);
-
+            RequestState jsonRequestState;
             while (parentThread.getGameState() == GENERATING_SHIPS) {
                 String request = readFromClient();
-                String answer = generateJSONResponse(request, true);
+                jsonRequestState = jsonHandler.apply(request, parentThread.getGameObject());
+                String answer = generateJSONResponse(request, true, jsonRequestState);
                 String type = JsonHandler.getJSONType(answer);
                 writeToClient(answer);
 
@@ -86,9 +87,9 @@ class PlayerThread extends Thread {
 
                 if (parentThread.getGameState().getPlayer() == currentPlayer) {
                     String request = readFromClient();
-                    jsonHandler.apply(request, parentThread.getGameObject());
-                    writeToClient(generateJSONResponse(request, true));
-                    coupledThread.dataOutputStream.writeUTF(generateJSONResponse(request, false));
+                    jsonRequestState = jsonHandler.apply(request, parentThread.getGameObject());
+                    writeToClient(generateJSONResponse(request, true, jsonRequestState));
+                    coupledThread.dataOutputStream.writeUTF(generateJSONResponse(request, false, jsonRequestState));
 
 //                    ++i;
 //                    System.out.println("A "+ i);
@@ -105,7 +106,7 @@ class PlayerThread extends Thread {
                         }
 
                     } catch (InterruptedException e) {
-                        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAaa");
+                        log.trace(e);
                     }
                 }
 
