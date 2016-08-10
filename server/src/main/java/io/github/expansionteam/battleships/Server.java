@@ -9,7 +9,7 @@ import static org.apache.log4j.Logger.*;
 import org.apache.log4j.Logger;
 
 public class Server {
-    private final int port = 1234;
+    private static final int port = 1234;
     private ServerSocketChannel serverSocket;
     private static int n = 0;   // simple pair counter
 
