@@ -9,6 +9,7 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import static io.github.expansionteam.battleships.ConnectionThread.*;
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.GENERATING_SHIPS;
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.TURN_GAME;
 import static io.github.expansionteam.battleships.ConnectionThread.Player;
@@ -84,22 +85,28 @@ class PlayerThread extends Thread {
 
             cyclicBarrier.await();
 
-            while (parentThread.getGameState() == TURN_GAME) {
+            GameState gameState;
 
-                if (parentThread.getGameState().getPlayer() == currentPlayer) {
+            while ((gameState = parentThread.getGameState()) == TURN_GAME) {
+                Player player = gameState.getPlayer();
+
+                if (player == currentPlayer) {
                     String request = readFromClient();
                     jsonRequestState = jsonHandler.apply(request, parentThread.getGameObject());
-                    String response = generateJSONResponse(request, true, jsonRequestState);
-                    writeToClient(response);
-                    coupledThread.dataOutputStream.writeUTF(generateJSONResponse(request, false, jsonRequestState));
+                    String playerResponse = generateJSONResponse(request, true, jsonRequestState);
+                    String opponentResponse = generateJSONResponse(request, false, jsonRequestState);
+                    writeToClient(playerResponse);
+                    coupledThread.dataOutputStream.writeUTF(opponentResponse);
 
                     log.info(parentThread.getGameState().getPlayer());
-                    log.debug(response);
+                    log.debug(playerResponse);
+                    log.debug(opponentResponse);
 
-                    if (getJSONType(response).equals("EmptyFieldHitEvent")) {
+                    if (getJSONType(playerResponse).equals("EmptyFieldHitEvent")) {
                         parentThread.getGameState().switchPlayer();
                         coupledThread.interrupt();
                     }
+
                 } else {
                     writeToClient("ready");
                     try {
