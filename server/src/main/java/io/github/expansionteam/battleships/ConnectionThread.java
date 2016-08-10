@@ -94,10 +94,6 @@ class ConnectionThread implements Runnable {
         return this.gameState;
     }
 
-    synchronized void switchPlayer() {
-            gameState.switchPlayer();
-    }
-
     enum GameState {
         INITIAL {
             @Override
