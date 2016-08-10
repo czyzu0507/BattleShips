@@ -13,24 +13,83 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import static io.github.expansionteam.battleships.RequestState.GAME_STARTED;
+import static io.github.expansionteam.battleships.RequestState.NOT_RECOGNIZED_EVENT;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
 public class JsonHandlerTest {
 
+    @Test(expectedExceptions = JSONException.class)
+    public void throwsExceptionWhenNotJson() {
+        // given
+        Game gameMock = mock(Game.class);
+        JsonHandler jsonHandler = new JsonHandler();
+        String requestJson = "Not a Json";
+
+        // when
+        jsonHandler.apply(requestJson, gameMock);
+    }
+
     @Test
-    public void applyShoot() {
+    public void applyNotRecognizeEvent() {
         // given
         JsonHandler jsonHandler = new JsonHandler();
 
         Game gameMock = mock(Game.class);
+        String requestJson = new JSONObject().put("type", "Unknown Type").toString();
+
+        // when
+        RequestState actualState = jsonHandler.apply(requestJson, gameMock);
+
+        // then
+        assertEquals(actualState, NOT_RECOGNIZED_EVENT);
+    }
+
+    @Test
+    public void applyStartGame() {
+        // given
+        JsonHandler jsonHandler = new JsonHandler();
+
+        Game gameMock = mock(Game.class);
+        String requestJson = new JSONObject().put("type", "StartGameEvent").toString();
+
+        // when
+        RequestState actualState = jsonHandler.apply(requestJson, gameMock);
+
+        // then
+        assertEquals(actualState, GAME_STARTED);
+    }
+
+    @DataProvider
+    private Object[][] applyShootSituations() {
+        return new Object[][]{
+                {false, false, false, false, RequestState.FIELD_ALREADY_HIT},
+                {true, false, false, false, RequestState.EMPTY_FIELD_HIT},
+                {true, true, false, false, RequestState.SHIP_HIT},
+                {true, true, true, false, RequestState.SHIP_DESTROYED},
+                {true, true, true, true, RequestState.GAME_END},
+        };
+    }
+
+    @Test(dataProvider = "applyShootSituations")
+    public void applyShoot(Boolean fieldHit, Boolean shipHit, Boolean shipDestroyed, Boolean gameEnd, RequestState expectedState) {
+        // given
+        JsonHandler jsonHandler = new JsonHandler();
+
+        Game gameMock = mock(Game.class);
+        when(gameMock.shootOpponentField(2, 5)).thenReturn(fieldHit);
+        when(gameMock.isOpponentShipHit(2, 5)).thenReturn(shipHit);
+        when(gameMock.isOpponentShipDestroyed(2, 5)).thenReturn(shipDestroyed);
+        when(gameMock.isEnded()).thenReturn(gameEnd);
         String requestJson = createEvent("ShootPositionEvent", 2, 5);
 
         // when
-        jsonHandler.apply(requestJson, gameMock);
+        RequestState actualState = jsonHandler.apply(requestJson, gameMock);
 
         // then
         verify(gameMock, times(1)).shootOpponentField(2, 5);
+        assertEquals(actualState, expectedState);
     }
 
     @Test
@@ -78,17 +137,6 @@ public class JsonHandlerTest {
 
         // then
         assertEquals(actualResponse.get("type"), "NotRecognizeEvent");
-    }
-
-    @Test(expectedExceptions = JSONException.class)
-    public void throwsExceptionWhenNotJson() {
-        // given
-        Game gameMock = mock(Game.class);
-        JsonHandler jsonHandler = new JsonHandler();
-        String requestJson = "Not a Json";
-
-        // when
-        jsonHandler.apply(requestJson, gameMock);
     }
 
     @Test
