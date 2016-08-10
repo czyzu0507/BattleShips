@@ -63,7 +63,6 @@ class JsonHandler {
         }
     }
 
-
     RequestState apply(String json, Game game) {
         final JSONObject jsonRequest = new JSONObject(json);
         final String type = new JSONObject(json).getString("type");
@@ -83,11 +82,9 @@ class JsonHandler {
                 int x = position.getInt("x");
                 int y = position.getInt("y");
 
-                if (game.isOpponentFieldHit(x, y)) {
+                if (!game.shootOpponentField(x, y)) {
                     return RequestState.FIELD_ALREADY_HIT;
                 }
-
-                game.shootOpponentField(x, y);
 
                 if (!game.isOpponentShipHit(x, y)) {
                     return RequestState.EMPTY_FIELD_HIT;
@@ -117,11 +114,13 @@ class JsonHandler {
     }
 
     private String getNotRecognizedEventJson(JSONObject jsonResponse, boolean player) {
-        return getJsonEvent(jsonResponse, "NotRecognizeEvent", player, new JSONObject());
+        return getJsonEvent(jsonResponse, "NotRecognizeEvent", player, new JSONObject()
+                .put("nextTurn", player ? "PLAYER" : "OPPONENT"));
     }
 
     private String getOpponentArrivedEventJson(JSONObject jsonResponse, boolean player) {
-        return getJsonEvent(jsonResponse, "OpponentArrivedEvent", player, new JSONObject());
+        return getJsonEvent(jsonResponse, "OpponentArrivedEvent", player, new JSONObject()
+                .put("nextTurn", "PLAYER"));
     }
 
     private String getShipsGeneratedEventJson(JSONObject jsonResponse, boolean player, Collection<Ship> ships) {
@@ -146,25 +145,34 @@ class JsonHandler {
             shipsJsonArray.put(shipJsonObject);
         }
 
-        return getJsonEvent(jsonResponse, "ShipsGeneratedEvent", player, new JSONObject().put("ships", shipsJsonArray));
+        return getJsonEvent(jsonResponse, "ShipsGeneratedEvent", player, new JSONObject()
+                .put("nextTurn", player ? "PLAYER" : "OPPONENT")
+                .put("ships", shipsJsonArray));
     }
 
     private String getShipHitEventJson(JSONObject jsonResponse, boolean player, JSONObject position) {
-        return getJsonEvent(jsonResponse, "ShipHitEvent", player, new JSONObject().put("position", position));
+        return getJsonEvent(jsonResponse, "ShipHitEvent", player, new JSONObject()
+                .put("nextTurn", player ? "PLAYER" : "OPPONENT")
+                .put("position", position));
     }
 
     private String getEmptyFieldHitEventJson(JSONObject jsonResponse, boolean player, JSONObject position) {
-        return getJsonEvent(jsonResponse, "EmptyFieldHitEvent", player, new JSONObject().put("position", position));
+        return getJsonEvent(jsonResponse, "EmptyFieldHitEvent", player, new JSONObject()
+                .put("nextTurn", player ? "OPPONENT" : "PLAYER")
+                .put("position", position));
     }
 
     private String getFieldAlreadyShotEvent(JSONObject jsonResponse, boolean player, JSONObject position) {
-        return getJsonEvent(jsonResponse, "FieldAlreadyShot", player, new JSONObject().put("position", position));
+        return getJsonEvent(jsonResponse, "FieldAlreadyShot", player, new JSONObject()
+                .put("nextTurn", player ? "PLAYER" : "OPPONENT")
+                .put("position", position));
     }
 
     private String getShipDestroyedEventJson(JSONObject jsonResponse, boolean player, JSONObject position, Collection<Field> adjacentToShip) {
         return getJsonEvent(jsonResponse, "ShipDestroyedEvent", player, new JSONObject()
                 .put("position", position)
-                .put("adjacent", createAdjacentPositionJsonArray(adjacentToShip)));
+                .put("adjacent", createAdjacentPositionJsonArray(adjacentToShip))
+                .put("nextTurn", player ? "PLAYER" : "OPPONENT"));
     }
 
     private String getGameWonEventJson(JSONObject jsonResponse, boolean player, JSONObject position, Collection<Field> adjacentToShip) {

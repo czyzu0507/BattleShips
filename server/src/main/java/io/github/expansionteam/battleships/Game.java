@@ -34,10 +34,6 @@ public class Game {
         return opponentBoard().shootField(x, y);
     }
 
-    public boolean isOpponentFieldHit(int x, int y) {
-        return opponentBoard().isFieldHit(x, y);
-    }
-
     public boolean isOpponentShipDestroyed(int x, int y) {
         return opponentBoard().isDestroyedShip(x, y);
     }
