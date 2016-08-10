@@ -16,7 +16,8 @@ class ConnectionThread implements Runnable {
     private final int gameIndex;
     private final Game game = new Game();
     private GameState gameState = INITIAL;
-    private CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
+    private final CyclicBarrier cyclicBarrierForStatesSynchronization = new CyclicBarrier(3);
+    private final CyclicBarrier cyclicBarrierForClientTransmissionSynch = new CyclicBarrier(2);
 
     private final static Logger log = getLogger(ConnectionThread.class);
 
@@ -34,8 +35,11 @@ class ConnectionThread implements Runnable {
         p1.setName("Game_" + gameIndex + "_Player_1");
         p2.setName("Game_" + gameIndex + "_Player_2");
 
-        p1.setCyclicBarrier(cyclicBarrier);
-        p2.setCyclicBarrier(cyclicBarrier);
+        p1.setBarrierForStateRendezvous(cyclicBarrierForStatesSynchronization);
+        p2.setBarrierForStateRendezvous(cyclicBarrierForStatesSynchronization);
+
+        p1.setBarrierForTransmissionSynchronization(cyclicBarrierForClientTransmissionSynch);
+        p2.setBarrierForTransmissionSynchronization(cyclicBarrierForClientTransmissionSynch);
 
         p1.start();
         p2.start();
@@ -59,7 +63,7 @@ class ConnectionThread implements Runnable {
         gameState = TURN_GAME;
 
         try {
-            cyclicBarrier.await();
+            cyclicBarrierForStatesSynchronization.await();
         }
         catch (InterruptedException | BrokenBarrierException e) {
             log.trace(e);
