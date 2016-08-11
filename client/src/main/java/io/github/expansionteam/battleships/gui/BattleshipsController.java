@@ -157,7 +157,7 @@ public class BattleshipsController implements Initializable {
         event.getAdjacentPositions().stream().forEach(p -> opponentBoard.positionWasShotAndMissed(Position.of(p.getX(), p.getY())));
 
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Game over");
             alert.setContentText("You won!");
             alert.showAndWait();
@@ -173,7 +173,7 @@ public class BattleshipsController implements Initializable {
         event.getAdjacentPositions().stream().forEach(p -> playerBoard.positionWasShot(Position.of(p.getX(), p.getY())));
 
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Game over");
             alert.setContentText("You lose!");
             alert.showAndWait();
