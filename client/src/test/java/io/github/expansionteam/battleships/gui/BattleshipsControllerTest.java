@@ -11,8 +11,6 @@ import io.github.expansionteam.battleships.common.events.opponentboard.OpponentS
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerEmptyFieldHitEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipDestroyedEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipHitEvent;
-import io.github.expansionteam.battleships.gui.BattleshipsController;
-import io.github.expansionteam.battleships.gui.EventDataConverter;
 import io.github.expansionteam.battleships.gui.models.*;
 import javafx.scene.layout.BorderPane;
 import org.mockito.ArgumentCaptor;
@@ -69,7 +67,9 @@ public class BattleshipsControllerTest {
         shipsData.add(createShip1());
         shipsData.add(createShip2());
 
-        battleshipsController.handleShipsGeneratedEvent(new ShipsGeneratedEvent(shipsData));
+        NextTurnData nextTurn = NextTurnData.PLAYER_TURN;
+
+        battleshipsController.handleShipsGeneratedEvent(new ShipsGeneratedEvent(shipsData, nextTurn));
 
         // then
         ArgumentCaptor<Ship> shipArgumentCaptor = ArgumentCaptor.forClass(Ship.class);

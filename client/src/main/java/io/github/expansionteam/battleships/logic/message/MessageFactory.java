@@ -3,6 +3,7 @@ package io.github.expansionteam.battleships.logic.message;
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
 import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.StartGameEvent;
+import io.github.expansionteam.battleships.common.events.WaitForOpponentEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +22,10 @@ public class MessageFactory {
                 .put("position", new JSONObject()
                         .put("x", event.getPosition().getX())
                         .put("y", event.getPosition().getY())));
+    }
+
+    public Message createFromEvent(WaitForOpponentEvent event) {
+        return new Message("WaitForOpponentEvent", null, new JSONObject());
     }
 
     Message createFromJson(String jsonText) {
