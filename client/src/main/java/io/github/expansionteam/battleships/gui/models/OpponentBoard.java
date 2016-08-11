@@ -18,11 +18,11 @@ public class OpponentBoard extends Board {
         updateBoard();
     }
 
-    public void fieldWasShotAndHit(Position position) {
+    public void positionWasShotAndHit(Position position) {
         fieldsByPosition.get(position).shoot(true);
     }
 
-    public void fieldWasShotAndMissed(Position position) {
+    public void positionWasShotAndMissed(Position position) {
         fieldsByPosition.get(position).shoot(false);
     }
 

@@ -25,7 +25,7 @@ public class EmptyFieldHitEventResponseMessageProcessor implements ResponseMessa
         int y = positionJsonObject.getInt("y");
 
         log.debug("Post EmptyFieldHitEvent.");
-        eventBus.post(new EmptyFieldHitEvent(PositionData.of(x, y)));
+//        eventBus.post(new EmptyFieldHitEvent(PositionData.of(x, y)));
     }
 
 }
