@@ -1,6 +1,10 @@
 package io.github.expansionteam.battleships.gui.models;
 
+import org.apache.log4j.Logger;
+
 public class PlayerField extends Field {
+
+    private final static Logger log = Logger.getLogger(PlayerField.class);
 
     private boolean isOccupied = false;
     private boolean isShot = false;
@@ -28,7 +32,7 @@ public class PlayerField extends Field {
             cssClass = isOccupied ? "field-is-occupied" : "field-is-empty";
         }
 
-        getStyleClass().removeAll(getStyleClass());
+        getStyleClass().clear();
         getStyleClass().add(cssClass);
     }
     
