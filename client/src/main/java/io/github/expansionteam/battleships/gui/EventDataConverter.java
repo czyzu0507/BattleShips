@@ -1,4 +1,4 @@
-package io.github.expansionteam.battleships.gui.controllers;
+package io.github.expansionteam.battleships.gui;
 
 import io.github.expansionteam.battleships.common.events.data.ShipData;
 import io.github.expansionteam.battleships.gui.models.Position;

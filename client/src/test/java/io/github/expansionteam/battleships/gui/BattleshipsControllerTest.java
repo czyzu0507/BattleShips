@@ -1,4 +1,4 @@
-package io.github.expansionteam.battleships.gui.controllers;
+package io.github.expansionteam.battleships.gui;
 
 import com.google.common.eventbus.EventBus;
 import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
@@ -11,6 +11,8 @@ import io.github.expansionteam.battleships.common.events.opponentboard.OpponentS
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerEmptyFieldHitEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipDestroyedEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipHitEvent;
+import io.github.expansionteam.battleships.gui.BattleshipsController;
+import io.github.expansionteam.battleships.gui.EventDataConverter;
 import io.github.expansionteam.battleships.gui.models.*;
 import javafx.scene.layout.BorderPane;
 import org.mockito.ArgumentCaptor;

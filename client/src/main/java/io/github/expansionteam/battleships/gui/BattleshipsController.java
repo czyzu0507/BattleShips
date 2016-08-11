@@ -1,4 +1,4 @@
-package io.github.expansionteam.battleships.gui.controllers;
+package io.github.expansionteam.battleships.gui;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
