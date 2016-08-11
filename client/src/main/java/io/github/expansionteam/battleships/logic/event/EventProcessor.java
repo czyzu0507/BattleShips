@@ -11,7 +11,7 @@ import io.github.expansionteam.battleships.logic.message.MessageProcessor;
 import io.github.expansionteam.battleships.logic.message.ProcessMessageTask;
 import org.apache.log4j.Logger;
 
-public class EventProcessor {
+class EventProcessor {
 
     private final static Logger log = Logger.getLogger(EventProcessor.class);
 
@@ -26,21 +26,21 @@ public class EventProcessor {
         this.messageProcessor = messageProcessor;
     }
 
-    public void processEvent(StartGameEvent event) {
+    void processEvent(StartGameEvent event) {
         log.debug("Process StartGameEvent.");
 
         Message message = messageFactory.createFromEvent(event);
         asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));
     }
 
-    public void processEvent(GenerateShipsEvent event) {
+    void processEvent(GenerateShipsEvent event) {
         log.debug("Process GenerateShipsEvent.");
 
         Message message = messageFactory.createFromEvent(event);
         asyncTask.runLater(new ProcessMessageTask(messageProcessor, message));
     }
 
-    public void processEvent(ShootPositionEvent event) {
+    void processEvent(ShootPositionEvent event) {
         log.debug("Process ShootPositionEvent.");
 
         Message message = messageFactory.createFromEvent(event);
