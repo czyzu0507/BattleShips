@@ -12,7 +12,7 @@ public class Message {
         this.data = data;
     }
 
-    public String getType() {
+    String getType() {
         return type;
     }
 

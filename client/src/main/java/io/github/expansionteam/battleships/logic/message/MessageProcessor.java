@@ -26,7 +26,7 @@ public class MessageProcessor {
         this.responseMessageProcessorsByType = responseMessageProcessorsByType;
     }
 
-    public void processMessage(Message message) {
+    void processMessage(Message message) {
         Message responseMessage = messageSender.sendMessageAndWaitForResponse(message);
         log.debug("Processing message: " + responseMessage);
 
