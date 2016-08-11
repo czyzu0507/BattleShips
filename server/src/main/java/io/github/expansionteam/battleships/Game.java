@@ -10,43 +10,43 @@ import java.util.Collection;
 import static io.github.expansionteam.battleships.engine.Board.BoardBuilder;
 import static io.github.expansionteam.battleships.engine.Board.RandomShipGenerator;
 
-public class Game {
+class Game {
 
-    private static final Logger log = Logger.getLogger(Game.class);
+//    private static final Logger log = Logger.getLogger(Game.class);
 
     private final Board firstPlayerBoard = new BoardBuilder().build();
     private final Board secondPlayerBoard = new BoardBuilder().build();
     private final RandomShipGenerator randomShipGenerator = new RandomShipGenerator();
 
-    public Collection<Ship> getPlayerShips() {
+    Collection<Ship> getPlayerShips() {
         Board board = currentBoard();
         return board.getShips();
     }
 
-    public void generateRandomShips() {
+    void generateRandomShips() {
         Board board = currentBoard();
         synchronized (randomShipGenerator) {
             randomShipGenerator.generateRandomShips(board);
         }
     }
 
-    public boolean shootOpponentField(int x, int y) {
+    boolean shootOpponentField(int x, int y) {
         return opponentBoard().shootField(x, y);
     }
 
-    public boolean isOpponentShipDestroyed(int x, int y) {
+    boolean isOpponentShipDestroyed(int x, int y) {
         return opponentBoard().isDestroyedShip(x, y);
     }
 
-    public boolean isOpponentShipHit(int x, int y) {
+    boolean isOpponentShipHit(int x, int y) {
         return isShipField(opponentBoard(), x, y);
     }
 
-    public Collection<Field> getAdjacentToOpponentShip(int x, int y) {
+    Collection<Field> getAdjacentToOpponentShip(int x, int y) {
         return opponentBoard().getAdjacentToShip(x, y);
     }
 
-    public boolean isEnded() {
+    boolean isEnded() {
         return opponentBoard().areAllShipsDestroyed();
     }
 
@@ -66,7 +66,7 @@ public class Game {
         return board.getFieldFromTheBoard(x, y).isShip();
     }
 
-    public boolean generatingShipsFinished() {
+    boolean generatingShipsFinished() {
         return firstPlayerBoard.placingShipsFinished() && secondPlayerBoard.placingShipsFinished();
     }
 
