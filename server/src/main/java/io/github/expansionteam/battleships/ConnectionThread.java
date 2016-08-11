@@ -16,6 +16,7 @@ class ConnectionThread implements Runnable {
     private final int gameIndex;
     private final Game game = new Game();
     private GameState gameState = INITIAL;
+    private PlayerHelper playerHelper = new PlayerHelper();
     private final CyclicBarrier cyclicBarrierForStatesSynchronization = new CyclicBarrier(3);
 
     private final static Logger log = getLogger(ConnectionThread.class);
@@ -86,42 +87,35 @@ class ConnectionThread implements Runnable {
         return this.game;
     }
 
-    synchronized GameState getGameState() {
+    GameState getGameState() {
         return this.gameState;
     }
 
+    Player getCurrentPlayer() {
+        return playerHelper.getCurrent();
+    }
+
+    void switchPlayer() {
+        playerHelper.switchPlayer();
+    }
+
     enum GameState {
-        INITIAL {
-            @Override
-            public Player getPlayer() {
-                return BOTH;
-            }
-        },
-        GENERATING_SHIPS {
-            @Override
-            public Player getPlayer() {
-                return BOTH;
-            }
-        },
-        TURN_GAME {
-            private Player current = PLAYER1;
-
-            @Override
-            public Player getPlayer() {
-                return current;
-            }
-
-            @Override
-            public void switchPlayer() {
-                current = (current == PLAYER1) ? PLAYER2 : PLAYER1;
-            }
-        };
-
-        public abstract Player getPlayer();
-        public void switchPlayer() {}
+        INITIAL, GENERATING_SHIPS, TURN_GAME
     }
 
     enum Player {
         BOTH, PLAYER1, PLAYER2
+    }
+
+    private static class PlayerHelper {
+        private Player current = PLAYER1;
+
+        Player getCurrent() {
+            return current;
+        }
+
+        void switchPlayer() {
+            current = (current == PLAYER1) ? PLAYER2 : PLAYER1;
+        }
     }
 }
