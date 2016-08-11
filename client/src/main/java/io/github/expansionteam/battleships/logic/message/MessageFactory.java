@@ -23,7 +23,7 @@ public class MessageFactory {
                         .put("y", event.getPosition().getY())));
     }
 
-    public Message createFromJson(String jsonText) {
+    Message createFromJson(String jsonText) {
         try {
             JSONObject jsonObject = new JSONObject(jsonText);
             String type = jsonObject.getString("type");
