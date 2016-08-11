@@ -14,6 +14,10 @@ public class OpponentField extends Field {
         super(position);
     }
 
+    public boolean wasShot() {
+        return wasShot;
+    }
+
     public void shoot(boolean wasOccupied) {
         this.wasOccupied = wasOccupied;
         this.wasShot = true;

@@ -5,8 +5,7 @@ import com.google.inject.Inject;
 import io.github.expansionteam.battleships.common.annotations.EventProducer;
 import io.github.expansionteam.battleships.common.events.ShootPositionEvent;
 import io.github.expansionteam.battleships.common.events.data.PositionData;
-import io.github.expansionteam.battleships.gui.models.Field;
-import javafx.event.Event;
+import io.github.expansionteam.battleships.gui.models.OpponentField;
 import javafx.scene.input.MouseEvent;
 import org.apache.log4j.Logger;
 
@@ -29,8 +28,11 @@ public class MouseClickedEventHandler {
     public void handleOpponentBoard(MouseEvent event) {
         log.debug("Handle MouseEvent: mouse click on opponent board.");
 
-        Field field = (Field) event.getSource();
-        eventBus.post(new ShootPositionEvent(PositionData.of(field.getPosition().getX(), field.getPosition().getY())));
+        OpponentField field = (OpponentField) event.getSource();
+
+        if (!field.wasShot()) {
+            eventBus.post(new ShootPositionEvent(PositionData.of(field.getPosition().getX(), field.getPosition().getY())));
+        }
     }
 
 }
