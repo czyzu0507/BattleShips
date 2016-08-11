@@ -4,6 +4,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import io.github.expansionteam.battleships.logic.AsyncTask;
 import io.github.expansionteam.battleships.logic.message.MessageProcessor;
 import io.github.expansionteam.battleships.logic.message.MessageProcessorProvider;
 import io.github.expansionteam.battleships.logic.message.MessageSender;
@@ -27,8 +28,8 @@ public class BattleshipsModule extends AbstractModule {
     }
 
     @Provides
-    public ExecutorService provideExecutorService() {
-        return Executors.newSingleThreadExecutor();
+    public AsyncTask provideAsyncTask() {
+        return new AsyncTask(Executors.newSingleThreadExecutor());
     }
 
 }
