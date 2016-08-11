@@ -70,7 +70,6 @@ class PlayerThread extends Thread {
         try {
             sleep(50);
             RequestState requestState;
-            GameState gameState;
             String request, answer;
 
             while (parentThread.getGameState() == GENERATING_SHIPS) {
@@ -90,8 +89,8 @@ class PlayerThread extends Thread {
             cyclicBarrierForStateSynchronization.await();
             log.info("AFTER BARRIER 2");
 
-            while ((gameState = parentThread.getGameState()) == TURN_GAME) {
-                Player player = gameState.getPlayer();
+            while (parentThread.getGameState() == TURN_GAME) {
+                Player player = parentThread.getCurrentPlayer();
 
                 if (player == currentPlayer) {
                     sleep(50);
@@ -109,7 +108,7 @@ class PlayerThread extends Thread {
                     }
 
                     if (requestState == RequestState.EMPTY_FIELD_HIT) {
-                        parentThread.getGameState().switchPlayer();
+                        parentThread.switchPlayer();
                         log.info("P1:  PLAYER SWITCHED");
                     }
                 } else {
