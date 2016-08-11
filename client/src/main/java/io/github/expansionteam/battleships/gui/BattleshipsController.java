@@ -8,14 +8,18 @@ import io.github.expansionteam.battleships.common.annotations.EventProducer;
 import io.github.expansionteam.battleships.common.events.*;
 import io.github.expansionteam.battleships.common.events.data.NextTurnData;
 import io.github.expansionteam.battleships.common.events.opponentboard.OpponentEmptyFieldHitEvent;
+import io.github.expansionteam.battleships.common.events.opponentboard.OpponentGameEndEvent;
 import io.github.expansionteam.battleships.common.events.opponentboard.OpponentShipDestroyedEvent;
 import io.github.expansionteam.battleships.common.events.opponentboard.OpponentShipHitEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerEmptyFieldHitEvent;
+import io.github.expansionteam.battleships.common.events.playerboard.PlayerGameEndEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipDestroyedEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipHitEvent;
 import io.github.expansionteam.battleships.gui.models.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.apache.log4j.Logger;
@@ -143,6 +147,37 @@ public class BattleshipsController implements Initializable {
         event.getAdjacentPositions().stream().forEach(p -> playerBoard.positionWasShot(Position.of(p.getX(), p.getY())));
 
         updateGameState(event.getNextTurn());
+    }
+
+    @Subscribe
+    public void handleOpponentGameEndEvent(OpponentGameEndEvent event) {
+        log.debug("Handle: " + event.getClass().getSimpleName());
+
+        opponentBoard.positionWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
+        event.getAdjacentPositions().stream().forEach(p -> opponentBoard.positionWasShotAndMissed(Position.of(p.getX(), p.getY())));
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Game over");
+            alert.setContentText("You won!");
+            alert.showAndWait();
+        });
+    }
+
+
+    @Subscribe
+    public void handlePlayerGameEndEvent(PlayerGameEndEvent event) {
+        log.debug("Handle: " + event.getClass().getSimpleName());
+
+        playerBoard.positionWasShot(Position.of(event.getPosition().getX(), event.getPosition().getY()));
+        event.getAdjacentPositions().stream().forEach(p -> playerBoard.positionWasShot(Position.of(p.getX(), p.getY())));
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Game over");
+            alert.setContentText("You lose!");
+            alert.showAndWait();
+        });
     }
 
     private void updateGameState(NextTurnData nextTurn) {
