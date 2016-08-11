@@ -13,7 +13,7 @@ public class ProcessMessageTaskTest {
     public void run() {
         // Given
         MessageProcessor messageProcessorMock = mock(MessageProcessor.class);
-        Message message = new Message("", new JSONObject());
+        Message message = new Message("", BoardOwner.OPPONENT, new JSONObject());
         ProcessMessageTask processMessageTask = new ProcessMessageTask(messageProcessorMock, message);
 
         // When

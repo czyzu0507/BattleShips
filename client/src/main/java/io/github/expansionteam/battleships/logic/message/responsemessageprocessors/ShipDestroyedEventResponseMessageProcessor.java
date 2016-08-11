@@ -2,7 +2,11 @@ package io.github.expansionteam.battleships.logic.message.responsemessageprocess
 
 import com.google.common.eventbus.EventBus;
 import io.github.expansionteam.battleships.common.events.ShipDestroyedEvent;
+import io.github.expansionteam.battleships.common.events.data.NextTurnData;
 import io.github.expansionteam.battleships.common.events.data.PositionData;
+import io.github.expansionteam.battleships.common.events.opponentboard.OpponentShipDestroyedEvent;
+import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipDestroyedEvent;
+import io.github.expansionteam.battleships.logic.message.BoardOwner;
 import io.github.expansionteam.battleships.logic.message.Message;
 import io.github.expansionteam.battleships.logic.message.ResponseMessageProcessor;
 import org.apache.log4j.Logger;
@@ -35,8 +39,20 @@ public class ShipDestroyedEventResponseMessageProcessor implements ResponseMessa
             adjacentPositions.add(createPositionDataFromJsonObject(currentPositionJsonObject));
         }
 
-        log.debug("Post ShipDestroyedEvent.");
-//        eventBus.post(new ShipDestroyedEvent(position, adjacentPositions));
+        NextTurnData nextTurn;
+        if (responseMessage.getData().getString("nextTurn").equals("OPPONENT")) {
+            nextTurn = NextTurnData.OPPONENT_TURN;
+        } else {
+            nextTurn = NextTurnData.PLAYER_TURN;
+        }
+
+        if (responseMessage.getBoardOwner().equals(BoardOwner.OPPONENT)) {
+            log.debug("Post OpponentShipDestroyedEvent.");
+            eventBus.post(new OpponentShipDestroyedEvent(position, adjacentPositions, nextTurn));
+        } else {
+            log.debug("Post PlayerShipDestroyedEvent.");
+            eventBus.post(new PlayerShipDestroyedEvent(position, adjacentPositions, nextTurn));
+        }
     }
 
     private PositionData createPositionDataFromJsonObject(JSONObject positionJsonObject) {
