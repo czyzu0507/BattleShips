@@ -30,11 +30,13 @@ public class BattleshipsControllerTest {
     public void handleOpponentArrivedEvent() {
         // given
         EventBus eventBusMock = mock(EventBus.class);
+        GameState gameStateMock = mock(GameState.class);
         BorderPane boardAreaMock = mock(BorderPane.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.eventBus = eventBusMock;
         battleshipsController.boardArea = boardAreaMock;
+        battleshipsController.gameState = gameStateMock;
 
         // when
         battleshipsController.handleOpponentArrivedEvent(new OpponentArrivedEvent());
@@ -52,6 +54,7 @@ public class BattleshipsControllerTest {
                 Ship.createHorizontal(Position.of(1, 1), ShipSize.FOUR),
                 Ship.createVertical(Position.of(4, 6), ShipSize.TWO
                 ));
+        GameState gameStateMock = mock(GameState.class);
 
         BorderPane boardAreaMock = mock(BorderPane.class);
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
@@ -59,6 +62,7 @@ public class BattleshipsControllerTest {
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.eventBus = eventBusMock;
         battleshipsController.eventDataConverter = eventDataConverterMock;
+        battleshipsController.gameState = gameStateMock;
         battleshipsController.boardArea = boardAreaMock;
         battleshipsController.playerBoard = playerBoardMock;
 
@@ -85,9 +89,13 @@ public class BattleshipsControllerTest {
     @Test
     public void handleOpponentEmptyFieldHitEvent() {
         // given
+        EventBus eventBusMock = mock(EventBus.class);
+        GameState gameStateMock = mock(GameState.class);
         OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
+        battleshipsController.eventBus = eventBusMock;
+        battleshipsController.gameState = gameStateMock;
         battleshipsController.opponentBoard = opponentBoardMock;
 
         // when
@@ -105,9 +113,11 @@ public class BattleshipsControllerTest {
     public void handlePlayerEmptyFieldHitEvent() {
         // given
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
+        GameState gameStateMock = mock(GameState.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.playerBoard = playerBoardMock;
+        battleshipsController.gameState = gameStateMock;
 
         // when
         battleshipsController.handlePlayerEmptyFieldHitEvent(
@@ -125,9 +135,11 @@ public class BattleshipsControllerTest {
     public void handleOpponentShipHitEvent() {
         // given
         OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
+        GameState gameStateMock = mock(GameState.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.opponentBoard = opponentBoardMock;
+        battleshipsController.gameState = gameStateMock;
 
         // when
         battleshipsController.handleOpponentShipHitEvent(new OpponentShipHitEvent(PositionData.of(2, 2), NextTurnData.PLAYER_TURN));
@@ -141,10 +153,14 @@ public class BattleshipsControllerTest {
     @Test
     public void handlePlayerShipHitEvent() {
         // given
+        EventBus eventBusMock = mock(EventBus.class);
+        GameState gameStateMock = mock(GameState.class);
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
+        battleshipsController.eventBus = eventBusMock;
         battleshipsController.playerBoard = playerBoardMock;
+        battleshipsController.gameState = gameStateMock;
 
         // when
         battleshipsController.handlePlayerShipHitEvent(new PlayerShipHitEvent(PositionData.of(2, 2), NextTurnData.OPPONENT_TURN));
@@ -159,9 +175,11 @@ public class BattleshipsControllerTest {
     public void handleOpponentShipDestroyedEvent() {
         // given
         OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
+        GameState gameStateMock = mock(GameState.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.opponentBoard = opponentBoardMock;
+        battleshipsController.gameState = gameStateMock;
 
         // when
         PositionData position = PositionData.of(1, 4);
@@ -171,26 +189,31 @@ public class BattleshipsControllerTest {
                 position, adjacentPositions, nextTurn));
 
         // then
-        ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
-        verify(opponentBoardMock, times(3)).positionWasShotAndHit(positionArgumentCaptor.capture());
+        ArgumentCaptor<Position> hitPositionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
+        verify(opponentBoardMock).positionWasShotAndHit(hitPositionArgumentCaptor.capture());
 
-        assertThat(positionArgumentCaptor.getAllValues().get(0).getX()).isEqualTo(1);
-        assertThat(positionArgumentCaptor.getAllValues().get(0).getY()).isEqualTo(4);
+        assertThat(hitPositionArgumentCaptor.getAllValues().get(0).getX()).isEqualTo(1);
+        assertThat(hitPositionArgumentCaptor.getAllValues().get(0).getY()).isEqualTo(4);
 
-        assertThat(positionArgumentCaptor.getAllValues().get(1).getX()).isEqualTo(3);
-        assertThat(positionArgumentCaptor.getAllValues().get(1).getY()).isEqualTo(2);
+        ArgumentCaptor<Position> missedPositionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
+        verify(opponentBoardMock, times(2)).positionWasShotAndMissed(missedPositionArgumentCaptor.capture());
 
-        assertThat(positionArgumentCaptor.getAllValues().get(2).getX()).isEqualTo(5);
-        assertThat(positionArgumentCaptor.getAllValues().get(2).getY()).isEqualTo(7);
+        assertThat(missedPositionArgumentCaptor.getAllValues().get(0).getX()).isEqualTo(3);
+        assertThat(missedPositionArgumentCaptor.getAllValues().get(0).getY()).isEqualTo(2);
+
+        assertThat(missedPositionArgumentCaptor.getAllValues().get(1).getX()).isEqualTo(5);
+        assertThat(missedPositionArgumentCaptor.getAllValues().get(1).getY()).isEqualTo(7);
     }
 
     @Test
     public void handlePlayerShipDestroyedEvent() {
         // given
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
+        GameState gameStateMock = mock(GameState.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.playerBoard = playerBoardMock;
+        battleshipsController.gameState = gameStateMock;
 
         // when
         PositionData position = PositionData.of(1, 4);
