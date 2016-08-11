@@ -6,7 +6,6 @@ client/src/main/resources/*.log*
 server/src/main/resources/*.log*
 src/main/resources/*.log*
 
-
 ### Maven ###
 target/
 pom.xml.tag
