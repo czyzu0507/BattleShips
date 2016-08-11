@@ -23,12 +23,12 @@ public class PlayerField extends Field {
     protected void updateCss() {
         String cssClass;
         if (isShot) {
-            cssClass = isOccupied ? "" : "";
+            cssClass = isOccupied ? "field-was-shot-hit " : "field-was-shot-miss";
         } else {
             cssClass = isOccupied ? "field-is-occupied" : "field-is-empty";
         }
 
-        getStyleClass().removeAll();
+        getStyleClass().removeAll(getStyleClass());
         getStyleClass().add(cssClass);
     }
     
