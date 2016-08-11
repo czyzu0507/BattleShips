@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import io.github.expansionteam.battleships.common.annotations.EventConsumer;
 import io.github.expansionteam.battleships.common.annotations.EventProducer;
 import io.github.expansionteam.battleships.common.events.*;
+import io.github.expansionteam.battleships.common.events.data.NextTurnData;
 import io.github.expansionteam.battleships.common.events.opponentboard.OpponentEmptyFieldHitEvent;
 import io.github.expansionteam.battleships.common.events.opponentboard.OpponentShipDestroyedEvent;
 import io.github.expansionteam.battleships.common.events.opponentboard.OpponentShipHitEvent;
@@ -36,6 +37,9 @@ public class BattleshipsController implements Initializable {
 
     @Inject
     EventDataConverter eventDataConverter;
+
+    @Inject
+    GameState gameState;
 
     @FXML
     BorderPane boardArea;
@@ -85,30 +89,40 @@ public class BattleshipsController implements Initializable {
             Ship ship = eventDataConverter.convertShipDataToShipGuiModel(s);
             playerBoard.placeShip(ship);
         });
+
+        updateGameState(event.getNextTurn());
     }
 
     @Subscribe
     public void handleOpponentEmptyFieldHitEvent(OpponentEmptyFieldHitEvent event) {
         log.debug("Handle: " + event.getClass().getSimpleName());
         opponentBoard.positionWasShotAndMissed(Position.of(event.getPosition().getX(), event.getPosition().getY()));
+
+        updateGameState(event.getNextTurn());
     }
 
     @Subscribe
     public void handlePlayerEmptyFieldHitEvent(PlayerEmptyFieldHitEvent event) {
         log.debug("Handle: " + event.getClass().getSimpleName());
         playerBoard.positionWasShot(Position.of(event.getPosition().getX(), event.getPosition().getY()));
+
+        updateGameState(event.getNextTurn());
     }
 
     @Subscribe
     public void handleOpponentShipHitEvent(OpponentShipHitEvent event) {
         log.debug("Handle: " + event.getClass().getSimpleName());
         opponentBoard.positionWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
+
+        updateGameState(event.getNextTurn());
     }
 
     @Subscribe
     public void handlePlayerShipHitEvent(PlayerShipHitEvent event) {
         log.debug("Handle: " + event.getClass().getSimpleName());
         playerBoard.positionWasShot(Position.of(event.getPosition().getX(), event.getPosition().getY()));
+
+        updateGameState(event.getNextTurn());
     }
 
     @Subscribe
@@ -117,6 +131,8 @@ public class BattleshipsController implements Initializable {
 
         opponentBoard.positionWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
         event.getAdjacentPositions().stream().forEach(p -> opponentBoard.positionWasShotAndHit(Position.of(p.getX(), p.getY())));
+
+        updateGameState(event.getNextTurn());
     }
 
     @Subscribe
@@ -125,6 +141,17 @@ public class BattleshipsController implements Initializable {
 
         playerBoard.positionWasShot(Position.of(event.getPosition().getX(), event.getPosition().getY()));
         event.getAdjacentPositions().stream().forEach(p -> playerBoard.positionWasShot(Position.of(p.getX(), p.getY())));
+
+        updateGameState(event.getNextTurn());
+    }
+
+    private void updateGameState(NextTurnData nextTurn) {
+        if (nextTurn.equals(NextTurnData.OPPONENT_TURN)) {
+            gameState.setCurrentTurn(GameState.Turn.OPPONENT_TURN);
+            eventBus.post(new WaitForOpponentEvent());
+        } else {
+            gameState.setCurrentTurn(GameState.Turn.PLAYER_TURN);
+        }
     }
 
 }
