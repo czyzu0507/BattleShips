@@ -7,7 +7,6 @@ import io.github.expansionteam.battleships.common.annotations.EventConsumer;
 import io.github.expansionteam.battleships.common.annotations.EventProducer;
 import io.github.expansionteam.battleships.common.events.*;
 import io.github.expansionteam.battleships.gui.models.*;
-import io.github.expansionteam.battleships.gui.models.Ship;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
@@ -54,23 +53,27 @@ public class BattleshipsController implements Initializable {
 
         boardArea.setVisible(false);
 
-        log.debug("Post StartGameEvent.");
-        eventBus.post(new StartGameEvent());
+        StartGameEvent startGameEvent = new StartGameEvent();
+        eventBus.post(startGameEvent);
+
+        log.debug("Post: " + startGameEvent.getClass().getSimpleName());
     }
 
     @Subscribe
     public void handleOpponentArrivedEvent(OpponentArrivedEvent event) {
-        log.debug("Handle OpponentArrivedEvent.");
+        log.debug("Handle: " + event.getClass().getSimpleName());
 
         boardArea.setVisible(true);
 
-        log.debug("Post GenerateShipsEvent.");
-        eventBus.post(new GenerateShipsEvent());
+        GenerateShipsEvent generateShipsEvent = new GenerateShipsEvent();
+        eventBus.post(generateShipsEvent);
+
+        log.debug("Post: " + generateShipsEvent.getClass().getSimpleName());
     }
 
     @Subscribe
     public void handleShipsGeneratedEvent(ShipsGeneratedEvent event) {
-        log.debug("Handle ShipsGeneratedEvent.");
+        log.debug("Handle: " + event.getClass().getSimpleName());
 
         event.getShips().stream().forEach(s -> {
             Ship ship = eventDataConverter.convertShipDataToShipGuiModel(s);
@@ -80,19 +83,19 @@ public class BattleshipsController implements Initializable {
 
     @Subscribe
     public void handleEmptyFieldHitEvent(EmptyFieldHitEvent event) {
-        log.debug("Handle EmptyFieldHitEvent.");
+        log.debug("Handle: " + event.getClass().getSimpleName());
         opponentBoard.fieldWasShotAndMissed(Position.of(event.getPosition().getX(), event.getPosition().getY()));
     }
 
     @Subscribe
     public void handleShipHitEvent(ShipHitEvent event) {
-        log.debug("Handle ShipHitEvent.");
+        log.debug("Handle: " + event.getClass().getSimpleName());
         opponentBoard.fieldWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
     }
 
     @Subscribe
     public void handleShipDestroyedEvent(ShipDestroyedEvent event) {
-        log.debug("Handle ShipDestroyedEvent.");
+        log.debug("Handle: " + event.getClass().getSimpleName());
 
         opponentBoard.fieldWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
         event.getAdjacentPositions().stream().forEach(p -> opponentBoard.fieldWasShotAndMissed(Position.of(p.getX(), p.getY())));
