@@ -52,7 +52,7 @@ public class OpponentField extends Field {
             }
         }
 
-        getStyleClass().removeAll(getStyleClass());
+        getStyleClass().clear();
         getStyleClass().add(cssClass);
     }
 
