@@ -28,7 +28,7 @@ public class Server {
     }
 
     public void runServer() {
-         while (true) {
+        while (true) {
             try {
                 ConnectionThread toRun = new ConnectionThread(acceptConnections(), acceptConnections(), ++n);
                 log.info("Game " + n + " started...");
@@ -58,6 +58,11 @@ public class Server {
                 while (sc.hasNextLine()) {
                     String input = sc.nextLine();
                     if (input.replaceAll("[\\r\\n]+", "").equalsIgnoreCase("stop")) {
+                        try {
+                            serverSocket.close();
+                        } catch (IOException e) {
+                            log.trace(e);
+                        }
                         System.exit(-1);
                     }
                 }
