@@ -2,6 +2,7 @@ package io.github.expansionteam.battleships.logic.message;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import io.github.expansionteam.battleships.logic.ConnectionConfig;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -13,10 +14,12 @@ public class MessageSenderProvider implements Provider<MessageSender> {
 
     private final static Logger log = Logger.getLogger(MessageSenderProvider.class);
 
-    private static final String IP = "127.0.0.1";
     private static final int PORT = 1234;
 
     private final MessageFactory messageFactory;
+
+    @Inject
+    ConnectionConfig connectionConfig;
 
     @Inject
     public MessageSenderProvider(MessageFactory messageFactory) {
@@ -26,7 +29,7 @@ public class MessageSenderProvider implements Provider<MessageSender> {
     @Override
     public MessageSender get() {
         try {
-            SocketAddress socketAddress = new InetSocketAddress(IP, PORT);
+            SocketAddress socketAddress = new InetSocketAddress(connectionConfig.getServerIp(), PORT);
 
             SocketChannel socketChannel = SocketChannel.open(socketAddress);
             socketChannel.configureBlocking(true);
