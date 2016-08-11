@@ -1,19 +1,23 @@
 package io.github.expansionteam.battleships.gui.controllers;
 
 import com.google.common.eventbus.EventBus;
-import io.github.expansionteam.battleships.common.events.*;
-import io.github.expansionteam.battleships.common.events.data.PositionData;
-import io.github.expansionteam.battleships.common.events.data.ShipData;
-import io.github.expansionteam.battleships.common.events.data.ShipOrientationData;
-import io.github.expansionteam.battleships.common.events.data.ShipSizeData;
+import io.github.expansionteam.battleships.common.events.GenerateShipsEvent;
+import io.github.expansionteam.battleships.common.events.OpponentArrivedEvent;
+import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
+import io.github.expansionteam.battleships.common.events.data.*;
+import io.github.expansionteam.battleships.common.events.opponentboard.OpponentEmptyFieldHitEvent;
+import io.github.expansionteam.battleships.common.events.opponentboard.OpponentShipDestroyedEvent;
+import io.github.expansionteam.battleships.common.events.opponentboard.OpponentShipHitEvent;
+import io.github.expansionteam.battleships.common.events.playerboard.PlayerEmptyFieldHitEvent;
+import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipDestroyedEvent;
+import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipHitEvent;
 import io.github.expansionteam.battleships.gui.models.*;
-import io.github.expansionteam.battleships.gui.models.Ship;
-import io.github.expansionteam.battleships.gui.models.ShipSize;
 import javafx.scene.layout.BorderPane;
 import org.mockito.ArgumentCaptor;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +28,7 @@ public class BattleshipsControllerTest {
 
     @Test
     public void handleOpponentArrivedEvent() {
-        // Given
+        // given
         EventBus eventBusMock = mock(EventBus.class);
         BorderPane boardAreaMock = mock(BorderPane.class);
 
@@ -32,16 +36,16 @@ public class BattleshipsControllerTest {
         battleshipsController.eventBus = eventBusMock;
         battleshipsController.boardArea = boardAreaMock;
 
-        // When
+        // when
         battleshipsController.handleOpponentArrivedEvent(new OpponentArrivedEvent());
 
-        // Then
+        // then
         verify(eventBusMock).post(isA(GenerateShipsEvent.class));
     }
 
     @Test
     public void handleShipsGeneratedEvent() {
-        // Given
+        // given
         EventBus eventBusMock = mock(EventBus.class);
         EventDataConverter eventDataConverterMock = mock(EventDataConverter.class);
         when(eventDataConverterMock.convertShipDataToShipGuiModel(isA(ShipData.class))).thenReturn(
@@ -58,14 +62,14 @@ public class BattleshipsControllerTest {
         battleshipsController.boardArea = boardAreaMock;
         battleshipsController.playerBoard = playerBoardMock;
 
-        // When
+        // when
         List<ShipData> shipsData = new ArrayList<>();
         shipsData.add(createShip1());
         shipsData.add(createShip2());
 
         battleshipsController.handleShipsGeneratedEvent(new ShipsGeneratedEvent(shipsData));
 
-        // Then
+        // then
         ArgumentCaptor<Ship> shipArgumentCaptor = ArgumentCaptor.forClass(Ship.class);
 
         verify(playerBoardMock, times(2)).placeShip(shipArgumentCaptor.capture());
@@ -77,38 +81,134 @@ public class BattleshipsControllerTest {
     }
 
     @Test
-    public void handleEmptyFieldHitEvent() {
-        // Given
+    public void handleOpponentEmptyFieldHitEvent() {
+        // given
         OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.opponentBoard = opponentBoardMock;
 
-        // When
-        battleshipsController.handleEmptyFieldHitEvent(new EmptyFieldHitEvent(PositionData.of(3, 4)));
+        // when
+        battleshipsController.handleOpponentEmptyFieldHitEvent(
+                new OpponentEmptyFieldHitEvent(PositionData.of(3, 4), NextTurnData.OPPONENT_TURN));
 
-        // Then
+        // then
         ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
-        verify(opponentBoardMock).fieldWasShotAndMissed(positionArgumentCaptor.capture());
+        verify(opponentBoardMock).positionWasShotAndMissed(positionArgumentCaptor.capture());
 
         assertThat(positionArgumentCaptor.getValue()).isEqualTo(Position.of(3, 4));
     }
 
     @Test
-    public void handleShipHitEvent() {
-        // Given
+    public void handlePlayerEmptyFieldHitEvent() {
+        // given
+        PlayerBoard playerBoardMock = mock(PlayerBoard.class);
+
+        BattleshipsController battleshipsController = new BattleshipsController();
+        battleshipsController.playerBoard = playerBoardMock;
+
+        // when
+        battleshipsController.handlePlayerEmptyFieldHitEvent(
+                new PlayerEmptyFieldHitEvent(PositionData.of(3, 4), NextTurnData.PLAYER_TURN));
+
+        // then
+        ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
+        verify(playerBoardMock).positionWasShot(positionArgumentCaptor.capture());
+
+        assertThat(positionArgumentCaptor.getValue()).isEqualTo(Position.of(3, 4));
+    }
+
+
+    @Test
+    public void handleOpponentShipHitEvent() {
+        // given
         OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.opponentBoard = opponentBoardMock;
 
-        // When
-        battleshipsController.handleShipHitEvent(new ShipHitEvent(PositionData.of(2, 2)));
+        // when
+        battleshipsController.handleOpponentShipHitEvent(new OpponentShipHitEvent(PositionData.of(2, 2), NextTurnData.PLAYER_TURN));
 
-        // Then
+        // then
         ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
-        verify(opponentBoardMock).fieldWasShotAndHit(positionArgumentCaptor.capture());
+        verify(opponentBoardMock).positionWasShotAndHit(positionArgumentCaptor.capture());
         assertThat(positionArgumentCaptor.getValue()).isEqualTo(Position.of(2, 2));
+    }
+
+    @Test
+    public void handlePlayerShipHitEvent() {
+        // given
+        PlayerBoard playerBoardMock = mock(PlayerBoard.class);
+
+        BattleshipsController battleshipsController = new BattleshipsController();
+        battleshipsController.playerBoard = playerBoardMock;
+
+        // when
+        battleshipsController.handlePlayerShipHitEvent(new PlayerShipHitEvent(PositionData.of(2, 2), NextTurnData.OPPONENT_TURN));
+
+        // then
+        ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
+        verify(playerBoardMock).positionWasShot(positionArgumentCaptor.capture());
+        assertThat(positionArgumentCaptor.getValue()).isEqualTo(Position.of(2, 2));
+    }
+
+    @Test
+    public void handleOpponentShipDestroyedEvent() {
+        // given
+        OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
+
+        BattleshipsController battleshipsController = new BattleshipsController();
+        battleshipsController.opponentBoard = opponentBoardMock;
+
+        // when
+        PositionData position = PositionData.of(1, 4);
+        List<PositionData> adjacentPositions = new ArrayList<>(Arrays.asList(PositionData.of(3, 2), PositionData.of(5, 7)));
+        NextTurnData nextTurn = NextTurnData.PLAYER_TURN;
+        battleshipsController.handleOpponentShipDestroyedEvent(new OpponentShipDestroyedEvent(
+                position, adjacentPositions, nextTurn));
+
+        // then
+        ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
+        verify(opponentBoardMock, times(3)).positionWasShotAndHit(positionArgumentCaptor.capture());
+
+        assertThat(positionArgumentCaptor.getAllValues().get(0).getX()).isEqualTo(1);
+        assertThat(positionArgumentCaptor.getAllValues().get(0).getY()).isEqualTo(4);
+
+        assertThat(positionArgumentCaptor.getAllValues().get(1).getX()).isEqualTo(3);
+        assertThat(positionArgumentCaptor.getAllValues().get(1).getY()).isEqualTo(2);
+
+        assertThat(positionArgumentCaptor.getAllValues().get(2).getX()).isEqualTo(5);
+        assertThat(positionArgumentCaptor.getAllValues().get(2).getY()).isEqualTo(7);
+    }
+
+    @Test
+    public void handlePlayerShipDestroyedEvent() {
+        // given
+        PlayerBoard playerBoardMock = mock(PlayerBoard.class);
+
+        BattleshipsController battleshipsController = new BattleshipsController();
+        battleshipsController.playerBoard = playerBoardMock;
+
+        // when
+        PositionData position = PositionData.of(1, 4);
+        List<PositionData> adjacentPositions = new ArrayList<>(Arrays.asList(PositionData.of(3, 2), PositionData.of(5, 7)));
+        NextTurnData nextTurn = NextTurnData.PLAYER_TURN;
+        battleshipsController.handlePlayerShipDestroyedEvent(new PlayerShipDestroyedEvent(
+                position, adjacentPositions, nextTurn));
+
+        // then
+        ArgumentCaptor<Position> positionArgumentCaptor = ArgumentCaptor.forClass(Position.class);
+        verify(playerBoardMock, times(3)).positionWasShot(positionArgumentCaptor.capture());
+
+        assertThat(positionArgumentCaptor.getAllValues().get(0).getX()).isEqualTo(1);
+        assertThat(positionArgumentCaptor.getAllValues().get(0).getY()).isEqualTo(4);
+
+        assertThat(positionArgumentCaptor.getAllValues().get(1).getX()).isEqualTo(3);
+        assertThat(positionArgumentCaptor.getAllValues().get(1).getY()).isEqualTo(2);
+
+        assertThat(positionArgumentCaptor.getAllValues().get(2).getX()).isEqualTo(5);
+        assertThat(positionArgumentCaptor.getAllValues().get(2).getY()).isEqualTo(7);
     }
 
     private ShipData createShip1() {

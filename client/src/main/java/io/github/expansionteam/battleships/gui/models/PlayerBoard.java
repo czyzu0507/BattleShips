@@ -22,6 +22,10 @@ public class PlayerBoard extends Board {
         ship.getPositions().forEach(p -> fieldsByPosition.get(p).occupy());
     }
 
+    public void positionWasShot(Position position) {
+        getFieldsByPosition().get(position).shoot();
+    }
+
     @Override
     protected Map<Position, PlayerField> getFieldsByPosition() {
         return fieldsByPosition;

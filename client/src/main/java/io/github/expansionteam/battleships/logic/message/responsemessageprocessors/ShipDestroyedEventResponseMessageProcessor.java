@@ -36,7 +36,7 @@ public class ShipDestroyedEventResponseMessageProcessor implements ResponseMessa
         }
 
         log.debug("Post ShipDestroyedEvent.");
-        eventBus.post(new ShipDestroyedEvent(position, adjacentPositions));
+//        eventBus.post(new ShipDestroyedEvent(position, adjacentPositions));
     }
 
     private PositionData createPositionDataFromJsonObject(JSONObject positionJsonObject) {
