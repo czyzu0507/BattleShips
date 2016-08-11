@@ -130,7 +130,7 @@ public class BattleshipsController implements Initializable {
         log.debug("Handle: " + event.getClass().getSimpleName());
 
         opponentBoard.positionWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
-        event.getAdjacentPositions().stream().forEach(p -> opponentBoard.positionWasShotAndHit(Position.of(p.getX(), p.getY())));
+        event.getAdjacentPositions().stream().forEach(p -> opponentBoard.positionWasShotAndMissed(Position.of(p.getX(), p.getY())));
 
         updateGameState(event.getNextTurn());
     }
