@@ -93,19 +93,4 @@ public final class Field implements Comparable<Field> {
         Field field = (Field) fieldObject;
         return x == field.x && y == field.y;
     }
-
-    // TODO: remove this later
-    // only for 'visual' test
-    @Override
-    public String toString() {
-        if (shipParent == null) {
-            if (isHit()) {
-                return "\u001B[31m " + x + "" + y + "\u001B[0m";
-            }
-            return x + "" + y;
-        }
-        if (isHit())
-            return "\u001B[31m S\u001B[0m";
-        return "\u001B[32m S\u001B[0m";
-    }
 }

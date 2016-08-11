@@ -28,7 +28,6 @@ class PlayerThread extends Thread {
     private final ConnectionThread parentThread;
 
     private CyclicBarrier cyclicBarrierForStateSynchronization;
-    private CyclicBarrier cyclicBarrierForTransmissionSynchronization;
 
     PlayerThread(SocketChannel socketChannel, ConnectionThread parentThread, Player currentPlayer) {
         this.socketChannel = socketChannel;
@@ -46,17 +45,13 @@ class PlayerThread extends Thread {
         this.cyclicBarrierForStateSynchronization = cyclicBarrier;
     }
 
-    void setBarrierForTransmissionSynchronization(CyclicBarrier cyclicBarrier) {
-        this.cyclicBarrierForTransmissionSynchronization = cyclicBarrier;
-    }
-
     void setThreadToInform(PlayerThread playerThread) {
         coupledThread = playerThread;
     }
 
     private String readFromClient() throws IOException {
         String jsonRequest = dataInputStream.readUTF();
-        log.debug("Message Received: " + jsonRequest);
+        log.info("Message Received: " + jsonRequest);
         return jsonRequest;
     }
 
@@ -66,7 +61,7 @@ class PlayerThread extends Thread {
 
     private void writeToClient(String answer) throws IOException {
         dataOutputStream.writeUTF(answer);
-        log.debug("Message Sent: " + answer);
+        log.info("Message Sent: " + answer);
         dataOutputStream.flush();
     }
 
@@ -75,11 +70,13 @@ class PlayerThread extends Thread {
         try {
             sleep(50);
             RequestState requestState;
+            GameState gameState;
+            String request, answer;
 
             while (parentThread.getGameState() == GENERATING_SHIPS) {
-                String request = readFromClient();
+                request = readFromClient();
                 requestState = jsonHandler.apply(request, parentThread.getGameObject());
-                String answer = generateJSONResponse(request, currentPlayer == PLAYER1, requestState);
+                answer = generateJSONResponse(request, currentPlayer == PLAYER1, requestState);
                 writeToClient(answer);
 
                 if (getJSONType(answer).equals("ShipsGeneratedEvent")) {
@@ -89,47 +86,45 @@ class PlayerThread extends Thread {
                 sleep(100);
             }
 
+            log.info("BEFORE BARRIER 1");
             cyclicBarrierForStateSynchronization.await();
-
-            GameState gameState;
+            log.info("AFTER BARRIER 2");
 
             while ((gameState = parentThread.getGameState()) == TURN_GAME) {
                 Player player = gameState.getPlayer();
 
                 if (player == currentPlayer) {
-                    String request = readFromClient();
+                    sleep(50);
+
+                    request = readFromClient();
                     requestState = jsonHandler.apply(request, parentThread.getGameObject());
                     String playerResponse = generateJSONResponse(request, true, requestState);
                     String opponentResponse = generateJSONResponse(request, false, requestState);
                     writeToClient(playerResponse);
 
-                    cyclicBarrierForTransmissionSynchronization.await();
-                    cyclicBarrierForTransmissionSynchronization.reset();
-
-                    coupledThread.dataOutputStream.writeUTF(opponentResponse);
-
-                    log.info(player);
-                    log.debug(playerResponse);
-                    log.debug(opponentResponse);
+                    if (requestState != RequestState.FIELD_ALREADY_HIT) {
+                        coupledThread.dataOutputStream.writeUTF(opponentResponse);
+                        coupledThread.interrupt();
+                        log.info("P1:  AFTER SENDING MESSAGES TO BOTH PLAYERS");
+                    }
 
                     if (requestState == RequestState.EMPTY_FIELD_HIT) {
                         parentThread.getGameState().switchPlayer();
-//                        coupledThread.interrupt();
+                        log.info("P1:  PLAYER SWITCHED");
                     }
-
                 } else {
                     readFromClient();
-                    cyclicBarrierForTransmissionSynchronization.await();
-//                    writeToClient("ready");
-//                    try {
-//                        synchronized (this) {
-//                            wait();
-//                        }
-//
-//                    } catch (InterruptedException e) {
-//                        log.trace(e);
-//                    }
+                    try {
+                        synchronized (this) {
+                            wait();
+                        }
+
+                    } catch (InterruptedException e) {
+                        log.trace(e);
+                    }
                 }
+
+                sleep(50);
             }
 
         } catch (IOException | InterruptedException | BrokenBarrierException e) {
