@@ -7,7 +7,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/8.0.40"
             stylesheets="@battleships.css"
-            fx:controller="io.github.expansionteam.battleships.gui.controllers.BattleshipsController"
+            fx:controller="io.github.expansionteam.battleships.gui.BattleshipsController"
             fx:id="boardArea">
     <center>
         <HBox alignment="CENTER">
