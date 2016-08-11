@@ -107,6 +107,11 @@ public class Board implements Iterable<Field> {
         return parentShip == null ? Collections.emptySet() : Ship.generateSetOfAdjacentFields(this, parentShip.occupiedFields);
     }
 
+    public boolean isShipField(int x, int y) {
+        Field field = getFieldFromTheBoard(x, y);
+        return field.isShip();
+    }
+
     // when the ship is destroyed
 
     private void markAdjacentFieldsAsHit(Ship hitShip) {

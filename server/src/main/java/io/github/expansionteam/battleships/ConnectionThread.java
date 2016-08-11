@@ -1,5 +1,7 @@
 package io.github.expansionteam.battleships;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.BrokenBarrierException;
@@ -8,13 +10,12 @@ import java.util.concurrent.CyclicBarrier;
 import static io.github.expansionteam.battleships.ConnectionThread.GameState.*;
 import static io.github.expansionteam.battleships.ConnectionThread.Player.*;
 import static java.lang.Thread.sleep;
-import static org.apache.log4j.Logger.*;
-import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 
 class ConnectionThread implements Runnable {
     private final SocketChannel sc1, sc2;
     private final int gameIndex;
-    private final Game game = new Game();
+    private final Game game = Game.createGame();
     private GameState gameState = INITIAL;
     private PlayerHelper playerHelper = new PlayerHelper();
     private final CyclicBarrier cyclicBarrierForStatesSynchronization = new CyclicBarrier(3);
@@ -51,8 +52,7 @@ class ConnectionThread implements Runnable {
         while (!game.generatingShipsFinished()) {
             try {
                 sleep(250);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 log.trace(e);
             }
         }
@@ -61,8 +61,7 @@ class ConnectionThread implements Runnable {
 
         try {
             cyclicBarrierForStatesSynchronization.await();
-        }
-        catch (InterruptedException | BrokenBarrierException e) {
+        } catch (InterruptedException | BrokenBarrierException e) {
             log.trace(e);
         }
 
@@ -98,9 +97,10 @@ class ConnectionThread implements Runnable {
     void switchPlayer() {
         playerHelper.switchPlayer();
     }
-
+    
     enum GameState {
         INITIAL, GENERATING_SHIPS, TURN_GAME
+
     }
 
     enum Player {
