@@ -42,7 +42,6 @@ public class OpponentField extends Field {
             if (wasShot) {
                 cssClass = wasOccupied ? "occupied-field-shot-hint-illegal" : "empty-field-shot-hint-illegal";
             } else {
-//                cssClass = wasOccupied ? "occupied-field-shot-hint-legal" : "empty-field-shot-hint-legal";
                 cssClass = "field-shot-hint-legal";
             }
         } else {
