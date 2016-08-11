@@ -31,7 +31,7 @@ public class MessageProcessorProvider implements Provider<MessageProcessor> {
         responseMessageProcessorsByType.put("EmptyFieldHitEvent", new EmptyFieldHitEventResponseMessageProcessor(eventBus));
         responseMessageProcessorsByType.put("ShipDestroyedEvent", new ShipDestroyedEventResponseMessageProcessor(eventBus));
 
-        return new MessageProcessor(eventBus, messageSender, responseMessageProcessorsByType);
+        return new MessageProcessor(messageSender, responseMessageProcessorsByType);
     }
 
 }
