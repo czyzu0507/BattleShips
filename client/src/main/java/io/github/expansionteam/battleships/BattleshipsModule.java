@@ -6,11 +6,13 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import io.github.expansionteam.battleships.gui.GameState;
 import io.github.expansionteam.battleships.logic.AsyncTask;
+import io.github.expansionteam.battleships.logic.ConnectionConfig;
 import io.github.expansionteam.battleships.logic.message.MessageProcessor;
 import io.github.expansionteam.battleships.logic.message.MessageProcessorProvider;
 import io.github.expansionteam.battleships.logic.message.MessageSender;
 import io.github.expansionteam.battleships.logic.message.MessageSenderProvider;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class BattleshipsModule extends AbstractModule {
@@ -38,4 +40,8 @@ public class BattleshipsModule extends AbstractModule {
         return new GameState();
     }
 
+    @Provides
+    @Singleton
+    public ConnectionConfig provideConnectionConfig() {
+        return new ConnectionConfig();}
 }
