@@ -22,7 +22,7 @@ public class MessageSender {
         this.messageFactory = messageFactory;
     }
 
-    public Message sendMessageAndWaitForResponse(Message message) {
+    Message sendMessageAndWaitForResponse(Message message) {
         try {
             DataInputStream inputStream = new DataInputStream(socketChannel.socket().getInputStream());
             DataOutputStream outputStream = new DataOutputStream(socketChannel.socket().getOutputStream());

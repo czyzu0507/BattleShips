@@ -1,9 +1,10 @@
-package io.github.expansionteam.battleships.gui.controllers;
+package io.github.expansionteam.battleships.gui;
 
 import io.github.expansionteam.battleships.common.events.data.PositionData;
 import io.github.expansionteam.battleships.common.events.data.ShipData;
 import io.github.expansionteam.battleships.common.events.data.ShipOrientationData;
 import io.github.expansionteam.battleships.common.events.data.ShipSizeData;
+import io.github.expansionteam.battleships.gui.EventDataConverter;
 import io.github.expansionteam.battleships.gui.models.Ship;
 import io.github.expansionteam.battleships.gui.models.ShipOrientation;
 import io.github.expansionteam.battleships.gui.models.ShipSize;

@@ -2,10 +2,7 @@ package io.github.expansionteam.battleships.logic.message.responsemessageprocess
 
 import com.google.common.eventbus.EventBus;
 import io.github.expansionteam.battleships.common.events.ShipsGeneratedEvent;
-import io.github.expansionteam.battleships.common.events.data.PositionData;
-import io.github.expansionteam.battleships.common.events.data.ShipData;
-import io.github.expansionteam.battleships.common.events.data.ShipOrientationData;
-import io.github.expansionteam.battleships.common.events.data.ShipSizeData;
+import io.github.expansionteam.battleships.common.events.data.*;
 import io.github.expansionteam.battleships.logic.message.Message;
 import io.github.expansionteam.battleships.logic.message.ResponseMessageProcessor;
 import org.apache.log4j.Logger;
@@ -46,8 +43,16 @@ public class ShipsGeneratedResponseMessageProcessor implements ResponseMessagePr
             shipsData.add(new ShipData(positionData, sizeData, orientationData));
         }
 
-        log.debug("Post ShipsGeneratedEvent.");
-        eventBus.post(new ShipsGeneratedEvent(shipsData));
+        NextTurnData nextTurn;
+        if (responseMessage.getData().getString("nextTurn").equals("OPPONENT")) {
+            nextTurn = NextTurnData.OPPONENT_TURN;
+        } else {
+            nextTurn = NextTurnData.PLAYER_TURN;
+        }
+
+        ShipsGeneratedEvent event = new ShipsGeneratedEvent(shipsData, nextTurn);
+        eventBus.post(event);
+        log.debug("Post: " + event.getClass().getSimpleName());
     }
 
 }

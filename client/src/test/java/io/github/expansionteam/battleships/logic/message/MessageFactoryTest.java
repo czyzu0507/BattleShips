@@ -60,6 +60,7 @@ public class MessageFactoryTest {
         // When
         Message message = messageFactory.createFromJson(new JSONObject()
                 .put("type", "Type")
+                .put("boardOwner", "OWNER")
                 .put("data", new JSONObject())
                 .toString());
 

@@ -1,10 +1,12 @@
 package io.github.expansionteam.battleships.logic.message.responsemessageprocessors;
 
 import com.google.common.eventbus.EventBus;
-import io.github.expansionteam.battleships.common.events.ShipDestroyedEvent;
+import io.github.expansionteam.battleships.common.events.GameEndEvent;
 import io.github.expansionteam.battleships.common.events.data.NextTurnData;
 import io.github.expansionteam.battleships.common.events.data.PositionData;
+import io.github.expansionteam.battleships.common.events.opponentboard.OpponentGameEndEvent;
 import io.github.expansionteam.battleships.common.events.opponentboard.OpponentShipDestroyedEvent;
+import io.github.expansionteam.battleships.common.events.playerboard.PlayerGameEndEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipDestroyedEvent;
 import io.github.expansionteam.battleships.logic.message.BoardOwner;
 import io.github.expansionteam.battleships.logic.message.Message;
@@ -16,13 +18,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShipDestroyedEventResponseMessageProcessor implements ResponseMessageProcessor {
+public class GameEndEventResponseMessageProcessor implements ResponseMessageProcessor {
 
-    private final static Logger log = Logger.getLogger(ShipDestroyedEventResponseMessageProcessor.class);
+    private final static Logger log = Logger.getLogger(GameEndEventResponseMessageProcessor.class);
 
     private final EventBus eventBus;
 
-    public ShipDestroyedEventResponseMessageProcessor(EventBus eventBus) {
+    public GameEndEventResponseMessageProcessor(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
@@ -39,19 +41,16 @@ public class ShipDestroyedEventResponseMessageProcessor implements ResponseMessa
             adjacentPositions.add(createPositionDataFromJsonObject(currentPositionJsonObject));
         }
 
-        NextTurnData nextTurn;
-        if (responseMessage.getData().getString("nextTurn").equals("OPPONENT")) {
-            nextTurn = NextTurnData.OPPONENT_TURN;
-        } else {
-            nextTurn = NextTurnData.PLAYER_TURN;
-        }
-
         if (responseMessage.getBoardOwner().equals(BoardOwner.OPPONENT)) {
-            log.debug("Post OpponentShipDestroyedEvent.");
-            eventBus.post(new OpponentShipDestroyedEvent(position, adjacentPositions, nextTurn));
+            OpponentGameEndEvent event = new OpponentGameEndEvent(position, adjacentPositions);
+
+            eventBus.post(event);
+            log.debug("Post: " + event.getClass().getSimpleName());
         } else {
-            log.debug("Post PlayerShipDestroyedEvent.");
-            eventBus.post(new PlayerShipDestroyedEvent(position, adjacentPositions, nextTurn));
+            PlayerGameEndEvent event = new PlayerGameEndEvent(position, adjacentPositions);
+
+            eventBus.post(event);
+            log.debug("Post: " + event.getClass().getSimpleName());
         }
     }
 

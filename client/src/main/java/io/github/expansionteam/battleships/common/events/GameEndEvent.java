@@ -1,20 +1,17 @@
 package io.github.expansionteam.battleships.common.events;
 
-import io.github.expansionteam.battleships.common.events.data.NextTurnData;
 import io.github.expansionteam.battleships.common.events.data.PositionData;
 
 import java.util.List;
 
-public abstract class ShipDestroyedEvent {
+public abstract class GameEndEvent {
 
     private final PositionData position;
     private final List<PositionData> adjacentPositions;
-    private final NextTurnData nextTurn;
 
-    public ShipDestroyedEvent(PositionData position, List<PositionData> adjacentPositions, NextTurnData nextTurn) {
+    public GameEndEvent(PositionData position, List<PositionData> adjacentPositions) {
         this.position = position;
         this.adjacentPositions = adjacentPositions;
-        this.nextTurn = nextTurn;
     }
 
     public PositionData getPosition() {
@@ -23,10 +20,6 @@ public abstract class ShipDestroyedEvent {
 
     public List<PositionData> getAdjacentPositions() {
         return adjacentPositions;
-    }
-
-    public NextTurnData getNextTurn() {
-        return nextTurn;
     }
 
 }

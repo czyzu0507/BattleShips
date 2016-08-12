@@ -8,10 +8,8 @@ import java.nio.channels.SocketChannel;
 import static org.apache.log4j.Logger.*;
 import org.apache.log4j.Logger;
 
-// I want to replace some code with SELECTORS, but I made stupid mistake yesterday
-// so I will have to refactor code later, now let's use sockets
 public class Server {
-    private final int port = 1234;
+    private static final int port = 1234;
     private ServerSocketChannel serverSocket;
     private static int n = 0;   // simple pair counter
 

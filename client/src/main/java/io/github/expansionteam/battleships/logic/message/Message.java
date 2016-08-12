@@ -5,15 +5,21 @@ import org.json.JSONObject;
 public class Message {
 
     private final String type;
+    private final BoardOwner boardOwner;
     private final JSONObject data;
 
-    Message(String type, JSONObject data) {
+    Message(String type, BoardOwner boardOwner, JSONObject data) {
         this.type = type;
+        this.boardOwner = boardOwner;
         this.data = data;
     }
 
-    public String getType() {
+    String getType() {
         return type;
+    }
+
+    public BoardOwner getBoardOwner() {
+        return boardOwner;
     }
 
     public JSONObject getData() {
