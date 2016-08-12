@@ -21,7 +21,8 @@ import java.util.Objects;
 public class MainLauncher extends Application {
 
     private final static Logger log = Logger.getLogger(MainLauncher.class);
-    private ConnectionConfig connectionConfig;
+    private static final int WINDOW_WIDTH = 800;
+    private static final int WINDOW_HEIGHT = 600;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -36,10 +37,10 @@ public class MainLauncher extends Application {
             eventBus.register(controller);
             return controller;
         });
-        primaryStage.setMinWidth(800);
-        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(WINDOW_WIDTH);
+        primaryStage.setMinHeight(WINDOW_HEIGHT);
         primaryStage.setTitle("Battleships");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
         primaryStage.show();
     }
 
@@ -56,7 +57,7 @@ public class MainLauncher extends Application {
                 serverIp = parameters.get(0);
                 InetAddresses.forString(serverIp);
                 log.debug("Server ip address is: " + serverIp);
-                connectionConfig = injector.getInstance(ConnectionConfig.class);
+                ConnectionConfig connectionConfig = injector.getInstance(ConnectionConfig.class);
                 connectionConfig.setServerIp(serverIp);
             } catch (IllegalArgumentException e) {
                 log.error(serverIp + " is invalid ip address.");
