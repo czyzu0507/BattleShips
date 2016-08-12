@@ -12,7 +12,7 @@ import io.github.expansionteam.battleships.common.events.playerboard.PlayerEmpty
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipDestroyedEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipHitEvent;
 import io.github.expansionteam.battleships.gui.models.*;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import org.mockito.ArgumentCaptor;
 import org.testng.annotations.Test;
 
@@ -31,12 +31,14 @@ public class BattleshipsControllerTest {
         // given
         EventBus eventBusMock = mock(EventBus.class);
         GameState gameStateMock = mock(GameState.class);
-        BorderPane boardAreaMock = mock(BorderPane.class);
+        HBox boardAreaMock = mock(HBox.class);
+        GuiAsyncTask asyncTaskMock = mock(GuiAsyncTask.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.eventBus = eventBusMock;
         battleshipsController.boardArea = boardAreaMock;
         battleshipsController.gameState = gameStateMock;
+        battleshipsController.guiAsyncTask = asyncTaskMock;
 
         // when
         battleshipsController.handleOpponentArrivedEvent(new OpponentArrivedEvent());
@@ -56,8 +58,9 @@ public class BattleshipsControllerTest {
                 ));
         GameState gameStateMock = mock(GameState.class);
 
-        BorderPane boardAreaMock = mock(BorderPane.class);
+        HBox boardAreaMock = mock(HBox.class);
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
+        GuiAsyncTask asyncTaskMock = mock(GuiAsyncTask.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.eventBus = eventBusMock;
@@ -65,6 +68,7 @@ public class BattleshipsControllerTest {
         battleshipsController.gameState = gameStateMock;
         battleshipsController.boardArea = boardAreaMock;
         battleshipsController.playerBoard = playerBoardMock;
+        battleshipsController.guiAsyncTask = asyncTaskMock;
 
         // when
         List<ShipData> shipsData = new ArrayList<>();
@@ -92,11 +96,15 @@ public class BattleshipsControllerTest {
         EventBus eventBusMock = mock(EventBus.class);
         GameState gameStateMock = mock(GameState.class);
         OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
+        GuiAsyncTask asyncTaskMock = mock(GuiAsyncTask.class);
+        HBox boardArea = new HBox();
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.eventBus = eventBusMock;
         battleshipsController.gameState = gameStateMock;
         battleshipsController.opponentBoard = opponentBoardMock;
+        battleshipsController.guiAsyncTask = asyncTaskMock;
+        battleshipsController.boardArea = boardArea;
 
         // when
         battleshipsController.handleOpponentEmptyFieldHitEvent(
@@ -114,10 +122,15 @@ public class BattleshipsControllerTest {
         // given
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
         GameState gameStateMock = mock(GameState.class);
+        HBox boardArea = new HBox();
+        GuiAsyncTask asyncTaskMock = mock(GuiAsyncTask.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.playerBoard = playerBoardMock;
         battleshipsController.gameState = gameStateMock;
+        battleshipsController.boardArea = boardArea;
+        battleshipsController.guiAsyncTask = asyncTaskMock;
+
 
         // when
         battleshipsController.handlePlayerEmptyFieldHitEvent(
@@ -136,10 +149,14 @@ public class BattleshipsControllerTest {
         // given
         OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
         GameState gameStateMock = mock(GameState.class);
+        HBox boardArea = new HBox();
+        GuiAsyncTask asyncTaskMock = mock(GuiAsyncTask.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.opponentBoard = opponentBoardMock;
         battleshipsController.gameState = gameStateMock;
+        battleshipsController.boardArea = boardArea;
+        battleshipsController.guiAsyncTask = asyncTaskMock;
 
         // when
         battleshipsController.handleOpponentShipHitEvent(new OpponentShipHitEvent(PositionData.of(2, 2), NextTurnData.PLAYER_TURN));
@@ -156,11 +173,15 @@ public class BattleshipsControllerTest {
         EventBus eventBusMock = mock(EventBus.class);
         GameState gameStateMock = mock(GameState.class);
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
+        HBox boardArea = new HBox();
+        GuiAsyncTask asyncTaskMock = mock(GuiAsyncTask.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.eventBus = eventBusMock;
         battleshipsController.playerBoard = playerBoardMock;
         battleshipsController.gameState = gameStateMock;
+        battleshipsController.boardArea = boardArea;
+        battleshipsController.guiAsyncTask = asyncTaskMock;
 
         // when
         battleshipsController.handlePlayerShipHitEvent(new PlayerShipHitEvent(PositionData.of(2, 2), NextTurnData.OPPONENT_TURN));
@@ -176,10 +197,14 @@ public class BattleshipsControllerTest {
         // given
         OpponentBoard opponentBoardMock = mock(OpponentBoard.class);
         GameState gameStateMock = mock(GameState.class);
+        HBox boardArea = new HBox();
+        GuiAsyncTask asyncTaskMock = mock(GuiAsyncTask.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.opponentBoard = opponentBoardMock;
         battleshipsController.gameState = gameStateMock;
+        battleshipsController.boardArea = boardArea;
+        battleshipsController.guiAsyncTask = asyncTaskMock;
 
         // when
         PositionData position = PositionData.of(1, 4);
@@ -210,10 +235,14 @@ public class BattleshipsControllerTest {
         // given
         PlayerBoard playerBoardMock = mock(PlayerBoard.class);
         GameState gameStateMock = mock(GameState.class);
+        HBox boardArea = new HBox();
+        GuiAsyncTask asyncTaskMock = mock(GuiAsyncTask.class);
 
         BattleshipsController battleshipsController = new BattleshipsController();
         battleshipsController.playerBoard = playerBoardMock;
         battleshipsController.gameState = gameStateMock;
+        battleshipsController.boardArea = boardArea;
+        battleshipsController.guiAsyncTask = asyncTaskMock;
 
         // when
         PositionData position = PositionData.of(1, 4);

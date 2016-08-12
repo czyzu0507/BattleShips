@@ -16,11 +16,10 @@ import io.github.expansionteam.battleships.common.events.playerboard.PlayerGameE
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipDestroyedEvent;
 import io.github.expansionteam.battleships.common.events.playerboard.PlayerShipHitEvent;
 import io.github.expansionteam.battleships.gui.models.*;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.log4j.Logger;
 
@@ -45,8 +44,11 @@ public class BattleshipsController implements Initializable {
     @Inject
     GameState gameState;
 
+    @Inject
+    GuiAsyncTask guiAsyncTask;
+
     @FXML
-    BorderPane boardArea;
+    HBox boardArea;
 
     @FXML
     VBox opponentBoardArea;
@@ -54,18 +56,25 @@ public class BattleshipsController implements Initializable {
     @FXML
     VBox playerBoardArea;
 
+    @FXML
+    VBox messageArea;
+
+    @FXML
+    Label message;
+
     OpponentBoard opponentBoard;
     PlayerBoard playerBoard;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setMessage("Waiting for opponent...");
+
         opponentBoard = boardFactory.createEmptyOpponentBoard();
         opponentBoardArea.getChildren().add(opponentBoard);
 
         playerBoard = boardFactory.createEmptyPlayerBoard();
         playerBoardArea.getChildren().add(playerBoard);
-
-        boardArea.setVisible(false);
+        boardArea.setDisable(true);
 
         StartGameEvent startGameEvent = new StartGameEvent();
         eventBus.post(startGameEvent);
@@ -77,7 +86,8 @@ public class BattleshipsController implements Initializable {
     public void handleOpponentArrivedEvent(OpponentArrivedEvent event) {
         log.debug("Handle: " + event.getClass().getSimpleName());
 
-        boardArea.setVisible(true);
+        boardArea.setDisable(false);
+        setMessage("");
 
         GenerateShipsEvent generateShipsEvent = new GenerateShipsEvent();
         eventBus.post(generateShipsEvent);
@@ -156,12 +166,8 @@ public class BattleshipsController implements Initializable {
         opponentBoard.positionWasShotAndHit(Position.of(event.getPosition().getX(), event.getPosition().getY()));
         event.getAdjacentPositions().stream().forEach(p -> opponentBoard.positionWasShotAndMissed(Position.of(p.getX(), p.getY())));
 
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Game over");
-            alert.setContentText("You won!");
-            alert.showAndWait();
-        });
+        setMessage("You won!");
+        boardArea.setDisable(true);
     }
 
 
@@ -172,21 +178,27 @@ public class BattleshipsController implements Initializable {
         playerBoard.positionWasShot(Position.of(event.getPosition().getX(), event.getPosition().getY()));
         event.getAdjacentPositions().stream().forEach(p -> playerBoard.positionWasShot(Position.of(p.getX(), p.getY())));
 
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Game over");
-            alert.setContentText("You lose!");
-            alert.showAndWait();
-        });
+        setMessage("You lose!");
+        boardArea.setDisable(true);
     }
 
     private void updateGameState(NextTurnData nextTurn) {
         if (nextTurn.equals(NextTurnData.OPPONENT_TURN)) {
             gameState.setCurrentTurn(GameState.Turn.OPPONENT_TURN);
+            setMessage("Opponent's turn.");
+            boardArea.setDisable(true);
+
             eventBus.post(new WaitForOpponentEvent());
         } else {
+            setMessage("Your turn.");
+            boardArea.setDisable(false);
             gameState.setCurrentTurn(GameState.Turn.PLAYER_TURN);
         }
     }
 
+    private void setMessage(String text) {
+        guiAsyncTask.runLater(() -> message.setText(text));
+    }
+
 }
+
