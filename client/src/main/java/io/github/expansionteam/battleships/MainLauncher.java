@@ -1,6 +1,7 @@
 package io.github.expansionteam.battleships;
 
 import com.google.common.eventbus.EventBus;
+import com.google.common.net.InetAddresses;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.github.expansionteam.battleships.logic.ConnectionConfig;
@@ -48,11 +49,19 @@ public class MainLauncher extends Application {
 
     private void configureServerIp(Injector injector) {
         if (Objects.nonNull(getParameters()) && !CollectionUtils.isEmpty(getParameters().getRaw())) {
-            List<String> parameters = getParameters().getRaw();
-            String serverIp = parameters.get(0);
-            log.debug("Server ip address is: " + serverIp);
-            connectionConfig = injector.getInstance(ConnectionConfig.class);
-            connectionConfig.setServerIp(serverIp);
+            List<String> parameters;
+            String serverIp = "";
+            try {
+                parameters = getParameters().getRaw();
+                serverIp = parameters.get(0);
+                InetAddresses.forString(serverIp);
+                log.debug("Server ip address is: " + serverIp);
+                connectionConfig = injector.getInstance(ConnectionConfig.class);
+                connectionConfig.setServerIp(serverIp);
+            } catch (IllegalArgumentException e) {
+                log.error(serverIp + " is invalid ip address.");
+                System.exit(1);
+            }
         }
     }
 
