@@ -1,13 +1,13 @@
-package io.github.expansionteam.battleships.gui.controllers;
+package io.github.expansionteam.battleships.gui;
 
 import io.github.expansionteam.battleships.common.events.data.ShipData;
 import io.github.expansionteam.battleships.gui.models.Position;
 import io.github.expansionteam.battleships.gui.models.Ship;
 import io.github.expansionteam.battleships.gui.models.ShipSize;
 
-public class EventDataConverter {
+class EventDataConverter {
 
-    public Ship convertShipDataToShipGuiModel(ShipData shipData) {
+    Ship convertShipDataToShipGuiModel(ShipData shipData) {
         Position position = Position.of(shipData.getPosition().getX(), shipData.getPosition().getY());
         ShipSize shipSize = getShipSize(shipData);
 

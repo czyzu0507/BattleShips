@@ -19,6 +19,7 @@ public class Board implements Iterable<Field> {
     public static class BoardBuilder {
 
         private final Set<Field> board = initializeSet();
+
         private final Map<Integer, Integer> availableShips = initializeMap();
 
         private static Set<Field> initializeSet() {
@@ -74,7 +75,7 @@ public class Board implements Iterable<Field> {
     public boolean shootField(int x, int y) {
         Field boardField = getFieldFromTheBoard(x, y);
         if (boardField.isHit()) {
-           return false;
+            return false;
         }
         boardField.markAsHit();
         Ship ship = boardField.getParentShip();
@@ -85,10 +86,19 @@ public class Board implements Iterable<Field> {
         return true;
     }
 
+    public boolean isFieldHit(int x, int y) {
+        Field field = getFieldFromTheBoard(x, y);
+        return field.isHit();
+    }
+
     public boolean isDestroyedShip(int x, int y) {
         Field field = getFieldFromTheBoard(x, y);
         Ship parentShip = field.getParentShip();
         return parentShip == null ? false : parentShip.isDestroyed();
+    }
+
+    public boolean areAllShipsDestroyed() {
+        return ships.stream().allMatch(ship -> ship.isDestroyed());
     }
 
     public Collection<Field> getAdjacentToShip(int x, int y) {
@@ -97,7 +107,12 @@ public class Board implements Iterable<Field> {
         return parentShip == null ? Collections.emptySet() : Ship.generateSetOfAdjacentFields(this, parentShip.occupiedFields);
     }
 
+    public boolean isShipField(int x, int y) {
+        return getFieldFromTheBoard(x, y).isShip();
+    }
+
     // when the ship is destroyed
+
     private void markAdjacentFieldsAsHit(Ship hitShip) {
         Set<Field> fields = Ship.generateSetOfAdjacentFields(this, hitShip.occupiedFields);
         fields.forEach(Field::markAsHit);
@@ -112,6 +127,10 @@ public class Board implements Iterable<Field> {
             }
         }
         return null;
+    }
+
+    public boolean placingShipsFinished() {
+        return availableShips.values().stream().mapToInt(i -> i).sum() == 0;
     }
 
     @Override

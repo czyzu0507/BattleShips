@@ -13,7 +13,6 @@
 .field-was-shot-miss {
     -fx-fill: #76797A;
     -fx-stroke: #2798F5;
-    /*-fx-stroke: #000;*/
     -fx-stroke-width:2;
 }
 

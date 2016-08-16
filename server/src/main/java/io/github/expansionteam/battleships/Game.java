@@ -7,43 +7,59 @@ import org.apache.log4j.Logger;
 
 import java.util.Collection;
 
-import static io.github.expansionteam.battleships.engine.Board.BoardBuilder;
 import static io.github.expansionteam.battleships.engine.Board.RandomShipGenerator;
 
-public class Game {
+class Game {
 
-    private static final Logger log = Logger.getLogger(Game.class);
+//    private static final Logger log = Logger.getLogger(Game.class);
 
-    private final Board firstPlayerBoard = new BoardBuilder().build();
-    private final Board secondPlayerBoard = new BoardBuilder().build();
+    private final Board firstPlayerBoard;
+    private final Board secondPlayerBoard;
     private final RandomShipGenerator randomShipGenerator = new RandomShipGenerator();
 
-    public Collection<Ship> getPlayerShips() {
+    static Game createGame() {
+        return new Game(new Board.BoardBuilder().build(), new Board.BoardBuilder().build());
+    }
+
+    Game(Board firstPlayerBoard, Board secondPlayerBoard) {
+        this.firstPlayerBoard = firstPlayerBoard;
+        this.secondPlayerBoard = secondPlayerBoard;
+    }
+
+    Collection<Ship> getPlayerShips() {
         Board board = currentBoard();
         return board.getShips();
     }
 
-    public void generateRandomShips() {
+    void generateRandomShips() {
         Board board = currentBoard();
         synchronized (randomShipGenerator) {
             randomShipGenerator.generateRandomShips(board);
         }
     }
 
-    public boolean shootOpponentField(int x, int y) {
+    boolean shootOpponentField(int x, int y) {
         return opponentBoard().shootField(x, y);
     }
 
-    public boolean isOpponentShipDestroyed(int x, int y) {
+    boolean isOpponentShipDestroyed(int x, int y) {
         return opponentBoard().isDestroyedShip(x, y);
     }
 
-    public boolean isOpponentShipHit(int x, int y) {
-        return isShipField(opponentBoard(), x, y);
+    boolean isOpponentShipHit(int x, int y) {
+        return opponentBoard().isShipField(x, y);
     }
 
-    public Collection<Field> getAdjacentToOpponentShip(int x, int y) {
+    Collection<Field> getAdjacentToOpponentShip(int x, int y) {
         return opponentBoard().getAdjacentToShip(x, y);
+    }
+
+    boolean isEnded() {
+        return opponentBoard().areAllShipsDestroyed();
+    }
+
+    boolean generatingShipsFinished() {
+        return firstPlayerBoard.placingShipsFinished() && secondPlayerBoard.placingShipsFinished();
     }
 
     private Board currentBoard() {
@@ -58,7 +74,4 @@ public class Game {
         return Thread.currentThread().getName().contains("Player_1");
     }
 
-    private boolean isShipField(Board board, int x, int y) {
-        return board.getFieldFromTheBoard(x, y).isShip();
-    }
 }
