@@ -108,8 +108,7 @@ public class Board implements Iterable<Field> {
     }
 
     public boolean isShipField(int x, int y) {
-        Field field = getFieldFromTheBoard(x, y);
-        return field.isShip();
+        return getFieldFromTheBoard(x, y).isShip();
     }
 
     // when the ship is destroyed

@@ -30,8 +30,9 @@ public class GameEndEventResponseMessageProcessor implements ResponseMessageProc
 
     @Override
     public void processResponseMessage(Message responseMessage) {
-        JSONObject positionJsonObject = responseMessage.getData().getJSONObject("position");
-        JSONArray adjacentPositionJsonObjects = responseMessage.getData().getJSONArray("adjacent");
+        JSONObject jsonObject = responseMessage.getData();
+        JSONObject positionJsonObject = jsonObject.getJSONObject("position");
+        JSONArray adjacentPositionJsonObjects = jsonObject.getJSONArray("adjacent");
 
         PositionData position = createPositionDataFromJsonObject(positionJsonObject);
 
@@ -41,17 +42,14 @@ public class GameEndEventResponseMessageProcessor implements ResponseMessageProc
             adjacentPositions.add(createPositionDataFromJsonObject(currentPositionJsonObject));
         }
 
+        GameEndEvent event;
         if (responseMessage.getBoardOwner().equals(BoardOwner.OPPONENT)) {
-            OpponentGameEndEvent event = new OpponentGameEndEvent(position, adjacentPositions);
-
-            eventBus.post(event);
-            log.debug("Post: " + event.getClass().getSimpleName());
+            event = new OpponentGameEndEvent(position, adjacentPositions);
         } else {
-            PlayerGameEndEvent event = new PlayerGameEndEvent(position, adjacentPositions);
-
-            eventBus.post(event);
-            log.debug("Post: " + event.getClass().getSimpleName());
+            event = new PlayerGameEndEvent(position, adjacentPositions);
         }
+        eventBus.post(event);
+        log.debug("Post: " + event.getClass().getSimpleName());
     }
 
     private PositionData createPositionDataFromJsonObject(JSONObject positionJsonObject) {

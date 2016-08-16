@@ -9,6 +9,7 @@ import io.github.expansionteam.battleships.logic.message.BoardOwner;
 import io.github.expansionteam.battleships.logic.message.Message;
 import io.github.expansionteam.battleships.logic.message.ResponseMessageProcessor;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 public class EmptyFieldHitEventResponseMessageProcessor implements ResponseMessageProcessor {
 
@@ -22,8 +23,9 @@ public class EmptyFieldHitEventResponseMessageProcessor implements ResponseMessa
 
     @Override
     public void processResponseMessage(Message responseMessage) {
-        int x = responseMessage.getData().getJSONObject("position").getInt("x");
-        int y = responseMessage.getData().getJSONObject("position").getInt("y");
+        JSONObject jsonObject = responseMessage.getData().getJSONObject("position");
+        int x = jsonObject.getInt("x");
+        int y = jsonObject.getInt("y");
 
         NextTurnData nextTurn;
         if (responseMessage.getData().getString("nextTurn").equals("OPPONENT")) {
