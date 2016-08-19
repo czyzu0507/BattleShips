@@ -52,7 +52,7 @@ public class Server {
     }
 
     // write stop or STOP to terminate the server
-    private void launchDeamonToStopServer() {
+    private void stopServer() {
         new Thread(() -> {
             try (Scanner sc = new Scanner(System.in)) {
                 while (sc.hasNextLine()) {
